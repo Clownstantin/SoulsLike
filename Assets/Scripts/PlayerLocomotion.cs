@@ -41,6 +41,7 @@ namespace SoulsLike
 			_moveDirection = _cameraTransform.forward * _inputHandler.Vertical;
 			_moveDirection += _cameraTransform.right * _inputHandler.Horizontal;
 			_moveDirection.Normalize();
+			_moveDirection.y = 0;
 
 			float speed = _movementSpeed;
 			_moveDirection *= speed;

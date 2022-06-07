@@ -11,6 +11,7 @@ namespace SoulsLike
 		private float _mouseY;
 
 		private PlayerControls _playerControls;
+		private CameraHandler _cameraHandler;
 
 		private Vector2 _movement;
 		private Vector2 _cameraInput;
@@ -21,12 +22,24 @@ namespace SoulsLike
 		public float MouseX => _mouseX;
 		public float MouseY => _mouseY;
 
+		private void Awake() => _cameraHandler = CameraHandler.Instance;
+
 		private void OnEnable()
 		{
 			_playerControls ??= new PlayerControls();
 			_playerControls.PlayerMovement.Movement.performed += m => _movement = m.ReadValue<Vector2>();
 			_playerControls.PlayerMovement.Camera.performed += c => _cameraInput = c.ReadValue<Vector2>();
 			_playerControls.Enable();
+		}
+
+		private void FixedUpdate()
+		{
+			float delta = Time.fixedDeltaTime;
+
+			if(_cameraHandler == null) return;
+
+			_cameraHandler.FollowTarget(delta);
+			_cameraHandler.HandleCameraRotation(delta, _mouseX, _mouseY);
 		}
 
 		private void OnDisable() => _playerControls.Disable();
