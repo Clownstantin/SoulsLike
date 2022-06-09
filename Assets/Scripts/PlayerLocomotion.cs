@@ -15,6 +15,7 @@ namespace SoulsLike
 
 		private InputHandler _inputHandler;
 		private AnimatorHandler _animatorHandler;
+		private PlayerManager _playerManager;
 
 		private Transform _transform;
 		private Rigidbody _rigidbody;
@@ -23,14 +24,14 @@ namespace SoulsLike
 		private Vector3 _normal;
 		private Vector3 _targetPosition;
 
-		private bool _isSprinting;
-
 		public Rigidbody Rigidbody => _rigidbody;
 
 		private void Start()
 		{
 			_rigidbody = GetComponent<Rigidbody>();
 			_inputHandler = GetComponent<InputHandler>();
+			_playerManager = GetComponent<PlayerManager>();
+
 			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
 			_animatorHandler.Init();
 
@@ -38,23 +39,7 @@ namespace SoulsLike
 			_transform = transform;
 		}
 
-		private void Update()
-		{
-			float delta = Time.deltaTime;
-
-			_isSprinting = _inputHandler.RollButtonPressed;
-			_inputHandler.TickInput(delta);
-
-			HandleMovement();
-			HandleRollingAndSprinting(delta);
-
-			_animatorHandler.UpdateAnimatorValues(_inputHandler.MoveAmount, 0, _isSprinting);
-
-			if(_animatorHandler.CanRotate) HandleRotation(delta);
-		}
-
-		#region Movement
-		private void HandleMovement()
+		public void HandleMovement(float delta)
 		{
 			if(_inputHandler.RollFlag) return;
 
@@ -63,13 +48,44 @@ namespace SoulsLike
 			_moveDirection.Normalize();
 			_moveDirection.y = 0;
 
-			if(_inputHandler.SprintFlag) _isSprinting = true;
+			float speed;
 
-			float speed = _inputHandler.SprintFlag ? _sprintSpeed : _movementSpeed;
+			if(_inputHandler.SprintFlag)
+			{
+				speed = _sprintSpeed;
+				_playerManager.SetIsSprinting(true);
+			}
+			else speed = _movementSpeed;
+
 			_moveDirection *= speed;
 
 			Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normal);
 			_rigidbody.velocity = projectedVelocity;
+
+			_animatorHandler.UpdateAnimatorValues(_inputHandler.MoveAmount, 0, _playerManager.IsSprinting);
+			if(_animatorHandler.CanRotate) HandleRotation(delta);
+		}
+
+		public void HandleRollingAndSprinting(float delta)
+		{
+			if(_playerManager.IsInteracting) return;
+
+			if(_inputHandler.RollFlag)
+			{
+				_moveDirection = _cameraTransform.forward * _inputHandler.Vertical;
+				_moveDirection += _cameraTransform.right * _inputHandler.Horizontal;
+
+				if(_inputHandler.MoveAmount > 0)
+				{
+					_animatorHandler.PlayTargetAnimation(AnimatorHandler.Roll, true);
+					_moveDirection.y = 0;
+
+					Quaternion rollRotation = Quaternion.LookRotation(_moveDirection);
+					_transform.rotation = rollRotation;
+				}
+				else
+					_animatorHandler.PlayTargetAnimation(AnimatorHandler.Stepback, true);
+			}
 		}
 
 		private void HandleRotation(float delta)
@@ -89,29 +105,6 @@ namespace SoulsLike
 			Quaternion targetRotation = Quaternion.Slerp(_transform.rotation, lookRot, rotSpeed * delta);
 
 			_transform.rotation = targetRotation;
-		}
-		#endregion
-
-		private void HandleRollingAndSprinting(float delta)
-		{
-			if(_inputHandler.IsInteracting) return;
-
-			if(_inputHandler.RollFlag)
-			{
-				_moveDirection = _cameraTransform.forward * _inputHandler.Vertical;
-				_moveDirection += _cameraTransform.right * _inputHandler.Horizontal;
-
-				if(_inputHandler.MoveAmount > 0)
-				{
-					_animatorHandler.PlayTargetAnimation(AnimatorHandler.Roll, true);
-					_moveDirection.y = 0;
-
-					Quaternion rollRotation = Quaternion.LookRotation(_moveDirection);
-					_transform.rotation = rollRotation;
-				}
-				else
-					_animatorHandler.PlayTargetAnimation(AnimatorHandler.Stepback, true);
-			}
 		}
 	}
 }

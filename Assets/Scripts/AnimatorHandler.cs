@@ -9,6 +9,7 @@ namespace SoulsLike
 		[SerializeField] private float _dampTime = 0.1f;
 		[SerializeField] private bool _canRotate;
 
+		private PlayerManager _playerManager;
 		private Animator _animator;
 		private InputHandler _inputHandler;
 		private PlayerLocomotion _playerLocomotion;
@@ -28,7 +29,7 @@ namespace SoulsLike
 
 		private void OnAnimatorMove()
 		{
-			if(!_inputHandler.IsInteracting) return;
+			if(!_playerManager.IsInteracting) return;
 
 			float delta = Time.deltaTime;
 
@@ -43,6 +44,7 @@ namespace SoulsLike
 		{
 			_animator = GetComponent<Animator>();
 			_inputHandler = GetComponentInParent<InputHandler>();
+			_playerManager = GetComponentInParent<PlayerManager>();
 			_playerLocomotion = GetComponentInParent<PlayerLocomotion>();
 
 			_verticalHash = Animator.StringToHash(Vertical);
