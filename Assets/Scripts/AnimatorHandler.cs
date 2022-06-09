@@ -10,29 +10,63 @@ namespace SoulsLike
 		[SerializeField] private bool _canRotate;
 
 		private Animator _animator;
+		private InputHandler _inputHandler;
+		private PlayerLocomotion _playerLocomotion;
+
 		private int _verticalHash;
 		private int _horizontalHash;
+		private int _isInteractingHash;
 
 		private const string Vertical = nameof(Vertical);
 		private const string Horizontal = nameof(Horizontal);
 
+		public const string IsInteracting = nameof(IsInteracting);
+		public const string Roll = nameof(Roll);
+		public const string Stepback = nameof(Stepback);
+
 		public bool CanRotate => _canRotate;
+
+		private void OnAnimatorMove()
+		{
+			if(!_inputHandler.IsInteracting) return;
+
+			float delta = Time.deltaTime;
+
+			_playerLocomotion.Rigidbody.drag = 0;
+			Vector3 deltaPos = _animator.deltaPosition;
+			deltaPos.y = 0;
+			Vector3 velocity = deltaPos / delta;
+			_playerLocomotion.Rigidbody.velocity = velocity;
+		}
 
 		public void Init()
 		{
 			_animator = GetComponent<Animator>();
+			_inputHandler = GetComponentInParent<InputHandler>();
+			_playerLocomotion = GetComponentInParent<PlayerLocomotion>();
+
 			_verticalHash = Animator.StringToHash(Vertical);
 			_horizontalHash = Animator.StringToHash(Horizontal);
+			_isInteractingHash = Animator.StringToHash(IsInteracting);
 		}
 
-		public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement)
+		public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement, bool isSprinting = false)
 		{
 			float vertical = ClampedAxis(verticalMovement);
 			float horizontal = ClampedAxis(horizontalMovement);
 			float delta = Time.deltaTime;
 
+			if(isSprinting) vertical = 2f;
+
 			_animator.SetFloat(_verticalHash, vertical, _dampTime, delta);
 			_animator.SetFloat(_horizontalHash, horizontal, _dampTime, delta);
+		}
+
+		public void PlayTargetAnimation(string targetAnim, bool isInteracting)
+		{
+			_animator.applyRootMotion = isInteracting;
+			_animator.SetBool(_isInteractingHash, isInteracting);
+			_animator.CrossFade(targetAnim, 0.2f);
 		}
 
 		public void StartOrStopRotation(bool rotState) => _canRotate = rotState;

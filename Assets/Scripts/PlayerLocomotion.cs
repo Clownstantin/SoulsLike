@@ -8,6 +8,7 @@ namespace SoulsLike
 		[Header("Stats")]
 		[SerializeField] private float _movementSpeed = 5f;
 		[SerializeField] private float _rotationSpeed = 10f;
+		[SerializeField] private float _sprintSpeed = 10f;
 
 		private Transform _cameraTransform;
 		private Vector3 _moveDirection;
@@ -21,6 +22,10 @@ namespace SoulsLike
 
 		private Vector3 _normal;
 		private Vector3 _targetPosition;
+
+		private bool _isSprinting;
+
+		public Rigidbody Rigidbody => _rigidbody;
 
 		private void Start()
 		{
@@ -36,25 +41,37 @@ namespace SoulsLike
 		private void Update()
 		{
 			float delta = Time.deltaTime;
+
+			_isSprinting = _inputHandler.RollButtonPressed;
 			_inputHandler.TickInput(delta);
+
+			HandleMovement();
+			HandleRollingAndSprinting(delta);
+
+			_animatorHandler.UpdateAnimatorValues(_inputHandler.MoveAmount, 0, _isSprinting);
+
+			if(_animatorHandler.CanRotate) HandleRotation(delta);
+		}
+
+		#region Movement
+		private void HandleMovement()
+		{
+			if(_inputHandler.RollFlag) return;
 
 			_moveDirection = _cameraTransform.forward * _inputHandler.Vertical;
 			_moveDirection += _cameraTransform.right * _inputHandler.Horizontal;
 			_moveDirection.Normalize();
 			_moveDirection.y = 0;
 
-			float speed = _movementSpeed;
+			if(_inputHandler.SprintFlag) _isSprinting = true;
+
+			float speed = _inputHandler.SprintFlag ? _sprintSpeed : _movementSpeed;
 			_moveDirection *= speed;
 
 			Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normal);
 			_rigidbody.velocity = projectedVelocity;
-
-			_animatorHandler.UpdateAnimatorValues(_inputHandler.MoveAmount, 0);
-
-			if(_animatorHandler.CanRotate) HandleRotation(delta);
 		}
 
-		#region Movement
 		private void HandleRotation(float delta)
 		{
 			Vector3 targetDir = Vector3.zero;
@@ -74,5 +91,27 @@ namespace SoulsLike
 			_transform.rotation = targetRotation;
 		}
 		#endregion
+
+		private void HandleRollingAndSprinting(float delta)
+		{
+			if(_inputHandler.IsInteracting) return;
+
+			if(_inputHandler.RollFlag)
+			{
+				_moveDirection = _cameraTransform.forward * _inputHandler.Vertical;
+				_moveDirection += _cameraTransform.right * _inputHandler.Horizontal;
+
+				if(_inputHandler.MoveAmount > 0)
+				{
+					_animatorHandler.PlayTargetAnimation(AnimatorHandler.Roll, true);
+					_moveDirection.y = 0;
+
+					Quaternion rollRotation = Quaternion.LookRotation(_moveDirection);
+					_transform.rotation = rollRotation;
+				}
+				else
+					_animatorHandler.PlayTargetAnimation(AnimatorHandler.Stepback, true);
+			}
+		}
 	}
 }

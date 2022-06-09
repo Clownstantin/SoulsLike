@@ -10,6 +10,12 @@ namespace SoulsLike
 		private float _mouseX;
 		private float _mouseY;
 
+		private bool _rollButtonPressed;
+		private bool _rollFlag;
+		private float _rollInputTimer;
+		private bool _sprintFlag;
+		private bool _isInteracting;
+
 		private PlayerControls _playerControls;
 		private CameraHandler _cameraHandler;
 
@@ -21,6 +27,10 @@ namespace SoulsLike
 		public float Vertical => _vertical;
 		public float MouseX => _mouseX;
 		public float MouseY => _mouseY;
+		public bool RollFlag => _rollFlag;
+		public bool RollButtonPressed => _rollButtonPressed;
+		public bool SprintFlag => _sprintFlag;
+		public bool IsInteracting => _isInteracting;
 
 		private void Awake() => _cameraHandler = CameraHandler.Instance;
 
@@ -44,7 +54,16 @@ namespace SoulsLike
 
 		private void OnDisable() => _playerControls.Disable();
 
-		public void TickInput(float delta) => MoveInput(delta);
+		public void TickInput(float delta)
+		{
+			MoveInput(delta);
+			HandleRollInput(delta);
+		}
+
+		public void SetIsInteractingParam(bool isInteracting) => _isInteracting = isInteracting;
+
+		public void SetRollFlag(bool rollFlag) => _rollFlag = rollFlag;
+		public void SetSprintFlag(bool sprintFlag) => _sprintFlag = sprintFlag;
 
 		private void MoveInput(float delta)
 		{
@@ -53,6 +72,27 @@ namespace SoulsLike
 			_moveAmount = Mathf.Clamp01(Mathf.Abs(_horizontal) + Mathf.Abs(_vertical));
 			_mouseX = _cameraInput.x;
 			_mouseY = _cameraInput.y;
+		}
+
+		private void HandleRollInput(float delta)
+		{
+			_rollButtonPressed = _playerControls.PlayerActions.Roll.IsPressed();
+
+			if(_rollButtonPressed)
+			{
+				_rollInputTimer += delta;
+				_sprintFlag = true;
+			}
+			else
+			{
+				if(_rollInputTimer > 0 && _rollInputTimer < 0.5f)
+				{
+					_sprintFlag = false;
+					_rollFlag = true;
+				}
+
+				_rollInputTimer = 0;
+			}
 		}
 	}
 }
