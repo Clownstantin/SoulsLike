@@ -118,7 +118,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""id"": ""50a2749b-f938-4ff0-a547-bb7d06c2ed5b"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone"",
                     ""groups"": """",
                     ""action"": ""Camera"",
                     ""isComposite"": false,

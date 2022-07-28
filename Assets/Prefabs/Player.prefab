@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7911715002085536405}
   - component: {fileID: 7911715002085536402}
-  - component: {fileID: 4314006478929471982}
   - component: {fileID: 7911715002085536401}
   - component: {fileID: 7911715002085536403}
   - component: {fileID: 7911715002085536404}
@@ -51,19 +50,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 5
   _rotationSpeed: 10
-  _sprintSpeed: 10
---- !u!114 &4314006478929471982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7911715002085536406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8aef314e1e12ba498226dfd9ac2fcb7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  myTransform: {fileID: 0}
+  animatorHandler: {fileID: 0}
+  rigidbody: {fileID: 0}
+  normalCamera: {fileID: 0}
 --- !u!114 &7911715002085536401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,6 +66,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef3526f2aff557843b78a7ca09a653fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  horizontal: 0
+  vertical: 0
+  moveAmount: 0
+  mouseX: 0
+  mouseY: 0
 --- !u!136 &7911715002085536403
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -184,7 +179,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 16ee6d6ad723f5442ace873ac9da6262, type: 3}
   m_PrefabInstance: {fileID: 7911715000935534619}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7911715000935534616
+--- !u!114 &1872744380
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -196,9 +191,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2545f41c183934ab197c565c67660b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementClamp: 0.55
-  _dampTime: 0.1
-  _canRotate: 1
+  animator: {fileID: 0}
+  canRotate: 1
 --- !u!4 &7658010103145641968 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 16ee6d6ad723f5442ace873ac9da6262, type: 3}
