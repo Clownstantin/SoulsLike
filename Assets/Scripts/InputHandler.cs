@@ -5,7 +5,6 @@ namespace SoulsLike
 	public class InputHandler : MonoBehaviour
 	{
 		private PlayerControls _inputActions;
-		private CameraHandler _cameraHandler;
 
 		private Vector2 _movementInput;
 		private Vector2 _cameraInput;
@@ -16,9 +15,12 @@ namespace SoulsLike
 		public float mouseX;
 		public float mouseY;
 
-		#region Monobehavior
-		private void Awake() => _cameraHandler = CameraHandler.instance;
+		public bool b_Input;
+		public bool rollFlag;
+		public bool sprintFlag;
+		public float rollInputTimer;
 
+		#region Monobehavior
 		private void OnEnable()
 		{
 			if(_inputActions == null)
@@ -31,23 +33,13 @@ namespace SoulsLike
 			_inputActions.Enable();
 		}
 
-		private void FixedUpdate()
-		{
-			float delta = Time.fixedDeltaTime;
-
-			if(_cameraHandler != null)
-			{
-				_cameraHandler.FollowTarget(delta);
-				_cameraHandler.HandleCameraRotation(delta, mouseX, mouseY);
-			}
-		}
-
 		private void OnDisable() => _inputActions.Disable();
 		#endregion
 
 		public void TickInput(float delta)
 		{
 			MoveInput(delta);
+			HandleRollInput(delta);
 		}
 
 		private void MoveInput(float delta)
@@ -57,6 +49,28 @@ namespace SoulsLike
 			moveAmount = Mathf.Clamp01(Mathf.Abs(horizontal) + Mathf.Abs(vertical));
 			mouseX = _cameraInput.x;
 			mouseY = _cameraInput.y;
+		}
+
+		private void HandleRollInput(float delta)
+		{
+			b_Input = _inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
+			Debug.Log($"RollInput {b_Input}");
+
+			if(b_Input)
+			{
+				rollInputTimer += delta;
+				sprintFlag = true;
+			}
+			else
+			{
+				if(rollInputTimer > 0 && rollInputTimer < 0.5f)
+				{
+					sprintFlag = false;
+					rollFlag = true;
+				}
+
+				rollInputTimer = 0;
+			}
 		}
 	}
 }
