@@ -1596,7 +1596,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 963194228}
   cameraPivotTransform: {fileID: 431157826}
   lookSpeed: 0.1
-  followSpeed: 0.1
+  followSpeed: 0.2
   pivotSpeed: 0.03
   minPivot: -35
   maxPivot: 35
