@@ -54,7 +54,6 @@ namespace SoulsLike
 		private void HandleRollInput(float delta)
 		{
 			b_Input = _inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
-			Debug.Log($"RollInput {b_Input}");
 
 			if(b_Input)
 			{

@@ -22,11 +22,14 @@ namespace SoulsLike
 		public const string IsInteracting = nameof(IsInteracting);
 		public const string Roll = nameof(Roll);
 		public const string Stepback = nameof(Stepback);
+		public const string Land = nameof(Land);
+		public const string Fall = nameof(Fall);
+		public const string Locomotion = nameof(Locomotion);
 
 		#region MonoBehaviour
 		private void OnAnimatorMove()
 		{
-			if(_playerManager.isInteracting == false) return;
+			if(!_playerManager.isInteracting) return;
 
 			float delta = Time.deltaTime;
 
