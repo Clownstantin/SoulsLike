@@ -5,7 +5,6 @@ namespace SoulsLike
 	public class AnimatorHandler : MonoBehaviour
 	{
 		private PlayerManager _playerManager;
-		private InputHandler _inputHandler;
 		private PlayerLocomotion _playerLocomotion;
 
 		private int _verticalHash;
@@ -15,20 +14,11 @@ namespace SoulsLike
 		private const string Vertical = nameof(Vertical);
 		private const string Horizontal = nameof(Horizontal);
 
-		public Animator animator;
+		public const string IsInteracting = nameof(IsInteracting);
 
+		public Animator animator;
 		public bool canRotate;
 
-		public const string IsInteracting = nameof(IsInteracting);
-		public const string Roll = nameof(Roll);
-		public const string Stepback = nameof(Stepback);
-		public const string Land = nameof(Land);
-		public const string Fall = nameof(Fall);
-		public const string Locomotion = nameof(Locomotion);
-		public const string OH_LightAttack_01 = nameof(OH_LightAttack_01);
-		public const string OH_HeavyAttack_01 = nameof(OH_HeavyAttack_01);
-
-		#region MonoBehaviour
 		private void OnAnimatorMove()
 		{
 			if(!_playerManager.isInteracting) return;
@@ -41,14 +31,13 @@ namespace SoulsLike
 			Vector3 velocity = deltaPosition / delta;
 			_playerLocomotion.rigidbody.velocity = velocity;
 		}
-		#endregion
 
-		public void Init()
+		public void Init(PlayerManager playerManager, PlayerLocomotion playerLocomotion, Animator animator)
 		{
-			animator = GetComponent<Animator>();
-			_playerManager = GetComponentInParent<PlayerManager>();
-			_playerLocomotion = GetComponentInParent<PlayerLocomotion>();
-			_inputHandler = GetComponentInParent<InputHandler>();
+			this.animator = animator;
+
+			_playerManager = playerManager;
+			_playerLocomotion = playerLocomotion;
 
 			_verticalHash = Animator.StringToHash(Vertical);
 			_horizontalHash = Animator.StringToHash(Horizontal);

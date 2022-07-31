@@ -81,7 +81,7 @@ namespace SoulsLike
 
 				if(Mathf.Abs(_targetPositionZ) < minCollisionOffset) _targetPositionZ = -minCollisionOffset;
 
-				_cameraPosition.z = Mathf.Lerp(cameraTransform.localPosition.z, _targetPositionZ, delta / 0.2f);
+				_cameraPosition.z = Mathf.Lerp(cameraTransform.localPosition.z, _targetPositionZ, delta / 0.1f);
 				cameraTransform.localPosition = _cameraPosition;
 			}
 		}

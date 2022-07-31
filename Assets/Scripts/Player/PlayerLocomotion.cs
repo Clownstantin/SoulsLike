@@ -31,15 +31,14 @@ namespace SoulsLike
 		public GameObject normalCamera;
 		public float inAirTimer;
 
-		#region Monobehavior
-		private void Start()
+		public void Init(PlayerManager playerManager, AnimatorHandler animatorHandler, InputHandler inputHandler)
 		{
 			rigidbody = GetComponent<Rigidbody>();
-			_inputHandler = GetComponent<InputHandler>();
-			_playerManager = GetComponent<PlayerManager>();
 
-			animatorHandler = GetComponentInChildren<AnimatorHandler>();
-			animatorHandler.Init();
+			_inputHandler = inputHandler;
+			_playerManager = playerManager;
+
+			this.animatorHandler = animatorHandler;
 
 			_cameraObject = Camera.main.transform;
 			myTransform = transform;
@@ -47,7 +46,6 @@ namespace SoulsLike
 			_playerManager.isGrounded = true;
 			_ignoreForGroundCheck = ~(1 << 8 | 1 << 11);
 		}
-		#endregion
 
 		public void HandleMovement(float delta)
 		{
@@ -91,12 +89,12 @@ namespace SoulsLike
 
 				if(_inputHandler.moveAmount > 0)
 				{
-					animatorHandler.PlayTargetAnimation(AnimatorHandler.Roll, true);
+					animatorHandler.PlayTargetAnimation(AnimationNameBase.Roll, true);
 					_moveDirection.y = 0;
 					Quaternion rollRotation = Quaternion.LookRotation(_moveDirection);
 					myTransform.rotation = rollRotation;
 				}
-				else animatorHandler.PlayTargetAnimation(AnimatorHandler.Stepback, true);
+				else animatorHandler.PlayTargetAnimation(AnimationNameBase.Stepback, true);
 			}
 		}
 
@@ -135,12 +133,12 @@ namespace SoulsLike
 					if(inAirTimer > 0.5f)
 					{
 						Debug.Log($"You were in the air for {inAirTimer}");
-						animatorHandler.PlayTargetAnimation(AnimatorHandler.Land, true);
+						animatorHandler.PlayTargetAnimation(AnimationNameBase.Land, true);
 						inAirTimer = 0;
 					}
 					else
 					{
-						animatorHandler.PlayTargetAnimation(AnimatorHandler.Locomotion, false);
+						animatorHandler.PlayTargetAnimation(AnimationNameBase.Locomotion, false);
 						inAirTimer = 0;
 					}
 
@@ -153,7 +151,7 @@ namespace SoulsLike
 
 				if(!_playerManager.isInAir)
 				{
-					if(!_playerManager.isInteracting) animatorHandler.PlayTargetAnimation(AnimatorHandler.Fall, true);
+					if(!_playerManager.isInteracting) animatorHandler.PlayTargetAnimation(AnimationNameBase.Fall, true);
 
 					Vector3 velocity = rigidbody.velocity;
 					velocity.Normalize();

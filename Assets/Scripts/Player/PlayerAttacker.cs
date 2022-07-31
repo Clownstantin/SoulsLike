@@ -6,21 +6,10 @@ namespace SoulsLike
 	{
 		private AnimatorHandler _animatorHandler;
 
-		#region MonoBehaviour
-		private void Awake()
-		{
-			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
-		}
-		#endregion
+		public void Init(AnimatorHandler animatorHandler) => _animatorHandler = animatorHandler;
 
-		public void HandleLightAttack(WeaponItem weapon)
-		{
-			_animatorHandler.PlayTargetAnimation(weapon.OHLightAttack, true);
-		}
+		public void HandleLightAttack(WeaponItem weapon) => _animatorHandler.PlayTargetAnimation(weapon.OHLightAttack, true);
 
-		public void HandleHeavyAttack(WeaponItem weapon)
-		{
-			_animatorHandler.PlayTargetAnimation(weapon.OHHeavyAttack, true);
-		}
+		public void HandleHeavyAttack(WeaponItem weapon) => _animatorHandler.PlayTargetAnimation(weapon.OHHeavyAttack, true);
 	}
 }

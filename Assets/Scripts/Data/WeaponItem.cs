@@ -9,7 +9,7 @@ namespace SoulsLike
 		public bool isUnarmed = default;
 
 		[Header("One Handed Attack Animations")]
-		[HideInInspector] public string OHLightAttack = AnimatorHandler.OH_LightAttack_01;
-		[HideInInspector] public string OHHeavyAttack = AnimatorHandler.OH_HeavyAttack_01;
+		[HideInInspector] public string OHLightAttack = AnimationNameBase.OH_LightAttack_01;
+		[HideInInspector] public string OHHeavyAttack = AnimationNameBase.OH_HeavyAttack_01;
 	}
 }

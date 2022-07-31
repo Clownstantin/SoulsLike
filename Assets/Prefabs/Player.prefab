@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7911715002085536405}
   - component: {fileID: 7911715002085536402}
+  - component: {fileID: 6079201212452067060}
   - component: {fileID: 7911715002085536401}
   - component: {fileID: 4601305354946907284}
   - component: {fileID: 3854973245768530048}
@@ -95,6 +96,22 @@ MonoBehaviour:
   rigidbody: {fileID: 0}
   normalCamera: {fileID: 0}
   inAirTimer: 0
+--- !u!114 &6079201212452067060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7911715002085536406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5871ea2973a1a8499806d15fe572cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthLevel: 10
+  maxHealth: 0
+  currentHealth: 0
+  healthBar: {fileID: 0}
 --- !u!114 &7911715002085536401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,7 +160,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7911715002085536406}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6564e9d1373aec34e90d0746f195c01c, type: 3}
+  m_Script: {fileID: 11500000, guid: 8062590390958af44a75f6854b90c2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rightWeapon: {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
@@ -277,7 +294,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3851727990082182324}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2065bd9c636526489c55e78ec3c3a24, type: 3}
+  m_Script: {fileID: 11500000, guid: 72523c8afc791094caa1b6d330f1a66f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parentOverride: {fileID: 8293840224405607026}
@@ -303,7 +320,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6857757606284787281}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2065bd9c636526489c55e78ec3c3a24, type: 3}
+  m_Script: {fileID: 11500000, guid: 72523c8afc791094caa1b6d330f1a66f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parentOverride: {fileID: 1786637358}
@@ -338,7 +355,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6993359260669799754}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daaff34534fa34e4f97006de1158ddd2, type: 3}
+  m_Script: {fileID: 11500000, guid: 2252e4afed2cec149b84f0aa69bc209b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &7658010103145641968 stripped

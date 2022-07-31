@@ -25,13 +25,6 @@ namespace SoulsLike
 		public bool sprintFlag;
 		public float rollInputTimer;
 
-		#region Monobehavior
-		private void Awake()
-		{
-			_playerAttacker = GetComponent<PlayerAttacker>();
-			_playerInventory = GetComponent<PlayerInventory>();
-		}
-
 		private void OnEnable()
 		{
 			if(_inputActions == null)
@@ -45,7 +38,12 @@ namespace SoulsLike
 		}
 
 		private void OnDisable() => _inputActions.Disable();
-		#endregion
+
+		public void Init(PlayerAttacker playerAttacker, PlayerInventory playerInventory)
+		{
+			_playerAttacker = playerAttacker;
+			_playerInventory = playerInventory;
+		}
 
 		public void TickInput(float delta)
 		{
@@ -86,8 +84,8 @@ namespace SoulsLike
 
 		private void HandleAttackInput()
 		{
-			_inputActions.PlayerActions.LightAttack.performed += l => rightLightAttackInput = true;
-			_inputActions.PlayerActions.HeavyAttack.performed += h => rightHeavyAttackInput = true;
+			rightLightAttackInput = _inputActions.PlayerActions.LightAttack.IsPressed();
+			rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.IsPressed();
 
 			if(rightLightAttackInput) _playerAttacker.HandleLightAttack(_playerInventory.rightWeapon);
 			if(rightHeavyAttackInput) _playerAttacker.HandleHeavyAttack(_playerInventory.rightWeapon);

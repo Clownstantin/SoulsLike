@@ -6,8 +6,15 @@ namespace SoulsLike
 	{
 		private InputHandler _inputHandler;
 		private Animator _animator;
+		private AnimatorHandler _animatorHandler;
 		private CameraHandler _cameraHandler;
+
 		private PlayerLocomotion _playerLocomotion;
+		private PlayerStats _playerStats;
+		private PlayerAttacker _playerAttacker;
+		private PlayerInventory _playerInventory;
+
+		private WeaponSlotManager _weaponSlotManager;
 
 		public bool isInteracting;
 
@@ -17,13 +24,31 @@ namespace SoulsLike
 		public bool isGrounded;
 
 		#region MonoBehaviour
+		private void Awake()
+		{
+			_playerStats = GetComponent<PlayerStats>();
+			_playerLocomotion = GetComponent<PlayerLocomotion>();
+			_playerAttacker = GetComponent<PlayerAttacker>();
+			_playerInventory = GetComponent<PlayerInventory>();
+			_inputHandler = GetComponent<InputHandler>();
+
+			_animator = GetComponentInChildren<Animator>();
+			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
+			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
+
+			_weaponSlotManager.Init();
+		}
+
 		private void Start()
 		{
-			_inputHandler = GetComponent<InputHandler>();
-			_playerLocomotion = GetComponent<PlayerLocomotion>();
-			_animator = GetComponentInChildren<Animator>();
-
 			_cameraHandler = CameraHandler.instance;
+
+			_playerLocomotion.Init(this, _animatorHandler, _inputHandler);
+			_playerAttacker.Init(_animatorHandler);
+			_playerInventory.Init(_weaponSlotManager);
+			_inputHandler.Init(_playerAttacker, _playerInventory);
+			_animatorHandler.Init(this, _playerLocomotion, _animator);
+			_playerStats.Init(_animatorHandler);
 		}
 
 		private void Update()

@@ -7,8 +7,7 @@ namespace SoulsLike
 		private WeaponHolderSlot _leftHandSlot;
 		private WeaponHolderSlot _rightHandSlot;
 
-		#region MonoBehaviour
-		private void Awake()
+		public void Init()
 		{
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
 
@@ -18,7 +17,6 @@ namespace SoulsLike
 				else if(weaponSlot.isRightHandSlot) _rightHandSlot = weaponSlot;
 			}
 		}
-		#endregion
 
 		public void LoadWeaponOnSlot(WeaponItem weaponItem, bool isLeft = default)
 		{
