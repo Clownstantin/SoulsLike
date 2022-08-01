@@ -87,7 +87,7 @@ MonoBehaviour:
   _walkingSpeed: 1
   _sprintSpeed: 7
   _rotationSpeed: 10
-  _fallingSpeed: 80
+  _fallingSpeed: 60
   _groundDetectionRayStart: 0.5
   _minDistanceToFall: 1
   _groundDirectionRayDistance: 0.2
@@ -148,6 +148,7 @@ MonoBehaviour:
   rollInput: 0
   rollFlag: 0
   sprintFlag: 0
+  comboFlag: 0
   rollInputTimer: 0
 --- !u!114 &206495904
 MonoBehaviour:
@@ -165,6 +166,7 @@ MonoBehaviour:
   isSprinting: 0
   isInAir: 0
   isGrounded: 1
+  canDoCombo: 0
 --- !u!114 &206495903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,6 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf0c32c436f52b4d81eaeac41e73fe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lastAttack: 
 --- !u!136 &206495902
 CapsuleCollider:
   m_ObjectHideFlags: 0

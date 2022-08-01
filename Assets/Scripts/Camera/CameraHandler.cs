@@ -42,7 +42,7 @@ namespace SoulsLike
 		public void FollowTarget(float delta, Transform targetTransform)
 		{
 			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, targetTransform.position,
-								ref _cameraFollowVelocity, delta / followSpeed);
+								ref _cameraFollowVelocity, delta * followSpeed);
 			_myTransform.position = targetPos;
 
 			HandleCameraCollisions(delta);

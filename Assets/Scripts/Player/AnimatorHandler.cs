@@ -10,11 +10,13 @@ namespace SoulsLike
 		private int _verticalHash;
 		private int _horizontalHash;
 		private int _isInteractingHash;
+		private int _canDoComboHash;
 
 		private const string Vertical = nameof(Vertical);
 		private const string Horizontal = nameof(Horizontal);
 
 		public const string IsInteracting = nameof(IsInteracting);
+		public const string CanDoCombo = nameof(CanDoCombo);
 
 		public Animator animator;
 		public bool canRotate;
@@ -42,6 +44,7 @@ namespace SoulsLike
 			_verticalHash = Animator.StringToHash(Vertical);
 			_horizontalHash = Animator.StringToHash(Horizontal);
 			_isInteractingHash = Animator.StringToHash(IsInteracting);
+			_canDoComboHash = Animator.StringToHash(CanDoCombo);
 		}
 
 		public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement, bool isSprinting)
@@ -69,6 +72,10 @@ namespace SoulsLike
 		public void CanRotate() => canRotate = true;
 
 		public void StopRotation() => canRotate = false;
+
+		public void EnableCombo() => animator.SetBool(_canDoComboHash, true);
+
+		public void DisableCombo() => animator.SetBool(_canDoComboHash, false);
 
 		private float ClampAxis(float axis)
 		{

@@ -20,7 +20,7 @@ namespace SoulsLike
 				return;
 			}
 
-			Weapon weaponModel = Instantiate(weaponItem.weaponPrefab);
+			Weapon weaponModel = Instantiate(weaponItem.WeaponPrefab);
 
 			if(weaponModel)
 			{

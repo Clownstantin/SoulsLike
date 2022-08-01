@@ -5,6 +5,7 @@ namespace SoulsLike
 	public class InputHandler : MonoBehaviour
 	{
 		private PlayerControls _inputActions;
+		private PlayerManager _playerManager;
 		private PlayerAttacker _playerAttacker;
 		private PlayerInventory _playerInventory;
 
@@ -23,6 +24,7 @@ namespace SoulsLike
 
 		public bool rollFlag;
 		public bool sprintFlag;
+		public bool comboFlag;
 		public float rollInputTimer;
 
 		private void OnEnable()
@@ -39,8 +41,9 @@ namespace SoulsLike
 
 		private void OnDisable() => _inputActions.Disable();
 
-		public void Init(PlayerAttacker playerAttacker, PlayerInventory playerInventory)
+		public void Init(PlayerManager playerManager, PlayerAttacker playerAttacker, PlayerInventory playerInventory)
 		{
+			_playerManager = playerManager;
 			_playerAttacker = playerAttacker;
 			_playerInventory = playerInventory;
 		}
@@ -87,8 +90,34 @@ namespace SoulsLike
 			rightLightAttackInput = _inputActions.PlayerActions.LightAttack.IsPressed();
 			rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.IsPressed();
 
-			if(rightLightAttackInput) _playerAttacker.HandleLightAttack(_playerInventory.rightWeapon);
-			if(rightHeavyAttackInput) _playerAttacker.HandleHeavyAttack(_playerInventory.rightWeapon);
+			if(rightLightAttackInput)
+			{
+				if(_playerManager.canDoCombo)
+				{
+					comboFlag = true;
+					_playerAttacker.HandleWeaponCombo(_playerInventory.rightWeapon);
+					comboFlag = false;
+				}
+				else
+				{
+					if(_playerManager.isInteracting || _playerManager.canDoCombo) return;
+					_playerAttacker.HandleLightAttack(_playerInventory.rightWeapon);
+				}
+			}
+			if(rightHeavyAttackInput)
+			{
+				if(_playerManager.canDoCombo)
+				{
+					comboFlag = true;
+					_playerAttacker.HandleWeaponCombo(_playerInventory.rightWeapon);
+					comboFlag = false;
+				}
+				else
+				{
+					if(_playerManager.isInteracting || _playerManager.canDoCombo) return;
+					_playerAttacker.HandleHeavyAttack(_playerInventory.rightWeapon);
+				}
+			}
 		}
 	}
 }

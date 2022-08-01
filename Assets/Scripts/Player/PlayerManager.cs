@@ -4,9 +4,9 @@ namespace SoulsLike
 {
 	public class PlayerManager : MonoBehaviour
 	{
-		private InputHandler _inputHandler;
 		private Animator _animator;
 		private AnimatorHandler _animatorHandler;
+		private InputHandler _inputHandler;
 		private CameraHandler _cameraHandler;
 
 		private PlayerLocomotion _playerLocomotion;
@@ -23,6 +23,7 @@ namespace SoulsLike
 		public bool isSprinting;
 		public bool isInAir;
 		public bool isGrounded;
+		public bool canDoCombo;
 
 		#region MonoBehaviour
 		private void Awake()
@@ -46,9 +47,9 @@ namespace SoulsLike
 			_cameraHandler = CameraHandler.instance;
 
 			_playerLocomotion.Init(this, _animatorHandler, _inputHandler);
-			_playerAttacker.Init(_animatorHandler);
+			_playerAttacker.Init(_inputHandler, _animatorHandler);
 			_playerInventory.Init(_weaponSlotManager);
-			_inputHandler.Init(_playerAttacker, _playerInventory);
+			_inputHandler.Init(this, _playerAttacker, _playerInventory);
 			_animatorHandler.Init(this, _playerLocomotion, _animator);
 			_playerStats.Init(_animatorHandler);
 		}
@@ -58,6 +59,7 @@ namespace SoulsLike
 			float delta = Time.deltaTime;
 
 			isInteracting = _animator.GetBool(AnimatorHandler.IsInteracting);
+			canDoCombo = _animator.GetBool(AnimatorHandler.CanDoCombo);
 
 			_inputHandler.TickInput(delta);
 			_playerLocomotion.HandleMovement(delta);
