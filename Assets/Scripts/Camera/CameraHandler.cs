@@ -4,6 +4,9 @@ namespace SoulsLike
 {
 	public class CameraHandler : MonoBehaviour
 	{
+		[SerializeField] private Transform cameraTransform;
+		[SerializeField] private Transform cameraPivotTransform;
+
 		private Transform _myTransform;
 		private Vector3 _cameraPosition;
 		private Vector3 _cameraFollowVelocity = Vector3.zero;
@@ -15,10 +18,6 @@ namespace SoulsLike
 		private float _pivotAngle;
 
 		public static CameraHandler instance;
-
-		public Transform targetTransform;
-		public Transform cameraTransform;
-		public Transform cameraPivotTransform;
 
 		public float lookSpeed = 0.1f;
 		public float followSpeed = 0.1f;
@@ -40,7 +39,7 @@ namespace SoulsLike
 		}
 		#endregion
 
-		public void FollowTarget(float delta)
+		public void FollowTarget(float delta, Transform targetTransform)
 		{
 			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, targetTransform.position,
 								ref _cameraFollowVelocity, delta / followSpeed);

@@ -138,7 +138,7 @@ namespace SoulsLike
 					}
 					else
 					{
-						animatorHandler.PlayTargetAnimation(AnimationNameBase.Locomotion, false);
+						animatorHandler.PlayTargetAnimation(AnimationNameBase.Empty, false);
 						inAirTimer = 0;
 					}
 
@@ -160,13 +160,10 @@ namespace SoulsLike
 				}
 			}
 
-			if(_playerManager.isGrounded)
-			{
-				if(_playerManager.isInteracting || _inputHandler.moveAmount > 0)
-					myTransform.position = Vector3.Lerp(myTransform.position, _targetPosition, delta);
-				else
-					myTransform.position = _targetPosition;
-			}
+			if(_playerManager.isInteracting || _inputHandler.moveAmount > 0)
+				myTransform.position = Vector3.Lerp(myTransform.position, _targetPosition, delta / 0.1f);
+			else
+				myTransform.position = _targetPosition;
 		}
 
 		private void HandleRotation(float delta)

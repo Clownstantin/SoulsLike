@@ -42,9 +42,9 @@ GameObject:
   - component: {fileID: 7911715002085536405}
   - component: {fileID: 7911715002085536402}
   - component: {fileID: 6079201212452067060}
+  - component: {fileID: 3854973245768530048}
   - component: {fileID: 7911715002085536401}
   - component: {fileID: 4601305354946907284}
-  - component: {fileID: 3854973245768530048}
   - component: {fileID: 5137714423967383375}
   - component: {fileID: 7911715002085536403}
   - component: {fileID: 7911715002085536404}
@@ -112,6 +112,20 @@ MonoBehaviour:
   maxHealth: 0
   currentHealth: 0
   healthBar: {fileID: 0}
+--- !u!114 &3854973245768530048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7911715002085536406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8062590390958af44a75f6854b90c2fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightWeapon: {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
+  leftWeapon: {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
 --- !u!114 &7911715002085536401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,20 +165,6 @@ MonoBehaviour:
   isSprinting: 0
   isInAir: 0
   isGrounded: 1
---- !u!114 &3854973245768530048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7911715002085536406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8062590390958af44a75f6854b90c2fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rightWeapon: {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
-  leftWeapon: {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
 --- !u!114 &5137714423967383375
 MonoBehaviour:
   m_ObjectHideFlags: 0

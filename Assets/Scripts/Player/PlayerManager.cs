@@ -15,6 +15,7 @@ namespace SoulsLike
 		private PlayerInventory _playerInventory;
 
 		private WeaponSlotManager _weaponSlotManager;
+		private Transform _myTransform;
 
 		public bool isInteracting;
 
@@ -41,6 +42,7 @@ namespace SoulsLike
 
 		private void Start()
 		{
+			_myTransform = transform;
 			_cameraHandler = CameraHandler.instance;
 
 			_playerLocomotion.Init(this, _animatorHandler, _inputHandler);
@@ -69,7 +71,7 @@ namespace SoulsLike
 
 			if(_cameraHandler != null)
 			{
-				_cameraHandler.FollowTarget(delta);
+				_cameraHandler.FollowTarget(delta, _myTransform);
 				_cameraHandler.HandleCameraRotation(delta, _inputHandler.mouseX, _inputHandler.mouseY);
 			}
 		}

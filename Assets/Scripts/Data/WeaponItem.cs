@@ -5,7 +5,7 @@ namespace SoulsLike
 	[CreateAssetMenu(menuName = "Items/Weapon Item")]
 	public class WeaponItem : Item
 	{
-		public GameObject weaponPrefab = default;
+		public Weapon weaponPrefab = default;
 		public bool isUnarmed = default;
 
 		[Header("One Handed Attack Animations")]

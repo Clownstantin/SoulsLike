@@ -8,7 +8,7 @@ namespace SoulsLike
 		public bool isLeftHandSlot;
 		public bool isRightHandSlot;
 
-		public GameObject currentWeaponModel;
+		[HideInInspector] public Weapon currentWeaponModel;
 
 		public void LoadWeaponModel(WeaponItem weaponItem)
 		{
@@ -20,7 +20,7 @@ namespace SoulsLike
 				return;
 			}
 
-			GameObject weaponModel = Instantiate(weaponItem.weaponPrefab);
+			Weapon weaponModel = Instantiate(weaponItem.weaponPrefab);
 
 			if(weaponModel)
 			{
@@ -42,7 +42,7 @@ namespace SoulsLike
 
 		public void UnloadWeapon()
 		{
-			if(currentWeaponModel) currentWeaponModel.SetActive(false);
+			if(currentWeaponModel) currentWeaponModel.gameObject.SetActive(false);
 		}
 	}
 }

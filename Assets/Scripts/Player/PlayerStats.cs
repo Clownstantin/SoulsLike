@@ -1,14 +1,8 @@
-﻿using UnityEngine;
-
-namespace SoulsLike
+﻿namespace SoulsLike
 {
-	public class PlayerStats : MonoBehaviour
+	public class PlayerStats : Stats
 	{
 		private AnimatorHandler _animatorHandler;
-
-		public int healthLevel = 10;
-		public int maxHealth;
-		public int currentHealth;
 
 		public HealthBar healthBar;
 
@@ -16,14 +10,14 @@ namespace SoulsLike
 		{
 			_animatorHandler = animatorHandler;
 
-			maxHealth = SetMaxHealthFromHealthLevel();
+			maxHealth = healthLevel * 10;
 			currentHealth = maxHealth;
 			healthBar.SetMaxHealth(maxHealth);
 		}
 
-		public void TakeDamage(int damage)
+		public override void TakeDamage(int damage)
 		{
-			currentHealth -= damage;
+			base.TakeDamage(damage);
 			healthBar.SetCurrentHealth(currentHealth);
 
 			_animatorHandler.PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
@@ -36,7 +30,5 @@ namespace SoulsLike
 				//Handle Player Death
 			}
 		}
-
-		private int SetMaxHealthFromHealthLevel() => healthLevel * 10;
 	}
 }
