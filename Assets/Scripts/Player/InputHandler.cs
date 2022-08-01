@@ -90,32 +90,25 @@ namespace SoulsLike
 			rightLightAttackInput = _inputActions.PlayerActions.LightAttack.IsPressed();
 			rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.IsPressed();
 
-			if(rightLightAttackInput)
+			PerformAttack(rightLightAttackInput, rightHeavyAttackInput, _playerInventory.rightWeapon);
+		}
+
+		private void PerformAttack(bool lightAttack, bool heavyAttack, WeaponItem weapon)
+		{
+			if(lightAttack || heavyAttack)
 			{
 				if(_playerManager.canDoCombo)
 				{
 					comboFlag = true;
-					_playerAttacker.HandleWeaponCombo(_playerInventory.rightWeapon);
+					_playerAttacker.HandleWeaponCombo(weapon);
 					comboFlag = false;
 				}
 				else
 				{
 					if(_playerManager.isInteracting || _playerManager.canDoCombo) return;
-					_playerAttacker.HandleLightAttack(_playerInventory.rightWeapon);
-				}
-			}
-			if(rightHeavyAttackInput)
-			{
-				if(_playerManager.canDoCombo)
-				{
-					comboFlag = true;
-					_playerAttacker.HandleWeaponCombo(_playerInventory.rightWeapon);
-					comboFlag = false;
-				}
-				else
-				{
-					if(_playerManager.isInteracting || _playerManager.canDoCombo) return;
-					_playerAttacker.HandleHeavyAttack(_playerInventory.rightWeapon);
+
+					if(lightAttack) _playerAttacker.HandleLightAttack(weapon);
+					else if(heavyAttack) _playerAttacker.HandleHeavyAttack(weapon);
 				}
 			}
 		}

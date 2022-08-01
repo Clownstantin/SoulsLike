@@ -21,23 +21,23 @@ namespace SoulsLike
 			{
 				_animatorHandler.animator.SetBool(AnimatorHandler.CanDoCombo, false);
 
-				if(lastAttack == weapon.OH_LightAttack_01)
-					_animatorHandler.PlayTargetAnimation(weapon.OH_LightAttack_02, true);
-				else if(lastAttack == weapon.OH_HeavyAttack_01)
-					_animatorHandler.PlayTargetAnimation(weapon.OH_HeavyAttack_02, true);
+				if(lastAttack == weapon.oneHandedLightAttack_01)
+					_animatorHandler.PlayTargetAnimation(weapon.oneHandedLightAttack_02, true);
+				else if(lastAttack == weapon.oneHandedHeavyAttack_01)
+					_animatorHandler.PlayTargetAnimation(weapon.oneHandedHeavyAttack_02, true);
 			}
 		}
 
 		public void HandleLightAttack(WeaponItem weapon)
 		{
-			_animatorHandler.PlayTargetAnimation(weapon.OH_LightAttack_01, true);
-			lastAttack = weapon.OH_LightAttack_01;
+			_animatorHandler.PlayTargetAnimation(weapon.oneHandedLightAttack_01, true);
+			lastAttack = weapon.oneHandedLightAttack_01;
 		}
 
 		public void HandleHeavyAttack(WeaponItem weapon)
 		{
-			_animatorHandler.PlayTargetAnimation(weapon.OH_HeavyAttack_01, true);
-			lastAttack = weapon.OH_HeavyAttack_01;
+			_animatorHandler.PlayTargetAnimation(weapon.oneHandedHeavyAttack_01, true);
+			lastAttack = weapon.oneHandedHeavyAttack_01;
 		}
 	}
 }

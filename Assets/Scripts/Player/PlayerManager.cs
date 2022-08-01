@@ -38,7 +38,7 @@ namespace SoulsLike
 			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
 
-			_weaponSlotManager.Init();
+			_weaponSlotManager.Init(_animator);
 		}
 
 		private void Start()

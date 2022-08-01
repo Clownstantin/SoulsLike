@@ -1,8 +1,12 @@
 ﻿namespace SoulsLike
 {
-	public class AnimationNameBase
+	public sealed class AnimationNameBase
 	{
 		public const string Empty = nameof(Empty);
+		public const string RightArmEmpty = nameof(RightArmEmpty);
+		public const string LeftArmEmpty = nameof(LeftArmEmpty);
+		public const string RighArm_Idle = nameof(RighArm_Idle);
+		public const string LeftArm_Idle = nameof(LeftArm_Idle);
 		public const string Roll = nameof(Roll);
 		public const string Stepback = nameof(Stepback);
 		public const string Land = nameof(Land);

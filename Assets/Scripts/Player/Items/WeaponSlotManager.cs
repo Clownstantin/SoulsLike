@@ -10,8 +10,11 @@ namespace SoulsLike
 		private DamageDealer _leftDamageDialer;
 		private DamageDealer _rightDamageDialer;
 
-		public void Init()
+		private Animator _animator;
+
+		public void Init(Animator animator)
 		{
+			_animator = animator;
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
 
 			foreach(WeaponHolderSlot weaponSlot in weaponHolderSlots)
@@ -23,16 +26,17 @@ namespace SoulsLike
 
 		public void LoadWeaponOnSlot(WeaponItem weaponItem, bool isLeft = default)
 		{
-			if(isLeft)
-			{
-				_leftHandSlot.LoadWeaponModel(weaponItem);
-				_leftDamageDialer = _leftHandSlot.currentWeaponModel.DamageDealer;
-			}
-			else
-			{
-				_rightHandSlot.LoadWeaponModel(weaponItem);
-				_rightDamageDialer = _rightHandSlot.currentWeaponModel.DamageDealer;
-			}
+			WeaponHolderSlot slot = isLeft ? _leftHandSlot : _rightHandSlot;
+			string idleAnimationName = isLeft ? weaponItem.leftHand_Idle : weaponItem.rightHand_Idle;
+			string emptyAnimationName = isLeft ? AnimationNameBase.LeftArmEmpty : AnimationNameBase.RightArmEmpty;
+
+			slot.LoadWeaponModel(weaponItem);
+
+			if(isLeft) _leftDamageDialer = _leftHandSlot.currentWeaponModel.DamageDealer;
+			else _rightDamageDialer = _rightHandSlot.currentWeaponModel.DamageDealer;
+
+			if(weaponItem) _animator.CrossFade(idleAnimationName, 0.2f);
+			else _animator.CrossFade(emptyAnimationName, 0.2f);
 		}
 
 		#region AnimationEvents
