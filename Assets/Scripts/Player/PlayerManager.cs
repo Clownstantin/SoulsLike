@@ -4,20 +4,22 @@ namespace SoulsLike
 {
 	public class PlayerManager : MonoBehaviour
 	{
-		private Animator _animator;
-		private AnimatorHandler _animatorHandler;
-		private InputHandler _inputHandler;
-		private CameraHandler _cameraHandler;
+		[SerializeField] private QuickSlotsUI _quickSlots = default;
 
-		private PlayerLocomotion _playerLocomotion;
-		private PlayerStats _playerStats;
-		private PlayerAttacker _playerAttacker;
-		private PlayerInventory _playerInventory;
+		private Animator _animator = default;
+		private AnimatorHandler _animatorHandler = default;
+		private InputHandler _inputHandler = default;
+		private CameraHandler _cameraHandler = default;
 
-		private WeaponSlotManager _weaponSlotManager;
-		private Transform _myTransform;
+		private PlayerLocomotion _playerLocomotion = default;
+		private PlayerStats _playerStats = default;
+		private PlayerAttacker _playerAttacker = default;
+		private PlayerInventory _playerInventory = default;
 
-		public bool isInteracting;
+		private WeaponSlotManager _weaponSlotManager = default;
+		private Transform _myTransform = default;
+
+		public bool isInteracting = default;
 
 		[Header("Player Flags")]
 		public bool isSprinting;
@@ -38,7 +40,7 @@ namespace SoulsLike
 			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
 
-			_weaponSlotManager.Init(_animator);
+			_weaponSlotManager.Init(_animator, _quickSlots);
 		}
 
 		private void Start()
@@ -81,7 +83,6 @@ namespace SoulsLike
 		private void LateUpdate()
 		{
 			ResetFlags();
-
 			if(isInAir) _playerLocomotion.inAirTimer += Time.deltaTime;
 		}
 

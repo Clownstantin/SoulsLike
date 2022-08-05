@@ -4,7 +4,7 @@
 	{
 		private AnimatorHandler _animatorHandler;
 
-		public HealthBar healthBar;
+		public HealthBarUI healthBar;
 
 		public void Init(AnimatorHandler animatorHandler)
 		{

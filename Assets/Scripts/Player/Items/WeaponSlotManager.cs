@@ -13,10 +13,13 @@ namespace SoulsLike
 		private DamageDealer _rightDamageDialer;
 
 		private Animator _animator;
+		private QuickSlotsUI _quickSlots;
 
-		public void Init(Animator animator)
+		public void Init(Animator animator, QuickSlotsUI quickSlots)
 		{
 			_animator = animator;
+			_quickSlots = quickSlots;
+
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
 
 			foreach(WeaponHolderSlot weaponSlot in weaponHolderSlots)
@@ -33,6 +36,7 @@ namespace SoulsLike
 			string emptyAnimationName = isLeft ? AnimationNameBase.LeftArmEmpty : AnimationNameBase.RightArmEmpty;
 
 			slot.LoadWeaponModel(weaponItem);
+			_quickSlots.UpdateWeaponQuickSlotsUI(weaponItem, isLeft);
 
 			if(isLeft) _leftDamageDialer = _leftHandSlot.currentWeaponModel.DamageDealer;
 			else _rightDamageDialer = _rightHandSlot.currentWeaponModel.DamageDealer;

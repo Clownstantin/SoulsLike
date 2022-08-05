@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee515b4834c4d9944bf9d455fe29212f, type: 3}
   m_Name: Short Sword
   m_EditorClassIdentifier: 
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 21300000, guid: 968d182541aa0ec449ec9df440516c94, type: 3}
   itemName: Short Sword
   _weaponPrefab: {fileID: 4091475822040298729, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}
   _isUnarmed: 0
-  OH_LightAttack_01: OH_LightAttack_01
-  OH_LightAttack_02: OH_LightAttack_02
-  OH_HeavyAttack_01: OH_HeavyAttack_01
-  OH_HeavyAttack_02: OH_HeavyAttack_02
+  rightHand_Idle: RighArm_Idle
+  leftHand_Idle: LeftArm_Idle
+  oneHandedLightAttack_01: OH_LightAttack_01
+  oneHandedLightAttack_02: OH_LightAttack_02
+  oneHandedHeavyAttack_01: OH_HeavyAttack_01
+  oneHandedHeavyAttack_02: OH_HeavyAttack_02
