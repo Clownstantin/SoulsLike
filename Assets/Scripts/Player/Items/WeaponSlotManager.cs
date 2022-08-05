@@ -4,6 +4,8 @@ namespace SoulsLike
 {
 	public class WeaponSlotManager : MonoBehaviour
 	{
+		[SerializeField] private float _crossFadeTransitionDuration = 0.2f;
+
 		private WeaponHolderSlot _leftHandSlot;
 		private WeaponHolderSlot _rightHandSlot;
 
@@ -35,8 +37,8 @@ namespace SoulsLike
 			if(isLeft) _leftDamageDialer = _leftHandSlot.currentWeaponModel.DamageDealer;
 			else _rightDamageDialer = _rightHandSlot.currentWeaponModel.DamageDealer;
 
-			if(weaponItem) _animator.CrossFade(idleAnimationName, 0.2f);
-			else _animator.CrossFade(emptyAnimationName, 0.2f);
+			if(weaponItem) _animator.CrossFade(idleAnimationName, _crossFadeTransitionDuration);
+			else _animator.CrossFade(emptyAnimationName, _crossFadeTransitionDuration);
 		}
 
 		#region AnimationEvents

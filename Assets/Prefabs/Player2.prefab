@@ -124,8 +124,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8062590390958af44a75f6854b90c2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rightWeapon: {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
-  leftWeapon: {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
+  rightWeapon: {fileID: 11400000, guid: df64dd6155be7d540a4c862b6ffd4f46, type: 2}
+  leftWeapon: {fileID: 11400000, guid: df64dd6155be7d540a4c862b6ffd4f46, type: 2}
+  unarmedWeapon: {fileID: 11400000, guid: df64dd6155be7d540a4c862b6ffd4f46, type: 2}
+  rightHandWeapons:
+  - {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
+  - {fileID: 11400000, guid: 3522d588d35ef204096a61a18fff492b, type: 2}
+  leftHandWeapons:
+  - {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
+  - {fileID: 11400000, guid: 3522d588d35ef204096a61a18fff492b, type: 2}
 --- !u!114 &206495905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +153,10 @@ MonoBehaviour:
   rightLightAttackInput: 0
   rightHeavyAttackInput: 0
   rollInput: 0
+  d_Pad_Up: 0
+  d_Pad_Down: 0
+  d_Pad_Left: 0
+  d_Pad_Right: 0
   rollFlag: 0
   sprintFlag: 0
   comboFlag: 0
@@ -348,6 +359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2252e4afed2cec149b84f0aa69bc209b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _crossFadeTransitionDuration: 0.2
 --- !u!114 &7189068193184532028
 MonoBehaviour:
   m_ObjectHideFlags: 0

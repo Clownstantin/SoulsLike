@@ -8,7 +8,7 @@ namespace SoulsLike
 		public bool isLeftHandSlot;
 		public bool isRightHandSlot;
 
-		[HideInInspector] public Weapon currentWeaponModel;
+		public Weapon currentWeaponModel;
 
 		public void LoadWeaponModel(WeaponItem weaponItem)
 		{
@@ -22,22 +22,19 @@ namespace SoulsLike
 
 			Weapon weaponModel = Instantiate(weaponItem.WeaponPrefab);
 
-			if(weaponModel)
-			{
-				if(parentOverride) weaponModel.transform.SetParent(parentOverride);
-				else weaponModel.transform.SetParent(transform);
+			if(parentOverride) weaponModel.transform.SetParent(parentOverride);
+			else weaponModel.transform.SetParent(transform);
 
-				weaponModel.transform.localPosition = Vector3.zero;
-				weaponModel.transform.localRotation = Quaternion.identity;
-				weaponModel.transform.localScale = Vector3.one;
-			}
+			weaponModel.transform.localPosition = Vector3.zero;
+			weaponModel.transform.localRotation = Quaternion.identity;
+			weaponModel.transform.localScale = Vector3.one;
 
 			currentWeaponModel = weaponModel;
 		}
 
 		public void DestroyWeapon()
 		{
-			if(currentWeaponModel) Destroy(currentWeaponModel);
+			if(currentWeaponModel) Destroy(currentWeaponModel.gameObject);
 		}
 
 		public void UnloadWeapon()

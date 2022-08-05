@@ -80,12 +80,21 @@ namespace SoulsLike
 
 		private void LateUpdate()
 		{
-			_inputHandler.rollFlag = false;
-			_inputHandler.sprintFlag = false;
-			_inputHandler.rightLightAttackInput = false;
-			_inputHandler.rightHeavyAttackInput = false;
+			ResetFlags();
 
 			if(isInAir) _playerLocomotion.inAirTimer += Time.deltaTime;
+		}
+
+		private void ResetFlags(bool state = false)
+		{
+			_inputHandler.rollFlag = state;
+			_inputHandler.sprintFlag = state;
+			_inputHandler.rightLightAttackInput = state;
+			_inputHandler.rightHeavyAttackInput = state;
+			_inputHandler.d_Pad_Up = state;
+			_inputHandler.d_Pad_Down = state;
+			_inputHandler.d_Pad_Left = state;
+			_inputHandler.d_Pad_Right = state;
 		}
 		#endregion
 	}

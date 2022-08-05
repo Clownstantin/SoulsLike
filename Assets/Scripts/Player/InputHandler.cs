@@ -21,6 +21,10 @@ namespace SoulsLike
 		public bool rightLightAttackInput;
 		public bool rightHeavyAttackInput;
 		public bool rollInput;
+		public bool d_Pad_Up;
+		public bool d_Pad_Down;
+		public bool d_Pad_Left;
+		public bool d_Pad_Right;
 
 		public bool rollFlag;
 		public bool sprintFlag;
@@ -53,6 +57,7 @@ namespace SoulsLike
 			MoveInput();
 			HandleRollInput(delta);
 			HandleAttackInput();
+			HandleQuickSlotsInput();
 		}
 
 		private void MoveInput()
@@ -87,8 +92,8 @@ namespace SoulsLike
 
 		private void HandleAttackInput()
 		{
-			rightLightAttackInput = _inputActions.PlayerActions.LightAttack.IsPressed();
-			rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.IsPressed();
+			rightLightAttackInput = _inputActions.PlayerActions.LightAttack.WasPerformedThisFrame();
+			rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.WasPerformedThisFrame();
 
 			PerformAttack(rightLightAttackInput, rightHeavyAttackInput, _playerInventory.rightWeapon);
 		}
@@ -111,6 +116,15 @@ namespace SoulsLike
 					else if(heavyAttack) _playerAttacker.HandleHeavyAttack(weapon);
 				}
 			}
+		}
+
+		private void HandleQuickSlotsInput()
+		{
+			d_Pad_Right = _inputActions.PlayerActions.DPadRight.WasPerformedThisFrame();
+			d_Pad_Left = _inputActions.PlayerActions.DPadLeft.WasPerformedThisFrame();
+
+			if(d_Pad_Right) _playerInventory.ChangeWeaponInSlot();
+			else if(d_Pad_Left) _playerInventory.ChangeWeaponInSlot(true);
 		}
 	}
 }
