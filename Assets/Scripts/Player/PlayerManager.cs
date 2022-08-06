@@ -4,7 +4,7 @@ namespace SoulsLike
 {
 	public class PlayerManager : MonoBehaviour
 	{
-		[SerializeField] private QuickSlotsUI _quickSlots = default;
+		[SerializeField] private UIManager _uiManager = default;
 
 		private Animator _animator = default;
 		private AnimatorHandler _animatorHandler = default;
@@ -19,13 +19,11 @@ namespace SoulsLike
 		private WeaponSlotManager _weaponSlotManager = default;
 		private Transform _myTransform = default;
 
-		public bool isInteracting = default;
+		private bool _isInteracting = default;
+		private bool _canDoCombo = default;
 
-		[Header("Player Flags")]
-		public bool isSprinting;
-		public bool isInAir;
-		public bool isGrounded;
-		public bool canDoCombo;
+		public bool IsInteracting => _isInteracting;
+		public bool CanDoCombo => _canDoCombo;
 
 		#region MonoBehaviour
 		private void Awake()
@@ -40,7 +38,7 @@ namespace SoulsLike
 			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
 
-			_weaponSlotManager.Init(_animator, _quickSlots);
+			_weaponSlotManager.Init(_animator, _uiManager, _playerStats);
 		}
 
 		private void Start()
@@ -49,19 +47,19 @@ namespace SoulsLike
 			_cameraHandler = CameraHandler.instance;
 
 			_playerLocomotion.Init(this, _animatorHandler, _inputHandler);
-			_playerAttacker.Init(_inputHandler, _animatorHandler);
+			_playerAttacker.Init(_inputHandler, _animatorHandler, _weaponSlotManager);
 			_playerInventory.Init(_weaponSlotManager);
 			_inputHandler.Init(this, _playerAttacker, _playerInventory);
 			_animatorHandler.Init(this, _playerLocomotion, _animator);
-			_playerStats.Init(_animatorHandler);
+			_playerStats.Init(_uiManager, _animatorHandler);
 		}
 
 		private void Update()
 		{
 			float delta = Time.deltaTime;
 
-			isInteracting = _animator.GetBool(AnimatorHandler.IsInteracting);
-			canDoCombo = _animator.GetBool(AnimatorHandler.CanDoCombo);
+			_isInteracting = _animator.GetBool(AnimatorHandler.IsInteracting);
+			_canDoCombo = _animator.GetBool(AnimatorHandler.CanDoCombo);
 
 			_inputHandler.TickInput(delta);
 			_playerLocomotion.HandleMovement(delta);
@@ -75,27 +73,16 @@ namespace SoulsLike
 
 			if(_cameraHandler != null)
 			{
-				_cameraHandler.FollowTarget(delta, _myTransform);
-				_cameraHandler.HandleCameraRotation(delta, _inputHandler.mouseX, _inputHandler.mouseY);
+				_cameraHandler.FollowTarget(delta, _myTransform.position);
+				_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
 			}
 		}
 
 		private void LateUpdate()
 		{
-			ResetFlags();
-			if(isInAir) _playerLocomotion.inAirTimer += Time.deltaTime;
-		}
-
-		private void ResetFlags(bool state = false)
-		{
-			_inputHandler.rollFlag = state;
-			_inputHandler.sprintFlag = state;
-			_inputHandler.rightLightAttackInput = state;
-			_inputHandler.rightHeavyAttackInput = state;
-			_inputHandler.d_Pad_Up = state;
-			_inputHandler.d_Pad_Down = state;
-			_inputHandler.d_Pad_Left = state;
-			_inputHandler.d_Pad_Right = state;
+			float delta = Time.deltaTime;
+			_inputHandler.ResetFlags();
+			_playerLocomotion.HandleInAirTimer(delta);
 		}
 		#endregion
 	}

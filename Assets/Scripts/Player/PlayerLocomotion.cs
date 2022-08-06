@@ -4,6 +4,7 @@ namespace SoulsLike
 {
 	public class PlayerLocomotion : MonoBehaviour
 	{
+		[SerializeField] private Camera normalCamera = default;
 		[Header("Movement Stats")]
 		[SerializeField] private float _movementSpeed = 5f;
 		[SerializeField] private float _walkingSpeed = 1f;
@@ -15,21 +16,23 @@ namespace SoulsLike
 		[SerializeField] private float _minDistanceToFall = 1f;
 		[SerializeField] private float _groundDirectionRayDistance = 0.2f;
 
-		private Transform _cameraObject;
-		private InputHandler _inputHandler;
-		private PlayerManager _playerManager;
+		private InputHandler _inputHandler = default;
+		private AnimatorHandler _animatorHandler = default;
+		private PlayerManager _playerManager = default;
+		private Transform _cameraObject = default;
+		private Transform _myTransform = default;
 
-		private Vector3 _normalVector;
-		private Vector3 _moveDirection;
-		private Vector3 _targetPosition;
-		private LayerMask _ignoreForGroundCheck;
+		private Vector3 _normalVector = default;
+		private Vector3 _moveDirection = default;
+		private Vector3 _targetPosition = default;
+		private LayerMask _ignoreForGroundCheck = default;
 
-		[HideInInspector] public Transform myTransform;
-		[HideInInspector] public AnimatorHandler animatorHandler;
+		private bool _isGrounded = default;
+		private bool _isSprinting = default;
+		private bool _isInAir = default;
+		private float _inAirTimer = default;
 
-		public new Rigidbody rigidbody;
-		public GameObject normalCamera;
-		public float inAirTimer;
+		[HideInInspector] public new Rigidbody rigidbody;
 
 		public void Init(PlayerManager playerManager, AnimatorHandler animatorHandler, InputHandler inputHandler)
 		{
@@ -38,35 +41,35 @@ namespace SoulsLike
 			_inputHandler = inputHandler;
 			_playerManager = playerManager;
 
-			this.animatorHandler = animatorHandler;
+			_animatorHandler = animatorHandler;
 
 			_cameraObject = Camera.main.transform;
-			myTransform = transform;
+			_myTransform = transform;
 
-			_playerManager.isGrounded = true;
+			_isGrounded = true;
 			_ignoreForGroundCheck = ~(1 << 8 | 1 << 11);
 		}
 
 		public void HandleMovement(float delta)
 		{
-			if(_inputHandler.rollFlag || _playerManager.isInteracting) return;
+			if(_inputHandler.RollFlag || _playerManager.IsInteracting) return;
 
-			_moveDirection = _cameraObject.forward * _inputHandler.vertical;
-			_moveDirection += _cameraObject.right * _inputHandler.horizontal;
+			_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
+			_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
 			_moveDirection.Normalize();
 			_moveDirection.y = 0;
 
 			float speed = _movementSpeed;
 
-			if(_inputHandler.sprintFlag && _inputHandler.moveAmount > 0.5f)
+			if(_inputHandler.SprintFlag && _inputHandler.MoveAmount > 0.5f)
 			{
 				speed = _sprintSpeed;
-				_playerManager.isSprinting = true;
+				_isSprinting = true;
 			}
 			else
 			{
-				if(_inputHandler.moveAmount < 0.5f) speed = _walkingSpeed;
-				_playerManager.isSprinting = false;
+				if(_inputHandler.MoveAmount < 0.5f) speed = _walkingSpeed;
+				_isSprinting = false;
 			}
 
 			_moveDirection *= speed;
@@ -74,41 +77,43 @@ namespace SoulsLike
 			Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
 			rigidbody.velocity = projectedVelocity;
 
-			animatorHandler.UpdateAnimatorValues(_inputHandler.moveAmount, 0, _playerManager.isSprinting);
-			if(animatorHandler.canRotate) HandleRotation(delta);
+			_animatorHandler.UpdateAnimatorValues(_inputHandler.MoveAmount, 0, _isSprinting);
+			if(_animatorHandler.CanRotate) HandleRotation(delta);
 		}
 
 		public void HandleRollingAndSprinting()
 		{
-			if(_playerManager.isInteracting) return;
+			if(_playerManager.IsInteracting) return;
 
-			if(_inputHandler.rollFlag)
+			if(_inputHandler.RollFlag)
 			{
-				_moveDirection = _cameraObject.forward * _inputHandler.vertical;
-				_moveDirection += _cameraObject.right * _inputHandler.horizontal;
+				_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
+				_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
 
-				if(_inputHandler.moveAmount > 0)
+				if(_inputHandler.MoveAmount > 0)
 				{
-					animatorHandler.PlayTargetAnimation(AnimationNameBase.Roll, true);
+					_animatorHandler.PlayTargetAnimation(AnimationNameBase.Roll, true);
 					_moveDirection.y = 0;
 					Quaternion rollRotation = Quaternion.LookRotation(_moveDirection);
-					myTransform.rotation = rollRotation;
+					_myTransform.rotation = rollRotation;
 				}
-				else animatorHandler.PlayTargetAnimation(AnimationNameBase.Stepback, true);
+				else _animatorHandler.PlayTargetAnimation(AnimationNameBase.Stepback, true);
 			}
 		}
 
+		public void HandleInAirTimer(float delta) => _inAirTimer += _isInAir ? delta : 0;
+
 		public void HandleFalling(float delta)
 		{
-			_playerManager.isGrounded = false;
+			_isGrounded = false;
 
-			Vector3 origin = myTransform.position;
+			Vector3 origin = _myTransform.position;
 			origin.y += _groundDetectionRayStart;
 
-			if(Physics.Raycast(origin, myTransform.forward, out _, 0.4f))
+			if(Physics.Raycast(origin, _myTransform.forward, out _, 0.4f))
 				_moveDirection = Vector3.zero;
 
-			if(_playerManager.isInAir)
+			if(_isInAir)
 			{
 				rigidbody.AddForce(Vector3.down * _fallingSpeed);
 				rigidbody.AddForce(_moveDirection * _fallingSpeed / 10f);
@@ -118,70 +123,70 @@ namespace SoulsLike
 			direction.Normalize();
 			origin += direction * _groundDirectionRayDistance;
 
-			_targetPosition = myTransform.position;
+			_targetPosition = _myTransform.position;
 			Debug.DrawRay(origin, Vector3.down * _minDistanceToFall, Color.red, 0.1f, false);
 
 			if(Physics.Raycast(origin, Vector3.down, out RaycastHit hit, _minDistanceToFall, _ignoreForGroundCheck))
 			{
 				_normalVector = hit.normal;
 				Vector3 targetPos = hit.point;
-				_playerManager.isGrounded = true;
+				_isGrounded = true;
 				_targetPosition.y = targetPos.y;
 
-				if(_playerManager.isInAir)
+				if(_isInAir)
 				{
-					if(inAirTimer > 0.5f)
+					if(_inAirTimer > 0.5f)
 					{
-						Debug.Log($"You were in the air for {inAirTimer}");
-						animatorHandler.PlayTargetAnimation(AnimationNameBase.Land, true);
-						inAirTimer = 0;
+						Debug.Log($"You were in the air for {_inAirTimer}");
+						_animatorHandler.PlayTargetAnimation(AnimationNameBase.Land, true);
+						_inAirTimer = 0;
 					}
 					else
 					{
-						animatorHandler.PlayTargetAnimation(AnimationNameBase.Empty, false);
-						inAirTimer = 0;
+						_animatorHandler.PlayTargetAnimation(AnimationNameBase.Empty, false);
+						_inAirTimer = 0;
 					}
 
-					_playerManager.isInAir = false;
+					_isInAir = false;
 				}
 			}
 			else
 			{
-				if(_playerManager.isGrounded) _playerManager.isGrounded = false;
+				if(_isGrounded) _isGrounded = false;
 
-				if(!_playerManager.isInAir)
+				if(!_isInAir)
 				{
-					if(!_playerManager.isInteracting) animatorHandler.PlayTargetAnimation(AnimationNameBase.Fall, true);
+					if(!_playerManager.IsInteracting) _animatorHandler.PlayTargetAnimation(AnimationNameBase.Fall, true);
 
 					Vector3 velocity = rigidbody.velocity;
 					velocity.Normalize();
 					rigidbody.velocity = velocity * (_movementSpeed * 0.5f);
-					_playerManager.isInAir = true;
+					_isInAir = true;
 				}
 			}
 
-			if(_playerManager.isInteracting || _inputHandler.moveAmount > 0)
-				myTransform.position = Vector3.Lerp(myTransform.position, _targetPosition, delta / 0.1f);
+			if(_playerManager.IsInteracting || _inputHandler.MoveAmount > 0)
+				_myTransform.position = Vector3.Lerp(_myTransform.position, _targetPosition, delta / 0.1f);
 			else
-				myTransform.position = _targetPosition;
+				_myTransform.position = _targetPosition;
 		}
 
 		private void HandleRotation(float delta)
 		{
-			float moveOverride = _inputHandler.moveAmount;
+			float moveOverride = _inputHandler.MoveAmount;
 
-			Vector3 targetDir = _cameraObject.forward * _inputHandler.vertical;
-			targetDir += _cameraObject.right * _inputHandler.horizontal;
+			Vector3 targetDir = _cameraObject.forward * _inputHandler.Vertical;
+			targetDir += _cameraObject.right * _inputHandler.Horizontal;
 			targetDir.Normalize();
 			targetDir.y = 0;
 
-			if(targetDir == Vector3.zero) targetDir = myTransform.forward;
+			if(targetDir == Vector3.zero) targetDir = _myTransform.forward;
 
 			float rotSpeed = _rotationSpeed;
 			Quaternion lookRotation = Quaternion.LookRotation(targetDir);
-			Quaternion targetRotation = Quaternion.Slerp(myTransform.rotation, lookRotation, rotSpeed * delta);
+			Quaternion targetRotation = Quaternion.Slerp(_myTransform.rotation, lookRotation, rotSpeed * delta);
 
-			myTransform.rotation = targetRotation;
+			_myTransform.rotation = targetRotation;
 		}
 	}
 }

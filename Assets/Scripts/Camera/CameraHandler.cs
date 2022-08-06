@@ -39,9 +39,9 @@ namespace SoulsLike
 		}
 		#endregion
 
-		public void FollowTarget(float delta, Transform targetTransform)
+		public void FollowTarget(float delta, Vector3 targetPosition)
 		{
-			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, targetTransform.position,
+			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, targetPosition,
 								ref _cameraFollowVelocity, delta * followSpeed);
 			_myTransform.position = targetPos;
 

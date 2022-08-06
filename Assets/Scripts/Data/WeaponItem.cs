@@ -8,17 +8,34 @@ namespace SoulsLike
 		[SerializeField] private Weapon _weaponPrefab = default;
 		[SerializeField] private bool _isUnarmed = default;
 
+		[Header("Stamina Cost")]
+		[SerializeField] private int _baseStamina = 20;
+		[SerializeField] private int _lightAttackMultiplier = 1;
+		[SerializeField] private int _heavyAttackMultiplier = 2;
+
+		[Header("Idle Animations")]
+		[SerializeField] private string _rightHandAnimation = AnimationNameBase.RighArm_Idle;
+		[SerializeField] private string _leftHandAnimation = AnimationNameBase.LeftArm_Idle;
+
+		[Header("One Handed Attack Animations")]
+		[SerializeField] private string _oneHandedLightAttack_01 = AnimationNameBase.OH_LightAttack_01;
+		[SerializeField] private string _oneHandedLightAttack_02 = AnimationNameBase.OH_LightAttack_02;
+		[SerializeField] private string _oneHandedHeavyAttack_01 = AnimationNameBase.OH_HeavyAttack_01;
+		[SerializeField] private string _oneHandedHeavyAttack_02 = AnimationNameBase.OH_HeavyAttack_02;
+
 		public Weapon WeaponPrefab => _weaponPrefab;
 		public bool IsUnarmed => _isUnarmed;
 
-		[Header("Idle Animations")]
-		public string rightHand_Idle = AnimationNameBase.RighArm_Idle;
-		public string leftHand_Idle = AnimationNameBase.LeftArm_Idle;
+		public int BaseStamina => _baseStamina;
+		public int LightAttackMultiplier => _lightAttackMultiplier;
+		public int HeavyAttackMultiplier => _heavyAttackMultiplier;
 
-		[Header("One Handed Attack Animations")]
-		public string oneHandedLightAttack_01 = AnimationNameBase.OH_LightAttack_01;
-		public string oneHandedLightAttack_02 = AnimationNameBase.OH_LightAttack_02;
-		public string oneHandedHeavyAttack_01 = AnimationNameBase.OH_HeavyAttack_01;
-		public string oneHandedHeavyAttack_02 = AnimationNameBase.OH_HeavyAttack_02;
+		public string RightHandAnimation => _rightHandAnimation;
+		public string LeftHandAnimation => _leftHandAnimation;
+
+		public string OneHandedLightAttack_01 => _oneHandedLightAttack_01;
+		public string OneHandedLightAttack_02 => _oneHandedLightAttack_02;
+		public string OneHandedHeavyAttack_01 => _oneHandedHeavyAttack_01;
+		public string OneHandedHeavyAttack_02 => _oneHandedHeavyAttack_02;
 	}
 }

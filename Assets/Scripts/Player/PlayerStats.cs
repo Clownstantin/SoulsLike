@@ -2,23 +2,25 @@
 {
 	public class PlayerStats : Stats
 	{
-		private AnimatorHandler _animatorHandler;
+		private UIManager _uiManager = default;
+		private AnimatorHandler _animatorHandler = default;
 
-		public HealthBarUI healthBar;
-
-		public void Init(AnimatorHandler animatorHandler)
+		public void Init(UIManager uIManager, AnimatorHandler animatorHandler)
 		{
 			_animatorHandler = animatorHandler;
+			_uiManager = uIManager;
 
-			maxHealth = healthLevel * 10;
-			currentHealth = maxHealth;
-			healthBar.SetMaxHealth(maxHealth);
+			SetStat(out maxHealth, out currentHealth, healthLevel, healthMultiplier);
+			SetStat(out maxStamina, out currentStamina, staminaLevel, staminaMultiplier);
+
+			_uiManager.SetMaxHealth(maxHealth);
+			_uiManager.SetMaxStamina(maxStamina);
 		}
 
 		public override void TakeDamage(int damage)
 		{
 			base.TakeDamage(damage);
-			healthBar.SetCurrentHealth(currentHealth);
+			_uiManager.SetCurrentHealth(currentHealth);
 
 			_animatorHandler.PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
 
@@ -29,6 +31,12 @@
 
 				//Handle Player Death
 			}
+		}
+
+		public void StaminaDrain(int drainValue)
+		{
+			currentStamina -= drainValue;
+			_uiManager.SetCurrentStamina(currentStamina);
 		}
 	}
 }

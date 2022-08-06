@@ -12,24 +12,34 @@ namespace SoulsLike
 		private Vector2 _movementInput;
 		private Vector2 _cameraInput;
 
-		public float horizontal;
-		public float vertical;
-		public float moveAmount;
-		public float mouseX;
-		public float mouseY;
+		private float _horizontal;
+		private float _vertical;
+		private float _moveAmount;
+		private float _mouseX;
+		private float _mouseY;
 
-		public bool rightLightAttackInput;
-		public bool rightHeavyAttackInput;
-		public bool rollInput;
-		public bool d_Pad_Up;
-		public bool d_Pad_Down;
-		public bool d_Pad_Left;
-		public bool d_Pad_Right;
+		private bool _rightLightAttackInput;
+		private bool _rightHeavyAttackInput;
+		private bool _rollInput;
+		private bool _quickSlotUpInput;
+		private bool _quickSlotDownInput;
+		private bool _quickSlotLeftInput;
+		private bool _quickSlotRightInput;
 
-		public bool rollFlag;
-		public bool sprintFlag;
-		public bool comboFlag;
-		public float rollInputTimer;
+		private bool _sprintFlag;
+		private bool _comboFlag;
+		private bool _rollFlag;
+		private float _rollInputTimer;
+
+		public float Horizontal => _horizontal;
+		public float Vertical => _vertical;
+		public float MoveAmount => _moveAmount;
+		public float MouseX => _mouseX;
+		public float MouseY => _mouseY;
+
+		public bool RollFlag => _rollFlag;
+		public bool SprintFlag => _sprintFlag;
+		public bool ComboFlag => _comboFlag;
 
 		private void OnEnable()
 		{
@@ -60,71 +70,83 @@ namespace SoulsLike
 			HandleQuickSlotsInput();
 		}
 
+		public void ResetFlags(bool state = false)
+		{
+			_rollFlag = state;
+			_sprintFlag = state;
+			_rightLightAttackInput = state;
+			_rightHeavyAttackInput = state;
+			_quickSlotUpInput = state;
+			_quickSlotDownInput = state;
+			_quickSlotLeftInput = state;
+			_quickSlotRightInput = state;
+		}
+
 		private void MoveInput()
 		{
-			horizontal = _movementInput.x;
-			vertical = _movementInput.y;
-			moveAmount = Mathf.Clamp01(Mathf.Abs(horizontal) + Mathf.Abs(vertical));
-			mouseX = _cameraInput.x;
-			mouseY = _cameraInput.y;
+			_horizontal = _movementInput.x;
+			_vertical = _movementInput.y;
+			_moveAmount = Mathf.Clamp01(Mathf.Abs(_horizontal) + Mathf.Abs(_vertical));
+			_mouseX = _cameraInput.x;
+			_mouseY = _cameraInput.y;
 		}
 
 		private void HandleRollInput(float delta)
 		{
-			rollInput = _inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
+			_rollInput = _inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
 
-			if(rollInput)
+			if(_rollInput)
 			{
-				rollInputTimer += delta;
-				sprintFlag = true;
+				_rollInputTimer += delta;
+				_sprintFlag = true;
 			}
 			else
 			{
-				if(rollInputTimer > 0 && rollInputTimer < 0.5f)
+				if(_rollInputTimer > 0 && _rollInputTimer < 0.5f)
 				{
-					sprintFlag = false;
-					rollFlag = true;
+					_sprintFlag = false;
+					_rollFlag = true;
 				}
 
-				rollInputTimer = 0;
+				_rollInputTimer = 0;
 			}
 		}
 
 		private void HandleAttackInput()
 		{
-			rightLightAttackInput = _inputActions.PlayerActions.LightAttack.WasPerformedThisFrame();
-			rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.WasPerformedThisFrame();
+			_rightLightAttackInput = _inputActions.PlayerActions.LightAttack.WasPerformedThisFrame();
+			_rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.WasPerformedThisFrame();
 
-			PerformAttack(rightLightAttackInput, rightHeavyAttackInput, _playerInventory.rightWeapon);
+			PerformAttack(_rightLightAttackInput, _rightHeavyAttackInput, _playerInventory.rightWeapon);
 		}
 
-		private void PerformAttack(bool lightAttack, bool heavyAttack, WeaponItem weapon)
+		private void PerformAttack(bool lightAttackInput, bool heavyAttackInput, WeaponItem weapon)
 		{
-			if(lightAttack || heavyAttack)
+			if(lightAttackInput || heavyAttackInput)
 			{
-				if(_playerManager.canDoCombo)
+				if(_playerManager.CanDoCombo)
 				{
-					comboFlag = true;
+					_comboFlag = true;
 					_playerAttacker.HandleWeaponCombo(weapon);
-					comboFlag = false;
+					_comboFlag = false;
 				}
 				else
 				{
-					if(_playerManager.isInteracting || _playerManager.canDoCombo) return;
+					if(_playerManager.IsInteracting || _playerManager.CanDoCombo) return;
 
-					if(lightAttack) _playerAttacker.HandleLightAttack(weapon);
-					else if(heavyAttack) _playerAttacker.HandleHeavyAttack(weapon);
+					if(lightAttackInput) _playerAttacker.HandleLightAttack(weapon);
+					else if(heavyAttackInput) _playerAttacker.HandleHeavyAttack(weapon);
 				}
 			}
 		}
 
 		private void HandleQuickSlotsInput()
 		{
-			d_Pad_Right = _inputActions.PlayerActions.DPadRight.WasPerformedThisFrame();
-			d_Pad_Left = _inputActions.PlayerActions.DPadLeft.WasPerformedThisFrame();
+			_quickSlotRightInput = _inputActions.PlayerActions.DPadRight.WasPerformedThisFrame();
+			_quickSlotLeftInput = _inputActions.PlayerActions.DPadLeft.WasPerformedThisFrame();
 
-			if(d_Pad_Right) _playerInventory.ChangeWeaponInSlot();
-			else if(d_Pad_Left) _playerInventory.ChangeWeaponInSlot(true);
+			if(_quickSlotRightInput) _playerInventory.ChangeWeaponInSlot();
+			else if(_quickSlotLeftInput) _playerInventory.ChangeWeaponInSlot(true);
 		}
 	}
 }

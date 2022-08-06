@@ -42,8 +42,8 @@ GameObject:
   - component: {fileID: 8923322972679739393}
   - component: {fileID: 206495909}
   - component: {fileID: 206495907}
-  - component: {fileID: 206495906}
   - component: {fileID: 206495904}
+  - component: {fileID: 206495906}
   - component: {fileID: 206495905}
   - component: {fileID: 206495903}
   - component: {fileID: 206495902}
@@ -83,6 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 367f5d9fb5abf424193633cf1274545e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  normalCamera: {fileID: 0}
   _movementSpeed: 5
   _walkingSpeed: 1
   _sprintSpeed: 7
@@ -91,11 +92,7 @@ MonoBehaviour:
   _groundDetectionRayStart: 0.5
   _minDistanceToFall: 1
   _groundDirectionRayDistance: 0.2
-  myTransform: {fileID: 0}
-  animatorHandler: {fileID: 0}
   rigidbody: {fileID: 0}
-  normalCamera: {fileID: 0}
-  inAirTimer: 0
 --- !u!114 &206495907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,9 +106,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthLevel: 10
-  maxHealth: 0
-  currentHealth: 0
-  healthBar: {fileID: 0}
+  healthMultiplier: 10
+  staminaLevel: 10
+  staminaMultiplier: 10
+--- !u!114 &206495904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8923322972679739398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b3f457934b8fdd41bcdb2678fd2a337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiManager: {fileID: 0}
 --- !u!114 &206495906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,24 +143,6 @@ MonoBehaviour:
   leftHandWeapons:
   - {fileID: 11400000, guid: 6838e723e68dba74fbc29368f4327009, type: 2}
   - {fileID: 11400000, guid: 3522d588d35ef204096a61a18fff492b, type: 2}
---- !u!114 &206495904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8923322972679739398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b3f457934b8fdd41bcdb2678fd2a337, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _quickSlots: {fileID: 0}
-  isInteracting: 0
-  isSprinting: 0
-  isInAir: 0
-  isGrounded: 1
-  canDoCombo: 0
 --- !u!114 &206495905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,22 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef3526f2aff557843b78a7ca09a653fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontal: 0
-  vertical: 0
-  moveAmount: 0
-  mouseX: 0
-  mouseY: 0
-  rightLightAttackInput: 0
-  rightHeavyAttackInput: 0
-  rollInput: 0
-  d_Pad_Up: 0
-  d_Pad_Down: 0
-  d_Pad_Left: 0
-  d_Pad_Right: 0
-  rollFlag: 0
-  sprintFlag: 0
-  comboFlag: 0
-  rollInputTimer: 0
 --- !u!114 &206495903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,7 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf0c32c436f52b4d81eaeac41e73fe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastAttack: 
 --- !u!136 &206495902
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -373,8 +348,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2545f41c183934ab197c565c67660b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  canRotate: 1
 --- !u!4 &8961243561073651670 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a40c97d65feab604d86b6aca55744ce8, type: 3}

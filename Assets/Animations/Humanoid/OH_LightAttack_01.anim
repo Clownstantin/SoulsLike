@@ -96160,6 +96160,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 0.75
+    functionName: DrainStaminaOnLightAttack
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.9166667
     functionName: CloseRightDamageCollider
     data: 
@@ -96174,7 +96181,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.6666666
+  - time: 1.8333334
     functionName: DisableCombo
     data: 
     objectReferenceParameter: {fileID: 0}

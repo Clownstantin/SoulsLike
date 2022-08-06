@@ -4,14 +4,14 @@ namespace SoulsLike
 {
 	public class EnemyStats : Stats
 	{
-		private Animator _animator;
+		private Animator _animator = default;
 
 		public void Init(Animator animator)
 		{
 			_animator = animator;
 
-			maxHealth = healthLevel * 10;
-			currentHealth = maxHealth;
+			SetStat(out maxHealth, out currentHealth, healthLevel, healthMultiplier);
+			SetStat(out maxStamina, out currentStamina, staminaLevel, staminaMultiplier);
 		}
 
 		public override void TakeDamage(int damage)

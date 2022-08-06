@@ -6,19 +6,23 @@ namespace SoulsLike
 	{
 		[SerializeField] private float _crossFadeTransitionDuration = 0.2f;
 
-		private WeaponHolderSlot _leftHandSlot;
-		private WeaponHolderSlot _rightHandSlot;
+		private WeaponItem _attackingWeapon = default;
 
-		private DamageDealer _leftDamageDialer;
-		private DamageDealer _rightDamageDialer;
+		private WeaponHolderSlot _leftHandSlot = default;
+		private WeaponHolderSlot _rightHandSlot = default;
 
-		private Animator _animator;
-		private QuickSlotsUI _quickSlots;
+		private DamageDealer _leftDamageDialer = default;
+		private DamageDealer _rightDamageDialer = default;
 
-		public void Init(Animator animator, QuickSlotsUI quickSlots)
+		private Animator _animator = default;
+		private UIManager _uIManager = default;
+		private PlayerStats _playerStats = default;
+
+		public void Init(Animator animator, UIManager uIManager, PlayerStats playerStats)
 		{
 			_animator = animator;
-			_quickSlots = quickSlots;
+			_uIManager = uIManager;
+			_playerStats = playerStats;
 
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
 
@@ -32,27 +36,43 @@ namespace SoulsLike
 		public void LoadWeaponOnSlot(WeaponItem weaponItem, bool isLeft = default)
 		{
 			WeaponHolderSlot slot = isLeft ? _leftHandSlot : _rightHandSlot;
-			string idleAnimationName = isLeft ? weaponItem.leftHand_Idle : weaponItem.rightHand_Idle;
+			string handAnimationName = isLeft ? weaponItem.LeftHandAnimation : weaponItem.RightHandAnimation;
 			string emptyAnimationName = isLeft ? AnimationNameBase.LeftArmEmpty : AnimationNameBase.RightArmEmpty;
 
 			slot.LoadWeaponModel(weaponItem);
-			_quickSlots.UpdateWeaponQuickSlotsUI(weaponItem, isLeft);
+			_uIManager.UpdateWeaponQuickSlotsUI(weaponItem, isLeft);
 
 			if(isLeft) _leftDamageDialer = _leftHandSlot.currentWeaponModel.DamageDealer;
 			else _rightDamageDialer = _rightHandSlot.currentWeaponModel.DamageDealer;
 
-			if(weaponItem) _animator.CrossFade(idleAnimationName, _crossFadeTransitionDuration);
+			if(weaponItem) _animator.CrossFade(handAnimationName, _crossFadeTransitionDuration);
 			else _animator.CrossFade(emptyAnimationName, _crossFadeTransitionDuration);
 		}
 
+		public void SetAttackingWeapon(WeaponItem weapon) => _attackingWeapon = weapon;
+
 		#region AnimationEvents
-		public void OpenLeftDamageCollider() => _leftDamageDialer.EnableDamageCollider();
+		private void DrainStaminaOnLightAttack()
+		{
+			if(!_attackingWeapon) return;
+			int drain = _attackingWeapon.BaseStamina * _attackingWeapon.LightAttackMultiplier;
+			_playerStats.StaminaDrain(drain);
+		}
 
-		public void OpenRightDamageCollider() => _rightDamageDialer.EnableDamageCollider();
+		private void DrainStaminaOnHeavyAttack()
+		{
+			if(!_attackingWeapon) return;
+			int drain = _attackingWeapon.BaseStamina * _attackingWeapon.HeavyAttackMultiplier;
+			_playerStats.StaminaDrain(drain);
+		}
 
-		public void CloseLeftDamageCollider() => _leftDamageDialer.DisableDamageCollider();
+		private void OpenLeftDamageCollider() => _leftDamageDialer.EnableDamageCollider();
 
-		public void CloseRightDamageCollider() => _rightDamageDialer.DisableDamageCollider();
+		private void OpenRightDamageCollider() => _rightDamageDialer.EnableDamageCollider();
+
+		private void CloseLeftDamageCollider() => _leftDamageDialer.DisableDamageCollider();
+
+		private void CloseRightDamageCollider() => _rightDamageDialer.DisableDamageCollider();
 		#endregion
 	}
 }

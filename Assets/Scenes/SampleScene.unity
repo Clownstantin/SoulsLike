@@ -892,6 +892,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 642779389}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &674775243 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 674775243, guid: 7b49a243a4d4e354bb80245a4b943bd0, type: 3}
+  m_PrefabInstance: {fileID: 5968700114122198195}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0cafb5c0820dca4998d00718a2d098e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1659,17 +1670,6 @@ MonoBehaviour:
   cameraSphereRadius: 0.2
   cameraCollisionOffset: 0.2
   minCollisionOffset: 0.2
---- !u!114 &1569257711 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5968700112705074268, guid: 7b49a243a4d4e354bb80245a4b943bd0, type: 3}
-  m_PrefabInstance: {fileID: 5968700114122198195}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 458b698f1039bdd498ed17e222b73c3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1605821499
 GameObject:
   m_ObjectHideFlags: 0
@@ -2296,6 +2296,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3974928104433653940, guid: 7b49a243a4d4e354bb80245a4b943bd0, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3974928104433653940, guid: 7b49a243a4d4e354bb80245a4b943bd0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5968700112940135775, guid: 7b49a243a4d4e354bb80245a4b943bd0, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -2394,17 +2402,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b49a243a4d4e354bb80245a4b943bd0, type: 3}
---- !u!114 &5968700114122198197 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5968700114122198197, guid: 7b49a243a4d4e354bb80245a4b943bd0, type: 3}
-  m_PrefabInstance: {fileID: 5968700114122198195}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f213a46973664348b23e84d7a9e3939, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8923322972885121181
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2413,13 +2410,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 206495904, guid: 5b223c93cf5e1324482cc62699675812, type: 3}
-      propertyPath: _quickSlots
+      propertyPath: _uiManager
       value: 
-      objectReference: {fileID: 5968700114122198197}
-    - target: {fileID: 206495907, guid: 5b223c93cf5e1324482cc62699675812, type: 3}
-      propertyPath: healthBar
-      value: 
-      objectReference: {fileID: 1569257711}
+      objectReference: {fileID: 674775243}
     - target: {fileID: 8923322972679739393, guid: 5b223c93cf5e1324482cc62699675812, type: 3}
       propertyPath: m_RootOrder
       value: 1

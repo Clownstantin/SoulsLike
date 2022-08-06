@@ -4,40 +4,44 @@ namespace SoulsLike
 {
 	public class PlayerAttacker : MonoBehaviour
 	{
-		private InputHandler _inputHandler;
-		private AnimatorHandler _animatorHandler;
+		private InputHandler _inputHandler = default;
+		private AnimatorHandler _animatorHandler = default;
+		private WeaponSlotManager _weaponSlotManager = default;
 
-		public string lastAttack;
+		private string _lastAttack = default;
 
-		public void Init(InputHandler inputHandler, AnimatorHandler animatorHandler)
+		public void Init(InputHandler inputHandler, AnimatorHandler animatorHandler, WeaponSlotManager weaponSlotManager)
 		{
 			_inputHandler = inputHandler;
 			_animatorHandler = animatorHandler;
+			_weaponSlotManager = weaponSlotManager;
 		}
 
 		public void HandleWeaponCombo(WeaponItem weapon)
 		{
-			if(_inputHandler.comboFlag)
+			if(_inputHandler.ComboFlag)
 			{
-				_animatorHandler.animator.SetBool(AnimatorHandler.CanDoCombo, false);
+				_animatorHandler.DisableCombo();
 
-				if(lastAttack == weapon.oneHandedLightAttack_01)
-					_animatorHandler.PlayTargetAnimation(weapon.oneHandedLightAttack_02, true);
-				else if(lastAttack == weapon.oneHandedHeavyAttack_01)
-					_animatorHandler.PlayTargetAnimation(weapon.oneHandedHeavyAttack_02, true);
+				if(_lastAttack == weapon.OneHandedLightAttack_01)
+					_animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack_02, true);
+				else if(_lastAttack == weapon.OneHandedHeavyAttack_01)
+					_animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack_02, true);
 			}
 		}
 
 		public void HandleLightAttack(WeaponItem weapon)
 		{
-			_animatorHandler.PlayTargetAnimation(weapon.oneHandedLightAttack_01, true);
-			lastAttack = weapon.oneHandedLightAttack_01;
+			_weaponSlotManager.SetAttackingWeapon(weapon);
+			_animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack_01, true);
+			_lastAttack = weapon.OneHandedLightAttack_01;
 		}
 
 		public void HandleHeavyAttack(WeaponItem weapon)
 		{
-			_animatorHandler.PlayTargetAnimation(weapon.oneHandedHeavyAttack_01, true);
-			lastAttack = weapon.oneHandedHeavyAttack_01;
+			_weaponSlotManager.SetAttackingWeapon(weapon);
+			_animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack_01, true);
+			_lastAttack = weapon.OneHandedHeavyAttack_01;
 		}
 	}
 }

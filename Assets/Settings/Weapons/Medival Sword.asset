@@ -16,9 +16,12 @@ MonoBehaviour:
   itemName: Medival Sword
   _weaponPrefab: {fileID: 4091475822040298729, guid: 894e4d9e251f0814187c97a54c0374ad, type: 3}
   _isUnarmed: 0
-  rightHand_Idle: RighArm_Idle
-  leftHand_Idle: LeftArm_Idle
-  oneHandedLightAttack_01: OH_LightAttack_01
-  oneHandedLightAttack_02: OH_LightAttack_02
-  oneHandedHeavyAttack_01: OH_HeavyAttack_01
-  oneHandedHeavyAttack_02: OH_HeavyAttack_02
+  _baseStamina: 20
+  _lightAttackMultiplier: 1
+  _heavyAttackMultiplier: 2
+  _rightHandAnimation: RighArm_Idle
+  _leftHandAnimation: LeftArm_Idle
+  _oneHandedLightAttack_01: OH_LightAttack_01
+  _oneHandedLightAttack_02: OH_LightAttack_02
+  _oneHandedHeavyAttack_01: OH_HeavyAttack_01
+  _oneHandedHeavyAttack_02: OH_HeavyAttack_02

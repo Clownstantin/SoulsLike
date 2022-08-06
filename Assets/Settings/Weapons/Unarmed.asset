@@ -16,9 +16,10 @@ MonoBehaviour:
   itemName: Unarmed
   _weaponPrefab: {fileID: 905578269431394207, guid: c805e4c5c0988344fbf5e6f8b2eb4454, type: 3}
   _isUnarmed: 1
-  rightHand_Idle: RightArmEmpty
-  leftHand_Idle: LeftArmEmpty
-  oneHandedLightAttack_01: 
-  oneHandedLightAttack_02: 
-  oneHandedHeavyAttack_01: 
-  oneHandedHeavyAttack_02: 
+  _rightHandAnimation: RightArmEmpty
+  _leftHandAnimation: LeftArmEmpty
+  _oneHandedLightAttack_01: OH_LightAttack_01
+  _oneHandedLightAttack_02: OH_LightAttack_02
+  _oneHandedHeavyAttack_01: OH_HeavyAttack_01
+  _oneHandedHeavyAttack_02: OH_HeavyAttack_02
+  _baseStamina: 0
