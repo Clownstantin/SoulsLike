@@ -5,8 +5,10 @@ namespace SoulsLike
 {
 	public class UIManager : MonoBehaviour
 	{
+		[Header("Bars")]
 		[SerializeField] private Slider _healthBarSlider = default;
 		[SerializeField] private Slider _staminaBarSlider = default;
+		[Header("QuickSlots")]
 		[SerializeField] private Image _leftWeaponIcon = default;
 		[SerializeField] private Image _rightWeaponIcon = default;
 

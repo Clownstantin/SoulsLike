@@ -4,32 +4,35 @@ namespace SoulsLike
 {
 	public class InputHandler : MonoBehaviour
 	{
-		private PlayerControls _inputActions;
-		private PlayerManager _playerManager;
-		private PlayerAttacker _playerAttacker;
-		private PlayerInventory _playerInventory;
+		private PlayerControls _inputActions = default;
+		private PlayerManager _playerManager = default;
+		private PlayerAttacker _playerAttacker = default;
+		private PlayerInventory _playerInventory = default;
 
-		private Vector2 _movementInput;
-		private Vector2 _cameraInput;
+		private Vector2 _movementInput = default;
+		private Vector2 _cameraInput = default;
 
-		private float _horizontal;
-		private float _vertical;
-		private float _moveAmount;
-		private float _mouseX;
-		private float _mouseY;
+		private float _horizontal = default;
+		private float _vertical = default;
+		private float _moveAmount = default;
+		private float _mouseX = default;
+		private float _mouseY = default;
 
-		private bool _rightLightAttackInput;
-		private bool _rightHeavyAttackInput;
-		private bool _rollInput;
-		private bool _quickSlotUpInput;
-		private bool _quickSlotDownInput;
-		private bool _quickSlotLeftInput;
-		private bool _quickSlotRightInput;
 
-		private bool _sprintFlag;
-		private bool _comboFlag;
-		private bool _rollFlag;
-		private float _rollInputTimer;
+		private bool _interactInput = default;
+		private bool _rollInput = default;
+		private bool _rightLightAttackInput = default;
+		private bool _rightHeavyAttackInput = default;
+
+		private bool _quickSlotUpInput = default;
+		private bool _quickSlotDownInput = default;
+		private bool _quickSlotLeftInput = default;
+		private bool _quickSlotRightInput = default;
+
+		private bool _sprintFlag = default;
+		private bool _comboFlag = default;
+		private bool _rollFlag = default;
+		private float _rollInputTimer = default;
 
 		public float Horizontal => _horizontal;
 		public float Vertical => _vertical;
@@ -40,6 +43,8 @@ namespace SoulsLike
 		public bool RollFlag => _rollFlag;
 		public bool SprintFlag => _sprintFlag;
 		public bool ComboFlag => _comboFlag;
+
+		public bool InteractInput => _interactInput;
 
 		private void OnEnable()
 		{
@@ -68,14 +73,18 @@ namespace SoulsLike
 			HandleRollInput(delta);
 			HandleAttackInput();
 			HandleQuickSlotsInput();
+			HandleInteractInput();
 		}
 
 		public void ResetFlags(bool state = false)
 		{
+			_interactInput = state;
 			_rollFlag = state;
 			_sprintFlag = state;
+
 			_rightLightAttackInput = state;
 			_rightHeavyAttackInput = state;
+
 			_quickSlotUpInput = state;
 			_quickSlotDownInput = state;
 			_quickSlotLeftInput = state;
@@ -112,12 +121,23 @@ namespace SoulsLike
 			}
 		}
 
+		private void HandleInteractInput() => _interactInput = _inputActions.PlayerActions.Interact.WasPerformedThisFrame();
+
 		private void HandleAttackInput()
 		{
 			_rightLightAttackInput = _inputActions.PlayerActions.LightAttack.WasPerformedThisFrame();
 			_rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.WasPerformedThisFrame();
 
-			PerformAttack(_rightLightAttackInput, _rightHeavyAttackInput, _playerInventory.rightWeapon);
+			PerformAttack(_rightLightAttackInput, _rightHeavyAttackInput, _playerInventory.RightWeapon);
+		}
+
+		private void HandleQuickSlotsInput()
+		{
+			_quickSlotRightInput = _inputActions.PlayerActions.DPadRight.WasPerformedThisFrame();
+			_quickSlotLeftInput = _inputActions.PlayerActions.DPadLeft.WasPerformedThisFrame();
+
+			if(_quickSlotRightInput) _playerInventory.ChangeWeaponInSlot();
+			else if(_quickSlotLeftInput) _playerInventory.ChangeWeaponInSlot(true);
 		}
 
 		private void PerformAttack(bool lightAttackInput, bool heavyAttackInput, WeaponItem weapon)
@@ -138,15 +158,6 @@ namespace SoulsLike
 					else if(heavyAttackInput) _playerAttacker.HandleHeavyAttack(weapon);
 				}
 			}
-		}
-
-		private void HandleQuickSlotsInput()
-		{
-			_quickSlotRightInput = _inputActions.PlayerActions.DPadRight.WasPerformedThisFrame();
-			_quickSlotLeftInput = _inputActions.PlayerActions.DPadLeft.WasPerformedThisFrame();
-
-			if(_quickSlotRightInput) _playerInventory.ChangeWeaponInSlot();
-			else if(_quickSlotLeftInput) _playerInventory.ChangeWeaponInSlot(true);
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 namespace SoulsLike
 {
@@ -6,6 +7,8 @@ namespace SoulsLike
 	{
 		[SerializeField] private Transform cameraTransform;
 		[SerializeField] private Transform cameraPivotTransform;
+
+		private static CameraHandler s_instance;
 
 		private Transform _myTransform;
 		private Vector3 _cameraPosition;
@@ -17,7 +20,7 @@ namespace SoulsLike
 		private float _lookAngle;
 		private float _pivotAngle;
 
-		public static CameraHandler instance;
+		public static CameraHandler Instance => s_instance;
 
 		public float lookSpeed = 0.1f;
 		public float followSpeed = 0.1f;
@@ -32,7 +35,7 @@ namespace SoulsLike
 		#region Monobehavior
 		private void Awake()
 		{
-			instance = this;
+			s_instance = this;
 			_myTransform = transform;
 			_defaultPositionZ = cameraTransform.localPosition.z;
 			_ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);

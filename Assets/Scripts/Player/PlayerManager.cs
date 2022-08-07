@@ -44,7 +44,7 @@ namespace SoulsLike
 		private void Start()
 		{
 			_myTransform = transform;
-			_cameraHandler = CameraHandler.instance;
+			_cameraHandler = CameraHandler.Instance;
 
 			_playerLocomotion.Init(this, _animatorHandler, _inputHandler);
 			_playerAttacker.Init(_inputHandler, _animatorHandler, _weaponSlotManager);
@@ -65,6 +65,8 @@ namespace SoulsLike
 			_playerLocomotion.HandleMovement(delta);
 			_playerLocomotion.HandleRollingAndSprinting();
 			_playerLocomotion.HandleFalling(delta);
+
+			CheckForInteractableObject();
 		}
 
 		private void FixedUpdate()
@@ -85,5 +87,32 @@ namespace SoulsLike
 			_playerLocomotion.HandleInAirTimer(delta);
 		}
 		#endregion
+
+		private void CheckForInteractableObject()
+		{
+			LayerMask ignoreLayers = ~~(1 << 8 | 1 << 9 | 1 << 10);
+
+			if(Physics.SphereCast(_myTransform.position, 0.3f, _myTransform.forward, out RaycastHit hit, ignoreLayers))
+			{
+				if(hit.collider.TryGetComponent(out Interactable interactableObj))
+				{
+					string interactableText = interactableObj.InteractableText;
+					//UI pop up
+
+					if(_inputHandler.InteractInput)
+					{
+						interactableObj.Interact(w => OnPickUpWeapon(w));
+						Destroy(interactableObj.gameObject);
+					}
+				}
+			}
+		}
+
+		private void OnPickUpWeapon(WeaponItem weapon)
+		{
+			_playerLocomotion.rigidbody.velocity = Vector3.zero;
+			_animatorHandler.PlayTargetAnimation(AnimationNameBase.PickUp, true);
+			_playerInventory.AddWeaponToInventory(weapon);
+		}
 	}
 }
