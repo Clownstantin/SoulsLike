@@ -16,6 +16,9 @@ scopes = {
 	"last_search.2138236A" = ""
 	"OpenInspectorPreview.2138236A" = "0"
 	"currentGroup.2138236A" = "asset"
+	"last_search.C4949528" = "Internal-Skinning t:ComputeShader"
+	"OpenInspectorPreview.C4949528" = "0"
+	"currentGroup.C4949528" = "asset"
 }
 providers = {
 	adb = {

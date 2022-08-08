@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public class PlayerManager : MonoBehaviour
+	public class PlayerManager : UpdateableComponent
 	{
 		[SerializeField] private UIManager _uiManager = default;
 
@@ -41,7 +41,7 @@ namespace SoulsLike
 			_weaponSlotManager.Init(_animator, _uiManager, _playerStats);
 		}
 
-		private void Start()
+		protected override void OnStart()
 		{
 			_myTransform = transform;
 			_cameraHandler = CameraHandler.Instance;
@@ -54,14 +54,13 @@ namespace SoulsLike
 			_playerStats.Init(_uiManager, _animatorHandler);
 		}
 
-		private void Update()
+		public override void OnUpdate(float delta)
 		{
-			float delta = Time.deltaTime;
-
 			_isInteracting = _animator.GetBool(AnimatorHandler.IsInteracting);
 			_canDoCombo = _animator.GetBool(AnimatorHandler.CanDoCombo);
 
 			_inputHandler.TickInput(delta);
+
 			_playerLocomotion.HandleMovement(delta);
 			_playerLocomotion.HandleRollingAndSprinting();
 			_playerLocomotion.HandleFalling(delta);
@@ -69,10 +68,8 @@ namespace SoulsLike
 			CheckForInteractableObject();
 		}
 
-		private void FixedUpdate()
+		public override void OnFixedUpdate(float delta)
 		{
-			float delta = Time.fixedDeltaTime;
-
 			if(_cameraHandler != null)
 			{
 				_cameraHandler.FollowTarget(delta, _myTransform.position);
@@ -80,9 +77,8 @@ namespace SoulsLike
 			}
 		}
 
-		private void LateUpdate()
+		public override void OnLateUpdate(float delta)
 		{
-			float delta = Time.deltaTime;
 			_inputHandler.ResetFlags();
 			_playerLocomotion.HandleInAirTimer(delta);
 		}
@@ -100,19 +96,18 @@ namespace SoulsLike
 					//UI pop up
 
 					if(_inputHandler.InteractInput)
-					{
-						interactableObj.Interact(w => OnPickUpWeapon(w));
-						Destroy(interactableObj.gameObject);
-					}
+						interactableObj.PickUp(w => OnPickUp(w, interactableObj));
 				}
 			}
 		}
 
-		private void OnPickUpWeapon(WeaponItem weapon)
+		private void OnPickUp(Item weapon, Interactable interactableObj)
 		{
 			_playerLocomotion.rigidbody.velocity = Vector3.zero;
 			_animatorHandler.PlayTargetAnimation(AnimationNameBase.PickUp, true);
-			_playerInventory.AddWeaponToInventory(weapon);
+			_playerInventory.AddItemToInventory(weapon);
+
+			Destroy(interactableObj.gameObject);
 		}
 	}
 }

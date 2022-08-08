@@ -18,7 +18,6 @@ namespace SoulsLike
 		private float _mouseX = default;
 		private float _mouseY = default;
 
-
 		private bool _interactInput = default;
 		private bool _rollInput = default;
 		private bool _rightLightAttackInput = default;
@@ -48,17 +47,20 @@ namespace SoulsLike
 
 		private void OnEnable()
 		{
-			if(_inputActions == null)
-			{
-				_inputActions = new PlayerControls();
-				_inputActions.PlayerMovement.Movement.performed += m => _movementInput = m.ReadValue<Vector2>();
-				_inputActions.PlayerMovement.Camera.performed += c => _cameraInput = c.ReadValue<Vector2>();
-			}
+			_inputActions ??= new PlayerControls();
+			_inputActions.PlayerMovement.Movement.performed += m => _movementInput = m.ReadValue<Vector2>();
+			_inputActions.PlayerMovement.Camera.performed += c => _cameraInput = c.ReadValue<Vector2>();
 
 			_inputActions.Enable();
 		}
 
-		private void OnDisable() => _inputActions.Disable();
+		private void OnDisable()
+		{
+			_inputActions.PlayerMovement.Movement.performed -= m => _movementInput = m.ReadValue<Vector2>();
+			_inputActions.PlayerMovement.Camera.performed -= c => _cameraInput = c.ReadValue<Vector2>();
+
+			_inputActions.Disable();
+		}
 
 		public void Init(PlayerManager playerManager, PlayerAttacker playerAttacker, PlayerInventory playerInventory)
 		{

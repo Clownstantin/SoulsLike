@@ -288,10 +288,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72523c8afc791094caa1b6d330f1a66f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentOverride: {fileID: 1595516171346151035}
-  isLeftHandSlot: 1
-  isRightHandSlot: 0
-  currentWeaponModel: {fileID: 0}
+  _parentOverride: {fileID: 1595516171346151035}
+  _isLeftHandSlot: 1
+  _isRightHandSlot: 0
 --- !u!1 &6807652317874513212 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2715566404302941441, guid: a40c97d65feab604d86b6aca55744ce8, type: 3}
@@ -309,10 +308,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72523c8afc791094caa1b6d330f1a66f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentOverride: {fileID: 7089701817379698677}
-  isLeftHandSlot: 0
-  isRightHandSlot: 1
-  currentWeaponModel: {fileID: 0}
+  _parentOverride: {fileID: 7089701817379698677}
+  _isLeftHandSlot: 0
+  _isRightHandSlot: 1
 --- !u!4 &7089701817379698677 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: a40c97d65feab604d86b6aca55744ce8, type: 3}

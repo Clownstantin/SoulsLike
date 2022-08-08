@@ -1,43 +1,43 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SoulsLike
 {
 	public class CameraHandler : MonoBehaviour
 	{
-		[SerializeField] private Transform cameraTransform;
-		[SerializeField] private Transform cameraPivotTransform;
+		[SerializeField] private Transform _cameraTransform = default;
+		[SerializeField] private Transform _cameraPivotTransform = default;
 
-		private static CameraHandler s_instance;
+		[Header("Movement")]
+		[SerializeField] private float _lookSpeed = 0.1f;
+		[SerializeField] private float _followSpeed = 0.1f;
+		[SerializeField] private float _pivotSpeed = 0.03f;
+		[SerializeField] private float _clampPivot = 35f;
 
-		private Transform _myTransform;
-		private Vector3 _cameraPosition;
-		private Vector3 _cameraFollowVelocity = Vector3.zero;
-		private LayerMask _ignoreLayers;
+		[Header("Collision Detection")]
+		[SerializeField] private float _cameraSphereRadius = 0.2f;
+		[SerializeField] private float _cameraCollisionOffset = 0.2f;
+		[SerializeField] private float _minCollisionOffset = 0.2f;
 
-		private float _defaultPositionZ;
-		private float _targetPositionZ;
-		private float _lookAngle;
-		private float _pivotAngle;
+		private static CameraHandler s_instance = default;
+
+		private Transform _myTransform = default;
+		private Vector3 _cameraPosition = default;
+		private Vector3 _cameraFollowVelocity = default;
+		private LayerMask _ignoreLayers = default;
+
+		private float _defaultPositionZ = default;
+		private float _targetPositionZ = default;
+		private float _lookAngle = default;
+		private float _pivotAngle = default;
 
 		public static CameraHandler Instance => s_instance;
-
-		public float lookSpeed = 0.1f;
-		public float followSpeed = 0.1f;
-		public float pivotSpeed = 0.03f;
-		public float minPivot = -35f;
-		public float maxPivot = 35f;
-
-		public float cameraSphereRadius = 0.2f;
-		public float cameraCollisionOffset = 0.2f;
-		public float minCollisionOffset = 0.2f;
 
 		#region Monobehavior
 		private void Awake()
 		{
 			s_instance = this;
 			_myTransform = transform;
-			_defaultPositionZ = cameraTransform.localPosition.z;
+			_defaultPositionZ = _cameraTransform.localPosition.z;
 			_ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
 		}
 		#endregion
@@ -45,7 +45,7 @@ namespace SoulsLike
 		public void FollowTarget(float delta, Vector3 targetPosition)
 		{
 			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, targetPosition,
-								ref _cameraFollowVelocity, delta * followSpeed);
+								ref _cameraFollowVelocity, delta * _followSpeed);
 			_myTransform.position = targetPos;
 
 			HandleCameraCollisions(delta);
@@ -53,9 +53,9 @@ namespace SoulsLike
 
 		public void HandleCameraRotation(float delta, float mouseXInput, float mouseYInput)
 		{
-			_lookAngle += mouseXInput * lookSpeed / delta;
-			_pivotAngle -= mouseYInput * pivotSpeed / delta;
-			_pivotAngle = Mathf.Clamp(_pivotAngle, minPivot, maxPivot);
+			_lookAngle += mouseXInput * _lookSpeed / delta;
+			_pivotAngle -= mouseYInput * _pivotSpeed / delta;
+			_pivotAngle = Mathf.Clamp(_pivotAngle, -_clampPivot, _clampPivot);
 
 			Vector3 rotation = Vector3.zero;
 			rotation.y = _lookAngle;
@@ -65,27 +65,27 @@ namespace SoulsLike
 			rotation = Vector3.zero;
 			rotation.x = _pivotAngle;
 			targetRotation = Quaternion.Euler(rotation);
-			cameraPivotTransform.localRotation = targetRotation;
+			_cameraPivotTransform.localRotation = targetRotation;
 		}
 
 		private void HandleCameraCollisions(float delta)
 		{
 			_targetPositionZ = _defaultPositionZ;
 
-			Vector3 direction = cameraTransform.position - cameraPivotTransform.position;
+			Vector3 direction = _cameraTransform.position - _cameraPivotTransform.position;
 			direction.Normalize();
 
-			if(Physics.SphereCast(cameraPivotTransform.position, cameraSphereRadius, direction,
-								  out RaycastHit hit, Mathf.Abs(_targetPositionZ), _ignoreLayers))
+			if(Physics.SphereCast(_cameraPivotTransform.position, _cameraSphereRadius, direction, out RaycastHit hit,
+								  Mathf.Abs(_targetPositionZ), _ignoreLayers) && !hit.collider.isTrigger)
 			{
-				float distance = Vector3.Distance(cameraPivotTransform.position, hit.point);
-				_targetPositionZ = -(distance - cameraCollisionOffset);
+				float distance = Vector3.Distance(_cameraPivotTransform.position, hit.point);
+				_targetPositionZ = -(distance - _cameraCollisionOffset);
 
-				if(Mathf.Abs(_targetPositionZ) < minCollisionOffset) _targetPositionZ = -minCollisionOffset;
-
-				_cameraPosition.z = Mathf.Lerp(cameraTransform.localPosition.z, _targetPositionZ, delta / 0.1f);
-				cameraTransform.localPosition = _cameraPosition;
+				if(Mathf.Abs(_targetPositionZ) < _minCollisionOffset) _targetPositionZ = -_minCollisionOffset;
 			}
+
+			_cameraPosition.z = Mathf.Lerp(_cameraTransform.localPosition.z, _targetPositionZ, delta / 0.1f);
+			_cameraTransform.localPosition = _cameraPosition;
 		}
 	}
 }

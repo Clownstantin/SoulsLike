@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public abstract class Interactable : MonoBehaviour
+	public class Interactable : MonoBehaviour
 	{
 		[SerializeField] private float _radius = 0.6f;
 		[SerializeField] private Vector3 _offset = default;
@@ -17,6 +17,8 @@ namespace SoulsLike
 			Gizmos.DrawWireSphere(transform.position + _offset, _radius);
 		}
 
-		public abstract void Interact(Action<WeaponItem> action);
+		public virtual void Interact(Action action) => action?.Invoke();
+
+		public virtual void PickUp(Action<Item> action) { }
 	}
 }

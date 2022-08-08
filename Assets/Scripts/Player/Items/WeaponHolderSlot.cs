@@ -4,11 +4,15 @@ namespace SoulsLike
 {
 	public class WeaponHolderSlot : MonoBehaviour
 	{
-		public Transform parentOverride;
-		public bool isLeftHandSlot;
-		public bool isRightHandSlot;
+		[SerializeField] private Transform _parentOverride = default;
+		[SerializeField] private bool _isLeftHandSlot = default;
+		[SerializeField] private bool _isRightHandSlot = default;
 
-		public Weapon currentWeaponModel;
+		private Weapon _currentWeaponModel = default;
+
+		public bool IsLeftHandSlot => _isLeftHandSlot;
+		public bool IsRightHandSlot => _isRightHandSlot;
+		public Weapon CurrentWeaponModel => _currentWeaponModel;
 
 		public void LoadWeaponModel(WeaponItem weaponItem)
 		{
@@ -22,24 +26,24 @@ namespace SoulsLike
 
 			Weapon weaponModel = Instantiate(weaponItem.WeaponPrefab);
 
-			if(parentOverride) weaponModel.transform.SetParent(parentOverride);
+			if(_parentOverride) weaponModel.transform.SetParent(_parentOverride);
 			else weaponModel.transform.SetParent(transform);
 
 			weaponModel.transform.localPosition = Vector3.zero;
 			weaponModel.transform.localRotation = Quaternion.identity;
 			weaponModel.transform.localScale = Vector3.one;
 
-			currentWeaponModel = weaponModel;
+			_currentWeaponModel = weaponModel;
 		}
 
 		public void DestroyWeapon()
 		{
-			if(currentWeaponModel) Destroy(currentWeaponModel.gameObject);
+			if(_currentWeaponModel) Destroy(_currentWeaponModel.gameObject);
 		}
 
 		public void UnloadWeapon()
 		{
-			if(currentWeaponModel) currentWeaponModel.gameObject.SetActive(false);
+			if(_currentWeaponModel) _currentWeaponModel.gameObject.SetActive(false);
 		}
 	}
 }

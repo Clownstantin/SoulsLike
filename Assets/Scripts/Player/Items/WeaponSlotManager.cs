@@ -28,8 +28,8 @@ namespace SoulsLike
 
 			foreach(WeaponHolderSlot weaponSlot in weaponHolderSlots)
 			{
-				if(weaponSlot.isLeftHandSlot) _leftHandSlot = weaponSlot;
-				else if(weaponSlot.isRightHandSlot) _rightHandSlot = weaponSlot;
+				if(weaponSlot.IsLeftHandSlot) _leftHandSlot = weaponSlot;
+				else if(weaponSlot.IsRightHandSlot) _rightHandSlot = weaponSlot;
 			}
 		}
 
@@ -42,8 +42,8 @@ namespace SoulsLike
 			slot.LoadWeaponModel(weaponItem);
 			_uIManager.UpdateWeaponQuickSlotsUI(weaponItem, isLeft);
 
-			if(isLeft) _leftDamageDialer = _leftHandSlot.currentWeaponModel.DamageDealer;
-			else _rightDamageDialer = _rightHandSlot.currentWeaponModel.DamageDealer;
+			if(isLeft) _leftDamageDialer = _leftHandSlot.CurrentWeaponModel.DamageDealer;
+			else _rightDamageDialer = _rightHandSlot.CurrentWeaponModel.DamageDealer;
 
 			if(weaponItem) _animator.CrossFade(handAnimationName, _crossFadeTransitionDuration);
 			else _animator.CrossFade(emptyAnimationName, _crossFadeTransitionDuration);
