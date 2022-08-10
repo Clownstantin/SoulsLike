@@ -9,5 +9,8 @@
 		OnStaminaChanged,
 		OnLeftWeaponSwitch,
 		OnRightWeaponSwitch,
+		OnPickUp,
+		OnGamePause,
+		OnGameResume,
 	}
 }

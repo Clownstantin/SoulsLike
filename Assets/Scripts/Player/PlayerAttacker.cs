@@ -4,13 +4,13 @@ namespace SoulsLike
 {
 	public class PlayerAttacker : MonoBehaviour
 	{
-		private InputHandler _inputHandler = default;
+		private PlayerInputHandler _inputHandler = default;
 		private AnimatorHandler _animatorHandler = default;
 		private WeaponSlotManager _weaponSlotManager = default;
 
 		private string _lastAttack = default;
 
-		public void Init(InputHandler inputHandler, AnimatorHandler animatorHandler, WeaponSlotManager weaponSlotManager)
+		public void Init(PlayerInputHandler inputHandler, AnimatorHandler animatorHandler, WeaponSlotManager weaponSlotManager)
 		{
 			_inputHandler = inputHandler;
 			_animatorHandler = animatorHandler;

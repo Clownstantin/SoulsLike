@@ -2,6 +2,7 @@
 
 namespace SoulsLike
 {
+	[RequireComponent(typeof(EnemyStats))]
 	public class EnemyManager : MonoBehaviour
 	{
 		private Animator _animator;

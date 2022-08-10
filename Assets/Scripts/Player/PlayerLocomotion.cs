@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
+	[RequireComponent(typeof(Rigidbody))]
 	public class PlayerLocomotion : MonoBehaviour
 	{
 		[System.Serializable]
@@ -24,7 +25,7 @@ namespace SoulsLike
 
 		[SerializeField] private MovementData _movementData = default;
 
-		private InputHandler _inputHandler = default;
+		private PlayerInputHandler _inputHandler = default;
 		private AnimatorHandler _animatorHandler = default;
 		private PlayerManager _playerManager = default;
 		private Transform _cameraObject = default;
@@ -42,7 +43,7 @@ namespace SoulsLike
 
 		[HideInInspector] public new Rigidbody rigidbody;
 
-		public void Init(PlayerManager playerManager, AnimatorHandler animatorHandler, InputHandler inputHandler)
+		public void Init(PlayerManager playerManager, AnimatorHandler animatorHandler, PlayerInputHandler inputHandler)
 		{
 			rigidbody = GetComponent<Rigidbody>();
 

@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
+	[RequireComponent(typeof(Collider))]
 	public class DamageDealer : MonoBehaviour
 	{
 		[SerializeField] private int _currentWeaponDamage = 25;

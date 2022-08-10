@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using SoulsLike.Extentions;
+using UnityEngine;
 
 namespace SoulsLike
 {
+	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerAttacker)),
+	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInputHandler))]
 	public class PlayerManager : UpdateableComponent
 	{
 		private Animator _animator = default;
 		private AnimatorHandler _animatorHandler = default;
-		private InputHandler _inputHandler = default;
+		private PlayerInputHandler _inputHandler = default;
 		private CameraHandler _cameraHandler = default;
 
 		private PlayerLocomotion _playerLocomotion = default;
@@ -30,13 +33,25 @@ namespace SoulsLike
 			_playerLocomotion = GetComponent<PlayerLocomotion>();
 			_playerAttacker = GetComponent<PlayerAttacker>();
 			_playerInventory = GetComponent<PlayerInventory>();
-			_inputHandler = GetComponent<InputHandler>();
+			_inputHandler = GetComponent<PlayerInputHandler>();
 
 			_animator = GetComponentInChildren<Animator>();
 			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
 
 			_weaponSlotManager.Init(_animator, _playerStats);
+		}
+
+		private void OnEnable()
+		{
+			this.AddListener(EventID.OnGamePause, _ => OnGamePause());
+			this.AddListener(EventID.OnGameResume, _ => OnGameResume());
+		}
+
+		private void OnDisable()
+		{
+			this.RemoveListener(EventID.OnGamePause, _ => OnGamePause());
+			this.RemoveListener(EventID.OnGameResume, _ => OnGameResume());
 		}
 
 		protected override void OnStart()
@@ -106,6 +121,18 @@ namespace SoulsLike
 			_playerInventory.AddItemToInventory(weapon);
 
 			Destroy(interactableObj.gameObject);
+		}
+
+		private void OnGamePause()
+		{
+			_animator.enabled = false;
+			_playerLocomotion.rigidbody.isKinematic = true;
+		}
+
+		private void OnGameResume()
+		{
+			_animator.enabled = true;
+			_playerLocomotion.rigidbody.isKinematic = false;
 		}
 	}
 }

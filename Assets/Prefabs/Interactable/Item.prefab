@@ -49,7 +49,7 @@ MonoBehaviour:
   _radius: 0.5
   _offset: {x: 0, y: 0.5, z: 0}
   _interactableText: Aboba
-  _weapon: {fileID: 11400000, guid: 3522d588d35ef204096a61a18fff492b, type: 2}
+  _item: {fileID: 11400000, guid: 3522d588d35ef204096a61a18fff492b, type: 2}
 --- !u!135 &7164445963958645125
 SphereCollider:
   m_ObjectHideFlags: 0

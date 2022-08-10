@@ -5,12 +5,12 @@ namespace SoulsLike
 {
 	public class PlayerInventory : MonoBehaviour
 	{
-		[Header("Weapon on start")]
+		[Header("Weapon on Start")]
 		[SerializeField] private WeaponItem _rightWeapon = default;
 		[SerializeField] private WeaponItem _leftWeapon = default;
 		[SerializeField] private WeaponItem _unarmedWeapon = default;
 
-		[Header("Weapon slots")]
+		[Header("Weapon Slots")]
 		[SerializeField] private WeaponItem[] _rightHandWeapons = default;
 		[SerializeField] private WeaponItem[] _leftHandWeapons = default;
 

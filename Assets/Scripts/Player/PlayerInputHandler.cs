@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public class InputHandler : MonoBehaviour
+	public class PlayerInputHandler : MonoBehaviour
 	{
 		private PlayerControls _inputActions = default;
 		private PlayerManager _playerManager = default;

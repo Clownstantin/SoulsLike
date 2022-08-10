@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SoulsLike.Extentions;
 using UnityEngine;
 
 namespace SoulsLike
@@ -15,37 +16,38 @@ namespace SoulsLike
 		private GameControls _gameControls = default;
 		private bool _isPaused = default;
 
+		public static GameManager Instance => s_instance;
+
 		public EventManager EventManager => _eventManager;
 		public CameraHandler CameraHandler => _cameraHandler;
 
-		public static GameManager Instance => s_instance;
-
+		#region Monobehavior
 		private void Awake()
 		{
-			s_updateableObjects = new List<IUpdateable>();
-
-			_eventManager = GetComponentInChildren<EventManager>();
-			_cameraHandler = GetComponentInChildren<CameraHandler>();
-
 			if(!s_instance)
 			{
 				s_instance = this;
 				DontDestroyOnLoad(gameObject);
 			}
 			else Destroy(gameObject);
+
+			s_updateableObjects = new List<IUpdateable>();
+
+			_eventManager = GetComponentInChildren<EventManager>();
+			_cameraHandler = GetComponentInChildren<CameraHandler>();
 		}
 
 		private void OnEnable()
 		{
 			_gameControls ??= new GameControls();
-			_gameControls.GameActions.Pause.performed += p => OnGamePause();
+			_gameControls.GameActions.Pause.performed += _ => OnPausePress();
 
 			_gameControls.Enable();
 		}
 
 		private void OnDisable()
 		{
-			_gameControls.GameActions.Pause.performed -= p => OnGamePause();
+			_gameControls.GameActions.Pause.performed -= _ => OnPausePress();
 			_gameControls.Disable();
 		}
 
@@ -54,6 +56,7 @@ namespace SoulsLike
 		private void FixedUpdate() => RunUpdate(isFixed: true);
 
 		private void LateUpdate() => RunUpdate(isLate: true);
+		#endregion
 
 		public void RegisterUpdatableObject(IUpdateable obj)
 		{
@@ -61,7 +64,7 @@ namespace SoulsLike
 			else
 			{
 				Object gameObj = (Object)obj;
-				Debug.Log($"{gameObj.name} is already registered");
+				Log.Send($"{gameObj.name} is already registered");
 			}
 		}
 
@@ -87,12 +90,20 @@ namespace SoulsLike
 			}
 		}
 
-		private void OnGamePause()
+		private void OnPausePress()
 		{
 			_isPaused = !_isPaused;
 
-			if(_isPaused) Log.Send("Game is paused");
-			else Log.Send("Game is resumed");
+			if(_isPaused)
+			{
+				this.TriggerEvent(EventID.OnGamePause);
+				Log.Send("Game is paused");
+			}
+			else
+			{
+				this.TriggerEvent(EventID.OnGameResume);
+				Log.Send("Game is resumed");
+			}
 		}
 	}
 }

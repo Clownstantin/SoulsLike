@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public class Interactable : MonoBehaviour
+	public abstract class Interactable : MonoBehaviour
 	{
 		[SerializeField] private float _radius = 0.6f;
 		[SerializeField] private Vector3 _offset = default;
