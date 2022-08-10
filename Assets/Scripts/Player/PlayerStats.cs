@@ -1,32 +1,31 @@
-﻿namespace SoulsLike
+﻿using SoulsLike.Extentions;
+
+namespace SoulsLike
 {
 	public class PlayerStats : Stats
 	{
-		private UIManager _uiManager = default;
 		private AnimatorHandler _animatorHandler = default;
 
-		public void Init(UIManager uIManager, AnimatorHandler animatorHandler)
+		public void Init(AnimatorHandler animatorHandler)
 		{
 			_animatorHandler = animatorHandler;
-			_uiManager = uIManager;
 
-			SetStat(out maxHealth, out currentHealth, healthLevel, healthMultiplier);
-			SetStat(out maxStamina, out currentStamina, staminaLevel, staminaMultiplier);
+			InitStats();
 
-			_uiManager.SetMaxHealth(maxHealth);
-			_uiManager.SetMaxStamina(maxStamina);
+			this.TriggerEvent(EventID.OnHealthInit, unitData.maxHealth);
+			this.TriggerEvent(EventID.OnStaminaInit, unitData.maxStamina);
 		}
 
 		public override void TakeDamage(int damage)
 		{
 			base.TakeDamage(damage);
-			_uiManager.SetCurrentHealth(currentHealth);
+			this.TriggerEvent(EventID.OnHealthChanged, unitData.currentHealth);
 
 			_animatorHandler.PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
 
-			if(currentHealth <= 0)
+			if(unitData.currentHealth <= 0)
 			{
-				currentHealth = 0;
+				unitData.currentHealth = 0;
 				_animatorHandler.PlayTargetAnimation(AnimationNameBase.Death, true);
 
 				//Handle Player Death
@@ -35,8 +34,8 @@
 
 		public void StaminaDrain(int drainValue)
 		{
-			currentStamina -= drainValue;
-			_uiManager.SetCurrentStamina(currentStamina);
+			unitData.currentStamina -= drainValue;
+			this.TriggerEvent(EventID.OnStaminaChanged, unitData.currentStamina);
 		}
 	}
 }

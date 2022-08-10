@@ -83,15 +83,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 367f5d9fb5abf424193633cf1274545e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalCamera: {fileID: 0}
-  _movementSpeed: 5
-  _walkingSpeed: 1
-  _sprintSpeed: 7
-  _rotationSpeed: 10
-  _fallingSpeed: 80
-  _groundDetectionRayStart: 0.5
-  _minDistanceToFall: 1
-  _groundDirectionRayDistance: 0.2
+  _movementData:
+    normalCamera: {fileID: 0}
+    movementSpeed: 5
+    walkingSpeed: 1
+    sprintSpeed: 7
+    rotationSpeed: 10
+    fallingSpeed: 60
+    groundDetectionRayStart: 0.5
+    minDistanceToFall: 1
+    groundDirectionRayDistance: 0.2
   rigidbody: {fileID: 0}
 --- !u!114 &206495907
 MonoBehaviour:
@@ -105,10 +106,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5871ea2973a1a8499806d15fe572cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthLevel: 10
-  healthMultiplier: 10
-  staminaLevel: 10
-  staminaMultiplier: 10
+  unitData:
+    healthLevel: 10
+    healthMultiplier: 10
+    staminaLevel: 10
+    staminaMultiplier: 10
+    maxHealth: 0
+    currentHealth: 0
+    maxStamina: 0
+    currentStamina: 0
 --- !u!114 &206495904
 MonoBehaviour:
   m_ObjectHideFlags: 0

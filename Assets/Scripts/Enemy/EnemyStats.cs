@@ -9,9 +9,7 @@ namespace SoulsLike
 		public void Init(Animator animator)
 		{
 			_animator = animator;
-
-			SetStat(out maxHealth, out currentHealth, healthLevel, healthMultiplier);
-			SetStat(out maxStamina, out currentStamina, staminaLevel, staminaMultiplier);
+			InitStats();
 		}
 
 		public override void TakeDamage(int damage)
@@ -20,9 +18,9 @@ namespace SoulsLike
 
 			_animator.Play(AnimationNameBase.DamageTaken);
 
-			if(currentHealth <= 0)
+			if(unitData.currentHealth <= 0)
 			{
-				currentHealth = 0;
+				unitData.currentHealth = 0;
 				_animator.Play(AnimationNameBase.Death);
 
 				//Handle Enemy Death

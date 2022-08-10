@@ -4,17 +4,25 @@ namespace SoulsLike
 {
 	public class PlayerLocomotion : MonoBehaviour
 	{
-		[SerializeField] private Camera normalCamera = default;
-		[Header("Movement Stats")]
-		[SerializeField] private float _movementSpeed = 5f;
-		[SerializeField] private float _walkingSpeed = 1f;
-		[SerializeField] private float _sprintSpeed = 7f;
-		[SerializeField] private float _rotationSpeed = 10f;
-		[SerializeField] private float _fallingSpeed = 45f;
-		[Header("Ground & Air Detection Stats")]
-		[SerializeField] private float _groundDetectionRayStart = 0.5f;
-		[SerializeField] private float _minDistanceToFall = 1f;
-		[SerializeField] private float _groundDirectionRayDistance = 0.2f;
+		[System.Serializable]
+		public struct MovementData
+		{
+			public Camera normalCamera;
+
+			[Header("Movement Stats")]
+			public float movementSpeed;
+			public float walkingSpeed;
+			public float sprintSpeed;
+			public float rotationSpeed;
+			public float fallingSpeed;
+
+			[Header("Ground & Air Detection Stats")]
+			public float groundDetectionRayStart;
+			public float minDistanceToFall;
+			public float groundDirectionRayDistance;
+		}
+
+		[SerializeField] private MovementData _movementData = default;
 
 		private InputHandler _inputHandler = default;
 		private AnimatorHandler _animatorHandler = default;
@@ -59,16 +67,16 @@ namespace SoulsLike
 			_moveDirection.Normalize();
 			_moveDirection.y = 0;
 
-			float speed = _movementSpeed;
+			float speed = _movementData.movementSpeed;
 
 			if(_inputHandler.SprintFlag && _inputHandler.MoveAmount > 0.5f)
 			{
-				speed = _sprintSpeed;
+				speed = _movementData.sprintSpeed;
 				_isSprinting = true;
 			}
 			else
 			{
-				if(_inputHandler.MoveAmount < 0.5f) speed = _walkingSpeed;
+				if(_inputHandler.MoveAmount < 0.5f) speed = _movementData.walkingSpeed;
 				_isSprinting = false;
 			}
 
@@ -106,27 +114,29 @@ namespace SoulsLike
 		public void HandleFalling(float delta)
 		{
 			_isGrounded = false;
+			float fallingSpeed = _movementData.fallingSpeed;
+			float minDistToFall = _movementData.minDistanceToFall;
 
 			Vector3 origin = _myTransform.position;
-			origin.y += _groundDetectionRayStart;
+			origin.y += _movementData.groundDetectionRayStart;
 
 			if(Physics.Raycast(origin, _myTransform.forward, out _, 0.4f))
 				_moveDirection = Vector3.zero;
 
 			if(_isInAir)
 			{
-				rigidbody.AddForce(Vector3.down * _fallingSpeed);
-				rigidbody.AddForce(_moveDirection * _fallingSpeed / 10f);
+				rigidbody.AddForce(Vector3.down * fallingSpeed);
+				rigidbody.AddForce(_moveDirection * fallingSpeed / 10f);
 			}
 
 			Vector3 direction = _moveDirection;
 			direction.Normalize();
-			origin += direction * _groundDirectionRayDistance;
+			origin += direction * _movementData.groundDirectionRayDistance;
 
 			_targetPosition = _myTransform.position;
-			Debug.DrawRay(origin, Vector3.down * _minDistanceToFall, Color.red, 0.1f, false);
+			Debug.DrawRay(origin, Vector3.down * minDistToFall, Color.red, 0.1f, false);
 
-			if(Physics.Raycast(origin, Vector3.down, out RaycastHit hit, _minDistanceToFall, _ignoreForGroundCheck))
+			if(Physics.Raycast(origin, Vector3.down, out RaycastHit hit, minDistToFall, _ignoreForGroundCheck))
 			{
 				_normalVector = hit.normal;
 				Vector3 targetPos = hit.point;
@@ -160,7 +170,7 @@ namespace SoulsLike
 
 					Vector3 velocity = rigidbody.velocity;
 					velocity.Normalize();
-					rigidbody.velocity = velocity * (_movementSpeed * 0.5f);
+					rigidbody.velocity = velocity * (_movementData.movementSpeed * 0.5f);
 					_isInAir = true;
 				}
 			}
@@ -182,7 +192,7 @@ namespace SoulsLike
 
 			if(targetDir == Vector3.zero) targetDir = _myTransform.forward;
 
-			float rotSpeed = _rotationSpeed;
+			float rotSpeed = _movementData.rotationSpeed;
 			Quaternion lookRotation = Quaternion.LookRotation(targetDir);
 			Quaternion targetRotation = Quaternion.Slerp(_myTransform.rotation, lookRotation, rotSpeed * delta);
 

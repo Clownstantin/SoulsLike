@@ -48,10 +48,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f0904ab3a0d315459f6d234bf9134dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthLevel: 10
-  healthMultiplier: 10
-  staminaLevel: 10
-  staminaMultiplier: 10
+  unitData:
+    healthLevel: 10
+    healthMultiplier: 10
+    staminaLevel: 10
+    staminaMultiplier: 10
+    maxHealth: 0
+    currentHealth: 0
+    maxStamina: 0
+    currentStamina: 0
 --- !u!114 &2638573350402706960
 MonoBehaviour:
   m_ObjectHideFlags: 0

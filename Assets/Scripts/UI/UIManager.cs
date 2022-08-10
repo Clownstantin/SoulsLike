@@ -1,3 +1,4 @@
+using SoulsLike.Extentions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,27 +13,15 @@ namespace SoulsLike
 		[SerializeField] private Image _leftWeaponIcon = default;
 		[SerializeField] private Image _rightWeaponIcon = default;
 
-		public void UpdateWeaponQuickSlotsUI(WeaponItem weapon, bool isLeft = false)
+		private void OnEnable() => Subscribe();
+
+		private void OnDisable() => Unsubscribe();
+
+		private void OnWeaponSwitch(WeaponItem weapon, bool isLeft = false)
 		{
 			if(isLeft) SetWeaponSpriteToImage(_leftWeaponIcon, weapon);
 			else SetWeaponSpriteToImage(_rightWeaponIcon, weapon);
 		}
-
-		public void SetMaxHealth(int maxHealth)
-		{
-			_healthBarSlider.maxValue = maxHealth;
-			_healthBarSlider.value = maxHealth;
-		}
-
-		public void SetMaxStamina(int maxStamina)
-		{
-			_staminaBarSlider.maxValue = maxStamina;
-			_staminaBarSlider.value = maxStamina;
-		}
-
-		public void SetCurrentHealth(int currentHealth) => _healthBarSlider.value = currentHealth;
-
-		public void SetCurrentStamina(int currentStamina) => _staminaBarSlider.value = currentStamina;
 
 		private void SetWeaponSpriteToImage(Image image, WeaponItem weapon)
 		{
@@ -46,6 +35,42 @@ namespace SoulsLike
 				image.sprite = weapon.itemIcon;
 				image.enabled = true;
 			}
+		}
+
+		private void OnHealthInit(int maxHealth)
+		{
+			_healthBarSlider.maxValue = maxHealth;
+			_healthBarSlider.value = maxHealth;
+		}
+
+		private void OnStaminaInit(int maxStamina)
+		{
+			_staminaBarSlider.maxValue = maxStamina;
+			_staminaBarSlider.value = maxStamina;
+		}
+
+		private void OnHealthChanged(int currentHealth) => _healthBarSlider.value = currentHealth;
+
+		private void OnStaminaChanged(int currentStamina) => _staminaBarSlider.value = currentStamina;
+
+		private void Subscribe()
+		{
+			this.AddListener(EventID.OnHealthInit, h => OnHealthInit((int)h));
+			this.AddListener(EventID.OnStaminaInit, s => OnStaminaInit((int)s));
+			this.AddListener(EventID.OnHealthChanged, h => OnHealthChanged((int)h));
+			this.AddListener(EventID.OnStaminaChanged, s => OnStaminaChanged((int)s));
+			this.AddListener(EventID.OnLeftWeaponSwitch, w => OnWeaponSwitch((WeaponItem)w, true));
+			this.AddListener(EventID.OnRightWeaponSwitch, w => OnWeaponSwitch((WeaponItem)w));
+		}
+
+		private void Unsubscribe()
+		{
+			this.RemoveListener(EventID.OnHealthInit, h => OnHealthInit((int)h));
+			this.RemoveListener(EventID.OnStaminaInit, s => OnStaminaInit((int)s));
+			this.RemoveListener(EventID.OnHealthChanged, h => OnHealthChanged((int)h));
+			this.RemoveListener(EventID.OnStaminaChanged, s => OnStaminaChanged((int)s));
+			this.RemoveListener(EventID.OnLeftWeaponSwitch, w => OnWeaponSwitch((WeaponItem)w, true));
+			this.RemoveListener(EventID.OnRightWeaponSwitch, w => OnWeaponSwitch((WeaponItem)w));
 		}
 	}
 }

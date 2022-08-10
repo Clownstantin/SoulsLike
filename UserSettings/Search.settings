@@ -10,7 +10,7 @@ scopes = {
 	"last_search.8040E7BB" = "exec"
 	"OpenInspectorPreview.8040E7BB" = "0"
 	"currentGroup.8040E7BB" = "all"
-	"last_search.DA949528" = "ref:Assets/Models/Weapons/Mordau/scene.bin"
+	"last_search.DA949528" = "exec"
 	"OpenInspectorPreview.DA949528" = "0"
 	"currentGroup.DA949528" = "all"
 	"last_search.2138236A" = ""
@@ -65,6 +65,7 @@ providers = {
 objectSelectors = {
 }
 recentSearches = [
+	"s"
 	"ref:Assets/Models/Weapons/Mordau/scene.bin"
 ]
 searchItemFavorites = [

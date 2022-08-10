@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SoulsLike.Extentions;
+using UnityEngine;
 
 namespace SoulsLike
 {
@@ -15,13 +16,11 @@ namespace SoulsLike
 		private DamageDealer _rightDamageDialer = default;
 
 		private Animator _animator = default;
-		private UIManager _uIManager = default;
 		private PlayerStats _playerStats = default;
 
-		public void Init(Animator animator, UIManager uIManager, PlayerStats playerStats)
+		public void Init(Animator animator, PlayerStats playerStats)
 		{
 			_animator = animator;
-			_uIManager = uIManager;
 			_playerStats = playerStats;
 
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
@@ -40,10 +39,17 @@ namespace SoulsLike
 			string emptyAnimationName = isLeft ? AnimationNameBase.LeftArmEmpty : AnimationNameBase.RightArmEmpty;
 
 			slot.LoadWeaponModel(weaponItem);
-			_uIManager.UpdateWeaponQuickSlotsUI(weaponItem, isLeft);
 
-			if(isLeft) _leftDamageDialer = _leftHandSlot.CurrentWeaponModel.DamageDealer;
-			else _rightDamageDialer = _rightHandSlot.CurrentWeaponModel.DamageDealer;
+			if(isLeft)
+			{
+				this.TriggerEvent(EventID.OnLeftWeaponSwitch, weaponItem);
+				_leftDamageDialer = _leftHandSlot.CurrentWeaponModel.DamageDealer;
+			}
+			else
+			{
+				this.TriggerEvent(EventID.OnRightWeaponSwitch, weaponItem);
+				_rightDamageDialer = _rightHandSlot.CurrentWeaponModel.DamageDealer;
+			}
 
 			if(weaponItem) _animator.CrossFade(handAnimationName, _crossFadeTransitionDuration);
 			else _animator.CrossFade(emptyAnimationName, _crossFadeTransitionDuration);

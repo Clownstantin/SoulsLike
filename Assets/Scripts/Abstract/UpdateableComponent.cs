@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SoulsLike.Extentions;
+using UnityEngine;
 
 namespace SoulsLike
 {
@@ -6,7 +7,7 @@ namespace SoulsLike
 	{
 		private void Start()
 		{
-			GameManager.Register(this);
+			this.RegisterUpdatableObject(this);
 			OnStart();
 		}
 
@@ -18,6 +19,6 @@ namespace SoulsLike
 
 		public virtual void OnLateUpdate(float delta) { }
 
-		private void OnDestroy() => GameManager.Unregister(this);
+		private void OnDestroy() => this.UnregisterUpdatableObject(this);
 	}
 }

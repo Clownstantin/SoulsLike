@@ -4,8 +4,6 @@ namespace SoulsLike
 {
 	public class PlayerManager : UpdateableComponent
 	{
-		[SerializeField] private UIManager _uiManager = default;
-
 		private Animator _animator = default;
 		private AnimatorHandler _animatorHandler = default;
 		private InputHandler _inputHandler = default;
@@ -38,20 +36,20 @@ namespace SoulsLike
 			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
 
-			_weaponSlotManager.Init(_animator, _uiManager, _playerStats);
+			_weaponSlotManager.Init(_animator, _playerStats);
 		}
 
 		protected override void OnStart()
 		{
 			_myTransform = transform;
-			_cameraHandler = CameraHandler.Instance;
+			_cameraHandler = GameManager.Instance.CameraHandler;
 
 			_playerLocomotion.Init(this, _animatorHandler, _inputHandler);
 			_playerAttacker.Init(_inputHandler, _animatorHandler, _weaponSlotManager);
 			_playerInventory.Init(_weaponSlotManager);
 			_inputHandler.Init(this, _playerAttacker, _playerInventory);
 			_animatorHandler.Init(this, _playerLocomotion, _animator);
-			_playerStats.Init(_uiManager, _animatorHandler);
+			_playerStats.Init(_animatorHandler);
 		}
 
 		public override void OnUpdate(float delta)
