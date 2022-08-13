@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerAttacker)),
+	[RequireComponent(typeof(IUnitStats), typeof(PlayerLocomotion), typeof(PlayerAttacker)),
 	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInputHandler))]
 	public class PlayerManager : UpdateableComponent
 	{

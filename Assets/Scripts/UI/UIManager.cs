@@ -17,23 +17,24 @@ namespace SoulsLike
 
 		private void OnDisable() => Unsubscribe();
 
-		private void OnWeaponSwitch(WeaponItem weapon, bool isLeft = false)
+		private void OnWeaponSwitch(Item weapon, bool isLeft = false)
 		{
 			if(isLeft) SetWeaponSpriteToImage(_leftWeaponIcon, weapon);
 			else SetWeaponSpriteToImage(_rightWeaponIcon, weapon);
 		}
 
-		private void SetWeaponSpriteToImage(Image image, WeaponItem weapon)
+		private void SetWeaponSpriteToImage(Image image, Item weapon)
 		{
-			if(weapon.IsUnarmed)
+			if(weapon.ItemIcon)
 			{
-				image.sprite = null;
-				image.enabled = false;
+				image.sprite = weapon.ItemIcon;
+				image.enabled = true;
+
 			}
 			else
 			{
-				image.sprite = weapon.itemIcon;
-				image.enabled = true;
+				image.sprite = null;
+				image.enabled = false;
 			}
 		}
 
@@ -59,8 +60,8 @@ namespace SoulsLike
 			this.AddListener(EventID.OnStaminaInit, s => OnStaminaInit((int)s));
 			this.AddListener(EventID.OnHealthChanged, h => OnHealthChanged((int)h));
 			this.AddListener(EventID.OnStaminaChanged, s => OnStaminaChanged((int)s));
-			this.AddListener(EventID.OnLeftWeaponSwitch, w => OnWeaponSwitch((WeaponItem)w, true));
-			this.AddListener(EventID.OnRightWeaponSwitch, w => OnWeaponSwitch((WeaponItem)w));
+			this.AddListener(EventID.OnLeftWeaponSwitch, w => OnWeaponSwitch((Item)w, true));
+			this.AddListener(EventID.OnRightWeaponSwitch, w => OnWeaponSwitch((Item)w));
 		}
 
 		private void Unsubscribe()
@@ -69,8 +70,8 @@ namespace SoulsLike
 			this.RemoveListener(EventID.OnStaminaInit, s => OnStaminaInit((int)s));
 			this.RemoveListener(EventID.OnHealthChanged, h => OnHealthChanged((int)h));
 			this.RemoveListener(EventID.OnStaminaChanged, s => OnStaminaChanged((int)s));
-			this.RemoveListener(EventID.OnLeftWeaponSwitch, w => OnWeaponSwitch((WeaponItem)w, true));
-			this.RemoveListener(EventID.OnRightWeaponSwitch, w => OnWeaponSwitch((WeaponItem)w));
+			this.RemoveListener(EventID.OnLeftWeaponSwitch, w => OnWeaponSwitch((Item)w, true));
+			this.RemoveListener(EventID.OnRightWeaponSwitch, w => OnWeaponSwitch((Item)w));
 		}
 	}
 }

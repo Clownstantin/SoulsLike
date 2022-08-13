@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee515b4834c4d9944bf9d455fe29212f, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ab54e2dcc918e949bb1f0de952ca570, type: 3}
   m_Name: Medival Sword
   m_EditorClassIdentifier: 
-  itemIcon: {fileID: 21300000, guid: 15427aeed417df240a7a579e137d8e1e, type: 3}
-  itemName: Medival Sword
+  _itemIcon: {fileID: 21300000, guid: 15427aeed417df240a7a579e137d8e1e, type: 3}
+  _itemName: Medival Sword
   _weaponPrefab: {fileID: 4091475822040298729, guid: 894e4d9e251f0814187c97a54c0374ad, type: 3}
   _isUnarmed: 0
   _baseStamina: 20

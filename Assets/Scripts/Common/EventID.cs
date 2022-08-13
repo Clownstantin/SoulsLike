@@ -12,5 +12,6 @@
 		OnPickUp,
 		OnGamePause,
 		OnGameResume,
+		Length
 	}
 }

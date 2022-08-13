@@ -41,7 +41,7 @@ namespace SoulsLike
 			else HandleWeaponLoad(ref _currentRightWeaponIndex, ref _rightWeapon, _rightHandWeapons);
 		}
 
-		public void AddItemToInventory(Item weaponItem) => _itemInventory.Add(weaponItem);
+		public void AddItemToInventory(Item item) => _itemInventory.Add(item);
 
 		private void HandleWeaponLoad(ref int index, ref WeaponItem weapon, WeaponItem[] targetWeapons, bool isLeft = false)
 		{

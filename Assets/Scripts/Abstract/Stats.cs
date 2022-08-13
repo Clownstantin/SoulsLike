@@ -2,23 +2,11 @@
 
 namespace SoulsLike
 {
-	public abstract class Stats : MonoBehaviour
+	public abstract class Stats : MonoBehaviour, IUnitStats
 	{
-		[System.Serializable]
-		public struct UnitData
-		{
-			public int healthLevel;
-			public int healthMultiplier;
-			public int staminaLevel;
-			public int staminaMultiplier;
-
-			[HideInInspector] public int maxHealth;
-			[HideInInspector] public int currentHealth;
-			[HideInInspector] public int maxStamina;
-			[HideInInspector] public int currentStamina;
-		}
-
 		[SerializeField] protected UnitData unitData = default;
+
+		public virtual void StaminaDrain(int drain) { }
 
 		public virtual void TakeDamage(int damage) => unitData.currentHealth -= damage;
 

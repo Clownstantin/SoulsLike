@@ -32,7 +32,7 @@ namespace SoulsLike
 			}
 		}
 
-		public void StaminaDrain(int drainValue)
+		public override void StaminaDrain(int drainValue)
 		{
 			unitData.currentStamina -= drainValue;
 			this.TriggerEvent(EventID.OnStaminaChanged, unitData.currentStamina);

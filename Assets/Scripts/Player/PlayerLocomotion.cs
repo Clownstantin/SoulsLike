@@ -5,24 +5,6 @@ namespace SoulsLike
 	[RequireComponent(typeof(Rigidbody))]
 	public class PlayerLocomotion : MonoBehaviour
 	{
-		[System.Serializable]
-		public struct MovementData
-		{
-			public Camera normalCamera;
-
-			[Header("Movement Stats")]
-			public float movementSpeed;
-			public float walkingSpeed;
-			public float sprintSpeed;
-			public float rotationSpeed;
-			public float fallingSpeed;
-
-			[Header("Ground & Air Detection Stats")]
-			public float groundDetectionRayStart;
-			public float minDistanceToFall;
-			public float groundDirectionRayDistance;
-		}
-
 		[SerializeField] private MovementData _movementData = default;
 
 		private PlayerInputHandler _inputHandler = default;
@@ -41,7 +23,7 @@ namespace SoulsLike
 		private bool _isInAir = default;
 		private float _inAirTimer = default;
 
-		[HideInInspector] public new Rigidbody rigidbody;
+		[HideInInspector] public new Rigidbody rigidbody = default;
 
 		public void Init(PlayerManager playerManager, AnimatorHandler animatorHandler, PlayerInputHandler inputHandler)
 		{

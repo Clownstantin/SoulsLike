@@ -8,7 +8,7 @@ namespace SoulsLike
 	{
 		private Dictionary<EventID, Action<object>> _listeners = default;
 
-		private void Awake() => _listeners = new Dictionary<EventID, Action<object>>();
+		private void Awake() => _listeners = new Dictionary<EventID, Action<object>>((int)EventID.Length);
 
 		private void OnDestroy() => _listeners.Clear();
 

@@ -4,24 +4,6 @@ namespace SoulsLike
 {
 	public class CameraHandler : MonoBehaviour
 	{
-		[System.Serializable]
-		public struct CameraData
-		{
-			public Transform cameraTransform;
-			public Transform cameraPivotTransform;
-
-			[Header("Movement")]
-			public float lookSpeed;
-			public float followSpeed;
-			public float pivotSpeed;
-			public float clampPivot;
-
-			[Header("Collision Detection")]
-			public float cameraSphereRadius;
-			public float cameraCollisionOffset;
-			public float minCollisionOffset;
-		}
-
 		[SerializeField] private CameraData _cameraData = default;
 
 		private Transform _myTransform = default;

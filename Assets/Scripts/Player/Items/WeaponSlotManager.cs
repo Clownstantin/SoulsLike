@@ -16,9 +16,9 @@ namespace SoulsLike
 		private DamageDealer _rightDamageDialer = default;
 
 		private Animator _animator = default;
-		private PlayerStats _playerStats = default;
+		private IUnitStats _playerStats = default;
 
-		public void Init(Animator animator, PlayerStats playerStats)
+		public void Init(Animator animator, IUnitStats playerStats)
 		{
 			_animator = animator;
 			_playerStats = playerStats;

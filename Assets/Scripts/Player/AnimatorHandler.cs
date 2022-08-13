@@ -4,16 +4,16 @@ namespace SoulsLike
 {
 	public class AnimatorHandler : MonoBehaviour
 	{
-		private Animator _animator;
-		private PlayerManager _playerManager;
-		private PlayerLocomotion _playerLocomotion;
+		private Animator _animator = default;
+		private PlayerManager _playerManager = default;
+		private PlayerLocomotion _playerLocomotion = default;
 
-		private int _verticalHash;
-		private int _horizontalHash;
-		private int _isInteractingHash;
-		private int _canDoComboHash;
+		private int _verticalHash = default;
+		private int _horizontalHash = default;
+		private int _isInteractingHash = default;
+		private int _canDoComboHash = default;
 
-		private bool _canRotate;
+		private bool _canRotate = default;
 
 		private const string Vertical = nameof(Vertical);
 		private const string Horizontal = nameof(Horizontal);

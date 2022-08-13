@@ -9,17 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee515b4834c4d9944bf9d455fe29212f, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ab54e2dcc918e949bb1f0de952ca570, type: 3}
   m_Name: Unarmed
   m_EditorClassIdentifier: 
   itemIcon: {fileID: 0}
   itemName: Unarmed
   _weaponPrefab: {fileID: 905578269431394207, guid: c805e4c5c0988344fbf5e6f8b2eb4454, type: 3}
   _isUnarmed: 1
+  _baseStamina: 0
+  _lightAttackMultiplier: 1
+  _heavyAttackMultiplier: 2
   _rightHandAnimation: RightArmEmpty
   _leftHandAnimation: LeftArmEmpty
   _oneHandedLightAttack_01: OH_LightAttack_01
   _oneHandedLightAttack_02: OH_LightAttack_02
   _oneHandedHeavyAttack_01: OH_HeavyAttack_01
   _oneHandedHeavyAttack_02: OH_HeavyAttack_02
-  _baseStamina: 0

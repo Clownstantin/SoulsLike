@@ -8,7 +8,7 @@ namespace SoulsLike
 	{
 		private static GameManager s_instance = default;
 
-		private List<IUpdateable> s_updateableObjects = default;
+		private List<IUpdateable> _updateableObjects = default;
 
 		private EventManager _eventManager = default;
 		private CameraHandler _cameraHandler = default;
@@ -31,7 +31,7 @@ namespace SoulsLike
 			}
 			else Destroy(gameObject);
 
-			s_updateableObjects = new List<IUpdateable>();
+			_updateableObjects = new List<IUpdateable>();
 
 			_eventManager = GetComponentInChildren<EventManager>();
 			_cameraHandler = GetComponentInChildren<CameraHandler>();
@@ -60,7 +60,7 @@ namespace SoulsLike
 
 		public void RegisterUpdatableObject(IUpdateable obj)
 		{
-			if(!s_updateableObjects.Contains(obj)) s_updateableObjects.Add(obj);
+			if(!_updateableObjects.Contains(obj)) _updateableObjects.Add(obj);
 			else
 			{
 				Object gameObj = (Object)obj;
@@ -70,18 +70,18 @@ namespace SoulsLike
 
 		public void UnregisterUpdatableObject(IUpdateable obj)
 		{
-			if(s_updateableObjects.Contains(obj)) s_updateableObjects.Remove(obj);
+			if(_updateableObjects.Contains(obj)) _updateableObjects.Remove(obj);
 		}
 
 		private void RunUpdate(bool isFixed = false, bool isLate = false)
 		{
-			if(!_isPaused && s_updateableObjects != null)
+			if(!_isPaused && _updateableObjects != null)
 			{
 				float delta = isFixed ? Time.fixedDeltaTime : Time.deltaTime;
 
-				for(int i = s_updateableObjects.Count - 1; i >= 0; i--)
+				for(int i = _updateableObjects.Count - 1; i >= 0; i--)
 				{
-					UpdateableComponent updateable = (UpdateableComponent)s_updateableObjects[i];
+					UpdateableComponent updateable = (UpdateableComponent)_updateableObjects[i];
 
 					if(isFixed) updateable.OnFixedUpdate(delta);
 					else if(isLate) updateable.OnLateUpdate(delta);
