@@ -8,6 +8,10 @@ namespace SoulsLike
 		[Header("")]
 		[SerializeField] private Item _item = default;
 
-		public override void PickUp(Action<Item> action) => action?.Invoke(_item);
+		public override void PickUp(Action<Item> action)
+		{
+			action?.Invoke(_item);
+			Destroy(gameObject);
+		}
 	}
 }

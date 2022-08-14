@@ -9,7 +9,6 @@ namespace SoulsLike
 
 		private PlayerInputHandler _inputHandler = default;
 		private AnimatorHandler _animatorHandler = default;
-		private PlayerManager _playerManager = default;
 		private Transform _cameraObject = default;
 		private Transform _myTransform = default;
 
@@ -25,13 +24,13 @@ namespace SoulsLike
 
 		[HideInInspector] public new Rigidbody rigidbody = default;
 
-		public void Init(PlayerManager playerManager, AnimatorHandler animatorHandler, PlayerInputHandler inputHandler)
+		public LayerMask IgnoreForGroundCheck => _ignoreForGroundCheck;
+
+		public void Init(AnimatorHandler animatorHandler, PlayerInputHandler inputHandler)
 		{
 			rigidbody = GetComponent<Rigidbody>();
 
 			_inputHandler = inputHandler;
-			_playerManager = playerManager;
-
 			_animatorHandler = animatorHandler;
 
 			_cameraObject = Camera.main.transform;
@@ -43,12 +42,8 @@ namespace SoulsLike
 
 		public void HandleMovement(float delta)
 		{
-			if(_inputHandler.RollFlag || _playerManager.IsInteracting) return;
-
-			_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
-			_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
-			_moveDirection.Normalize();
-			_moveDirection.y = 0;
+			if(_inputHandler.RollFlag) return;
+			HandleMoveDirection();
 
 			float speed = _movementData.movementSpeed;
 
@@ -74,31 +69,25 @@ namespace SoulsLike
 
 		public void HandleRollingAndSprinting()
 		{
-			if(_playerManager.IsInteracting) return;
+			if(!_inputHandler.RollFlag) return;
+			HandleMoveDirection();
 
-			if(_inputHandler.RollFlag)
+			if(_inputHandler.MoveAmount > 0)
 			{
-				_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
-				_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
-
-				if(_inputHandler.MoveAmount > 0)
-				{
-					_animatorHandler.PlayTargetAnimation(AnimationNameBase.Roll, true);
-					_moveDirection.y = 0;
-					Quaternion rollRotation = Quaternion.LookRotation(_moveDirection);
-					_myTransform.rotation = rollRotation;
-				}
-				else _animatorHandler.PlayTargetAnimation(AnimationNameBase.Stepback, true);
+				_animatorHandler.PlayTargetAnimation(AnimationNameBase.Roll, true);
+				_myTransform.rotation = Quaternion.LookRotation(_moveDirection);
 			}
+			else _animatorHandler.PlayTargetAnimation(AnimationNameBase.Stepback, true);
 		}
 
 		public void HandleInAirTimer(float delta) => _inAirTimer += _isInAir ? delta : 0;
 
-		public void HandleFalling(float delta)
+		public void HandleFalling(float delta, bool isInteracting)
 		{
 			_isGrounded = false;
 			float fallingSpeed = _movementData.fallingSpeed;
 			float minDistToFall = _movementData.minDistanceToFall;
+			float moveSpeed = _movementData.movementSpeed;
 
 			Vector3 origin = _myTransform.position;
 			origin.y += _movementData.groundDetectionRayStart;
@@ -112,11 +101,9 @@ namespace SoulsLike
 				rigidbody.AddForce(_moveDirection * fallingSpeed / 10f);
 			}
 
-			Vector3 direction = _moveDirection;
-			direction.Normalize();
-			origin += direction * _movementData.groundDirectionRayDistance;
-
+			origin += _moveDirection * _movementData.groundDirectionRayDistance;
 			_targetPosition = _myTransform.position;
+
 			Debug.DrawRay(origin, Vector3.down * minDistToFall, Color.red, 0.1f, false);
 
 			if(Physics.Raycast(origin, Vector3.down, out RaycastHit hit, minDistToFall, _ignoreForGroundCheck))
@@ -146,19 +133,20 @@ namespace SoulsLike
 			else
 			{
 				if(_isGrounded) _isGrounded = false;
+				_targetPosition += delta * moveSpeed * _myTransform.forward;
 
 				if(!_isInAir)
 				{
-					if(!_playerManager.IsInteracting) _animatorHandler.PlayTargetAnimation(AnimationNameBase.Fall, true);
+					if(!isInteracting) _animatorHandler.PlayTargetAnimation(AnimationNameBase.Fall, true);
 
 					Vector3 velocity = rigidbody.velocity;
 					velocity.Normalize();
-					rigidbody.velocity = velocity * (_movementData.movementSpeed * 0.5f);
+					rigidbody.velocity = velocity * (moveSpeed * 0.5f);
 					_isInAir = true;
 				}
 			}
 
-			if(_playerManager.IsInteracting || _inputHandler.MoveAmount > 0)
+			if(isInteracting || _inputHandler.MoveAmount > 0)
 				_myTransform.position = Vector3.Lerp(_myTransform.position, _targetPosition, delta / 0.1f);
 			else
 				_myTransform.position = _targetPosition;
@@ -166,20 +154,23 @@ namespace SoulsLike
 
 		private void HandleRotation(float delta)
 		{
-			float moveOverride = _inputHandler.MoveAmount;
+			HandleMoveDirection();
 
-			Vector3 targetDir = _cameraObject.forward * _inputHandler.Vertical;
-			targetDir += _cameraObject.right * _inputHandler.Horizontal;
-			targetDir.Normalize();
-			targetDir.y = 0;
-
-			if(targetDir == Vector3.zero) targetDir = _myTransform.forward;
+			if(_moveDirection == Vector3.zero) _moveDirection = _myTransform.forward;
 
 			float rotSpeed = _movementData.rotationSpeed;
-			Quaternion lookRotation = Quaternion.LookRotation(targetDir);
+			Quaternion lookRotation = Quaternion.LookRotation(_moveDirection);
 			Quaternion targetRotation = Quaternion.Slerp(_myTransform.rotation, lookRotation, rotSpeed * delta);
 
 			_myTransform.rotation = targetRotation;
+		}
+
+		private void HandleMoveDirection()
+		{
+			_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
+			_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
+			_moveDirection.Normalize();
+			_moveDirection.y = 0;
 		}
 	}
 }

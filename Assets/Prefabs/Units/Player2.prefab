@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 206495904}
   - component: {fileID: 206495906}
   - component: {fileID: 206495905}
+  - component: {fileID: 5103990756444194839}
   - component: {fileID: 206495903}
   - component: {fileID: 206495902}
   - component: {fileID: 206495901}
@@ -127,7 +128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b3f457934b8fdd41bcdb2678fd2a337, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _colliderHeight: 1.5
 --- !u!114 &206495906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,6 +161,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 556285a45f7b2a74c9b9c621304e6ddf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5103990756444194839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8923322972679739398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d051372375d1a7468e2deb628d550fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _checkRadius: 0.5
+  _checkDistance: 2
 --- !u!114 &206495903
 MonoBehaviour:
   m_ObjectHideFlags: 0

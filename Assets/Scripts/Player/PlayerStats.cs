@@ -4,12 +4,8 @@ namespace SoulsLike
 {
 	public class PlayerStats : Stats
 	{
-		private AnimatorHandler _animatorHandler = default;
-
-		public void Init(AnimatorHandler animatorHandler)
+		public void Init()
 		{
-			_animatorHandler = animatorHandler;
-
 			InitStats();
 
 			this.TriggerEvent(EventID.OnHealthInit, unitData.maxHealth);
@@ -21,12 +17,10 @@ namespace SoulsLike
 			base.TakeDamage(damage);
 			this.TriggerEvent(EventID.OnHealthChanged, unitData.currentHealth);
 
-			_animatorHandler.PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
-
 			if(unitData.currentHealth <= 0)
 			{
 				unitData.currentHealth = 0;
-				_animatorHandler.PlayTargetAnimation(AnimationNameBase.Death, true);
+				this.TriggerEvent(EventID.OnPlayerDeath);
 
 				//Handle Player Death
 			}

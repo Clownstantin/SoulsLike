@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+﻿using SoulsLike.Extentions;
+using UnityEngine;
 
 namespace SoulsLike
 {
 	public class AnimatorHandler : MonoBehaviour
 	{
 		private Animator _animator = default;
-		private PlayerManager _playerManager = default;
 		private PlayerLocomotion _playerLocomotion = default;
 
 		private int _verticalHash = default;
@@ -14,18 +14,25 @@ namespace SoulsLike
 		private int _canDoComboHash = default;
 
 		private bool _canRotate = default;
-
-		private const string Vertical = nameof(Vertical);
-		private const string Horizontal = nameof(Horizontal);
-
-		public const string IsInteracting = nameof(IsInteracting);
-		public const string CanDoCombo = nameof(CanDoCombo);
+		private bool _isInteracting = default;
 
 		public bool CanRotate => _canRotate;
 
+		private void OnEnable()
+		{
+			this.AddListener(EventID.OnHealthChanged, _ => PlayTargetAnimation(AnimationNameBase.DamageTaken, true));
+			this.AddListener(EventID.OnPlayerDeath, _ => PlayTargetAnimation(AnimationNameBase.Death, true));
+		}
+
+		private void OnDisable()
+		{
+			this.RemoveListener(EventID.OnHealthChanged, _ => PlayTargetAnimation(AnimationNameBase.DamageTaken, true));
+			this.RemoveListener(EventID.OnPlayerDeath, _ => PlayTargetAnimation(AnimationNameBase.Death, true));
+		}
+
 		private void OnAnimatorMove()
 		{
-			if(!_playerManager.IsInteracting) return;
+			if(!_isInteracting) return;
 
 			float delta = Time.deltaTime;
 
@@ -36,17 +43,15 @@ namespace SoulsLike
 			_playerLocomotion.rigidbody.velocity = velocity;
 		}
 
-		public void Init(PlayerManager playerManager, PlayerLocomotion playerLocomotion, Animator animator)
+		public void Init(PlayerLocomotion playerLocomotion, Animator animator)
 		{
 			_animator = animator;
-
-			_playerManager = playerManager;
 			_playerLocomotion = playerLocomotion;
 
-			_verticalHash = Animator.StringToHash(Vertical);
-			_horizontalHash = Animator.StringToHash(Horizontal);
-			_isInteractingHash = Animator.StringToHash(IsInteracting);
-			_canDoComboHash = Animator.StringToHash(CanDoCombo);
+			_verticalHash = Animator.StringToHash(AnimatorParameterBase.Vertical);
+			_horizontalHash = Animator.StringToHash(AnimatorParameterBase.Horizontal);
+			_isInteractingHash = Animator.StringToHash(AnimatorParameterBase.IsInteracting);
+			_canDoComboHash = Animator.StringToHash(AnimatorParameterBase.CanDoCombo);
 
 			EnableRotation();
 		}
@@ -65,6 +70,8 @@ namespace SoulsLike
 			_animator.SetFloat(_verticalHash, vertical, 0.1f, Time.deltaTime);
 			_animator.SetFloat(_horizontalHash, horizontal, 0.1f, Time.deltaTime);
 		}
+
+		public void UpdateIsInteractingFlag(bool isInteracting) => _isInteracting = isInteracting;
 
 		public void PlayTargetAnimation(string animationName, bool isInteracting)
 		{

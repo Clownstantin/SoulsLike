@@ -1,11 +1,11 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace SoulsLike
 {
 	public class PlayerInputHandler : MonoBehaviour
 	{
 		private PlayerControls _inputActions = default;
-		private PlayerManager _playerManager = default;
 		private PlayerAttacker _playerAttacker = default;
 		private PlayerInventory _playerInventory = default;
 
@@ -62,20 +62,19 @@ namespace SoulsLike
 			_inputActions.Disable();
 		}
 
-		public void Init(PlayerManager playerManager, PlayerAttacker playerAttacker, PlayerInventory playerInventory)
+		public void Init(PlayerAttacker playerAttacker, PlayerInventory playerInventory)
 		{
-			_playerManager = playerManager;
 			_playerAttacker = playerAttacker;
 			_playerInventory = playerInventory;
 		}
 
-		public void TickInput(float delta)
+		public void TickInput(float delta, bool isInteracting, bool canDoCombo)
 		{
 			MoveInput();
-			HandleRollInput(delta);
-			HandleAttackInput();
-			HandleQuickSlotsInput();
 			HandleInteractInput();
+			HandleRollInput(delta);
+			HandleAttackInput(isInteracting, canDoCombo);
+			HandleQuickSlotsInput();
 		}
 
 		public void ResetFlags(bool state = false)
@@ -104,7 +103,7 @@ namespace SoulsLike
 
 		private void HandleRollInput(float delta)
 		{
-			_rollInput = _inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
+			_rollInput = CheckRollInput();
 
 			if(_rollInput)
 			{
@@ -118,35 +117,38 @@ namespace SoulsLike
 					_sprintFlag = false;
 					_rollFlag = true;
 				}
-
 				_rollInputTimer = 0;
 			}
+
+			bool CheckRollInput() => _inputActions.PlayerActions.Roll.phase == InputActionPhase.Performed;
 		}
 
-		private void HandleInteractInput() => _interactInput = _inputActions.PlayerActions.Interact.WasPerformedThisFrame();
+		private void HandleInteractInput() => _interactInput = CheckInput(_inputActions.PlayerActions.Interact);
 
-		private void HandleAttackInput()
+		private void HandleAttackInput(bool isInteracting, bool canDocombo)
 		{
-			_rightLightAttackInput = _inputActions.PlayerActions.LightAttack.WasPerformedThisFrame();
-			_rightHeavyAttackInput = _inputActions.PlayerActions.HeavyAttack.WasPerformedThisFrame();
+			_rightLightAttackInput = CheckInput(_inputActions.PlayerActions.LightAttack);
+			_rightHeavyAttackInput = CheckInput(_inputActions.PlayerActions.HeavyAttack);
 
-			PerformAttack(_rightLightAttackInput, _rightHeavyAttackInput, _playerInventory.RightWeapon);
+			PerformAttack(_rightLightAttackInput, _rightHeavyAttackInput, isInteracting, canDocombo, _playerInventory.RightWeapon);
 		}
 
 		private void HandleQuickSlotsInput()
 		{
-			_quickSlotRightInput = _inputActions.PlayerActions.DPadRight.WasPerformedThisFrame();
-			_quickSlotLeftInput = _inputActions.PlayerActions.DPadLeft.WasPerformedThisFrame();
+			_quickSlotRightInput = CheckInput(_inputActions.PlayerActions.DPadRight);
+			_quickSlotLeftInput = CheckInput(_inputActions.PlayerActions.DPadLeft);
 
 			if(_quickSlotRightInput) _playerInventory.ChangeWeaponInSlot();
 			else if(_quickSlotLeftInput) _playerInventory.ChangeWeaponInSlot(true);
 		}
 
-		private void PerformAttack(bool lightAttackInput, bool heavyAttackInput, WeaponItem weapon)
+		private bool CheckInput(InputAction action) => action.WasPerformedThisFrame();
+
+		private void PerformAttack(bool lightAttackInput, bool heavyAttackInput, bool isInteracting, bool canDoCombo, WeaponItem weapon)
 		{
 			if(lightAttackInput || heavyAttackInput)
 			{
-				if(_playerManager.CanDoCombo)
+				if(canDoCombo)
 				{
 					_comboFlag = true;
 					_playerAttacker.HandleWeaponCombo(weapon);
@@ -154,7 +156,7 @@ namespace SoulsLike
 				}
 				else
 				{
-					if(_playerManager.IsInteracting || _playerManager.CanDoCombo) return;
+					if(isInteracting || canDoCombo) return;
 
 					if(lightAttackInput) _playerAttacker.HandleLightAttack(weapon);
 					else if(heavyAttackInput) _playerAttacker.HandleHeavyAttack(weapon);

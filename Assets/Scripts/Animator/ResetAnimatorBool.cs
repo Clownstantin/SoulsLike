@@ -9,8 +9,8 @@ namespace SoulsLike
 
 		public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-			if(_isInteracting) animator.SetBool(AnimatorHandler.IsInteracting, false);
-			if(_canDoCombo) animator.SetBool(AnimatorHandler.CanDoCombo, false);
+			if(_isInteracting) animator.SetBool(AnimatorParameterBase.IsInteracting, false);
+			if(_canDoCombo) animator.SetBool(AnimatorParameterBase.CanDoCombo, false);
 		}
 	}
 }

@@ -10,6 +10,8 @@
 		OnLeftWeaponSwitch,
 		OnRightWeaponSwitch,
 		OnPickUp,
+		OnPlayerDeath,
+		OnEnemyDeath,
 		OnGamePause,
 		OnGameResume,
 		Length
