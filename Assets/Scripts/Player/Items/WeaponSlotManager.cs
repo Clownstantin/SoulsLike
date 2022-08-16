@@ -20,14 +20,14 @@ namespace SoulsLike
 
 		private void OnEnable()
 		{
-			this.AddListener(EventID.OnWeaponInit, OnWeaponInit);
-			this.AddListener(EventID.OnWeaponLoad, OnWeaponLoad);
+			this.AddListener<WeaponInit>(OnWeaponInit);
+			this.AddListener<WeaponLoad>(OnWeaponLoad);
 		}
 
 		private void OnDisable()
 		{
-			this.RemoveListener(EventID.OnWeaponInit, OnWeaponInit);
-			this.RemoveListener(EventID.OnWeaponLoad, OnWeaponLoad);
+			this.RemoveListener<WeaponInit>(OnWeaponInit);
+			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
 		}
 
 		public void Init(Animator animator, IUnitStats playerStats)
@@ -44,22 +44,22 @@ namespace SoulsLike
 			}
 		}
 
-		private void InitWeapons((WeaponItem rightWeapon, WeaponItem leftWeapon) weapons)
+		private void OnWeaponInit(WeaponInit eventInfo)
 		{
-			_rightHandSlot.LoadWeaponModel(weapons.rightWeapon);
-			_leftHandSlot.LoadWeaponModel(weapons.leftWeapon);
+			_rightHandSlot.LoadWeaponModel(eventInfo.rightWeapon);
+			_leftHandSlot.LoadWeaponModel(eventInfo.leftWeapon);
 
 			_rightDamageDialer = _rightHandSlot.CurrentWeaponModel.DamageDealer;
 			_leftDamageDialer = _leftHandSlot.CurrentWeaponModel.DamageDealer;
 
-			_animator.CrossFade(weapons.rightWeapon.RightHandAnimation, _crossFadeTransitionDuration);
-			_animator.CrossFade(weapons.leftWeapon.LeftHandAnimation, _crossFadeTransitionDuration);
+			_animator.CrossFade(eventInfo.rightWeapon.RightHandAnimation, _crossFadeTransitionDuration);
+			_animator.CrossFade(eventInfo.leftWeapon.LeftHandAnimation, _crossFadeTransitionDuration);
 		}
 
-		private void LoadWeaponOnSlot((WeaponItem weapon, bool isLeft) values)
+		private void OnWeaponLoad(WeaponLoad eventInfo)
 		{
-			bool isLeft = values.isLeft;
-			WeaponItem weaponItem = values.weapon;
+			bool isLeft = eventInfo.isLeft;
+			WeaponItem weaponItem = eventInfo.weapon;
 
 			WeaponHolderSlot slot = isLeft ? _leftHandSlot : _rightHandSlot;
 			string weaponAnimationName = isLeft ? weaponItem.LeftHandAnimation : weaponItem.RightHandAnimation;
@@ -97,12 +97,6 @@ namespace SoulsLike
 		private void CloseLeftDamageCollider() => _leftDamageDialer.DisableDamageCollider();
 
 		private void CloseRightDamageCollider() => _rightDamageDialer.DisableDamageCollider();
-		#endregion
-
-		#region Actions
-		private void OnWeaponInit(object weapons) => InitWeapons(((WeaponItem, WeaponItem))weapons);
-
-		private void OnWeaponLoad(object weapon) => LoadWeaponOnSlot(((WeaponItem, bool))weapon);
 		#endregion
 	}
 }

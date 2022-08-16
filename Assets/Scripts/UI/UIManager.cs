@@ -31,53 +31,41 @@ namespace SoulsLike
 			}
 		}
 
-		private void LoadWeaponImage((WeaponItem weapon, bool isLeft) parameters) =>
-			SetWeaponSpriteToImage(parameters.isLeft ? _leftWeaponIcon : _rightWeaponIcon, parameters.weapon);
+		private void OnWeaponLoad(WeaponLoad eventInfo) =>
+			SetWeaponSpriteToImage(eventInfo.isLeft ? _leftWeaponIcon : _rightWeaponIcon, eventInfo.weapon);
 
-		private void HealthSliderInit(int maxHealth)
+		private void OnHealthInit(HealthInit eventInfo)
 		{
-			_healthBarSlider.maxValue = maxHealth;
-			_healthBarSlider.value = maxHealth;
+			_healthBarSlider.maxValue = eventInfo.health;
+			_healthBarSlider.value = eventInfo.health;
 		}
 
-		private void StaminaSliderInit(int maxStamina)
+		private void OnStaminaInit(StaminaInit eventInfo)
 		{
-			_staminaBarSlider.maxValue = maxStamina;
-			_staminaBarSlider.value = maxStamina;
+			_staminaBarSlider.maxValue = eventInfo.stamina;
+			_staminaBarSlider.value = eventInfo.stamina;
 		}
 
-		private void SetHealth(int currentHealth) => _healthBarSlider.value = currentHealth;
+		private void OnHealthChanged(HealthChanged eventInfo) => _healthBarSlider.value = eventInfo.currentHealth;
 
-		private void SetStamina(int currentStamina) => _staminaBarSlider.value = currentStamina;
+		private void OnStaminaChanged(StaminaChanged eventInfo) => _staminaBarSlider.value = eventInfo.currentStamina;
 
 		private void Subscribe()
 		{
-			this.AddListener(EventID.OnHealthInit, OnHealthInit);
-			this.AddListener(EventID.OnStaminaInit, OnStaminaInit);
-			this.AddListener(EventID.OnHealthChanged, OnHealthChanged);
-			this.AddListener(EventID.OnStaminaChanged, OnStaminaChanged);
-			this.AddListener(EventID.OnWeaponLoad, OnWeaponLoad);
+			this.AddListener<HealthInit>(OnHealthInit);
+			this.AddListener<StaminaInit>(OnStaminaInit);
+			this.AddListener<HealthChanged>(OnHealthChanged);
+			this.AddListener<StaminaChanged>(OnStaminaChanged);
+			this.AddListener<WeaponLoad>(OnWeaponLoad);
 		}
 
 		private void Unsubscribe()
 		{
-			this.RemoveListener(EventID.OnHealthInit, OnHealthInit);
-			this.RemoveListener(EventID.OnStaminaInit, OnStaminaInit);
-			this.RemoveListener(EventID.OnHealthChanged, OnHealthChanged);
-			this.RemoveListener(EventID.OnStaminaChanged, OnStaminaChanged);
-			this.RemoveListener(EventID.OnWeaponLoad, OnWeaponLoad);
+			this.RemoveListener<HealthInit>(OnHealthInit);
+			this.RemoveListener<StaminaInit>(OnStaminaInit);
+			this.RemoveListener<HealthChanged>(OnHealthChanged);
+			this.RemoveListener<StaminaChanged>(OnStaminaChanged);
+			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
 		}
-
-		#region Actions
-		private void OnHealthInit(object health) => HealthSliderInit((int)health);
-
-		private void OnStaminaInit(object stamina) => StaminaSliderInit((int)stamina);
-
-		private void OnHealthChanged(object health) => SetHealth((int)health);
-
-		private void OnStaminaChanged(object stamina) => SetStamina((int)stamina);
-
-		private void OnWeaponLoad(object weapon) => LoadWeaponImage(((WeaponItem, bool))weapon);
-		#endregion
 	}
 }

@@ -32,9 +32,9 @@ namespace SoulsLike
 			}
 			else Destroy(gameObject);
 
+			_eventManager = new EventManager();
 			_updateableObjects = new List<IUpdateable>();
 
-			_eventManager = GetComponentInChildren<EventManager>();
 			_cameraHandler = GetComponentInChildren<CameraHandler>();
 		}
 
@@ -57,6 +57,8 @@ namespace SoulsLike
 		private void FixedUpdate() => RunUpdate(isFixed: true);
 
 		private void LateUpdate() => RunUpdate(isLate: true);
+
+		private void OnDestroy() => _eventManager.Dispose();
 		#endregion
 
 		public void RegisterUpdatableObject(IUpdateable obj)
@@ -94,16 +96,14 @@ namespace SoulsLike
 		{
 			_isPaused = !_isPaused;
 
-			if(_isPaused)
-			{
-				this.TriggerEvent(EventID.OnGamePause);
-				Log.Send("Game is paused");
-			}
-			else
-			{
-				this.TriggerEvent(EventID.OnGameResume);
-				Log.Send("Game is resumed");
-			}
+			if(_isPaused) TriggerEscButtonEvent<GamePause>();
+			else TriggerEscButtonEvent<GameResume>();
+		}
+
+		private void TriggerEscButtonEvent<T>() where T : struct, IGameEvent
+		{
+			T gameEvent = Instance<T>.value;
+			this.TriggerEvent(gameEvent);
 		}
 	}
 }

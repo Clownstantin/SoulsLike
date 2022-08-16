@@ -43,14 +43,14 @@ namespace SoulsLike
 
 		private void OnEnable()
 		{
-			this.AddListener(EventID.OnGamePause, PauseAction);
-			this.AddListener(EventID.OnGameResume, ResumeAction);
+			this.AddListener<GamePause>(OnGamePause);
+			this.AddListener<GameResume>(OnGameResume);
 		}
 
 		private void OnDisable()
 		{
-			this.RemoveListener(EventID.OnGamePause, PauseAction);
-			this.RemoveListener(EventID.OnGameResume, ResumeAction);
+			this.RemoveListener<GamePause>(OnGamePause);
+			this.RemoveListener<GameResume>(OnGameResume);
 		}
 
 		protected override void OnStart()
@@ -99,20 +99,16 @@ namespace SoulsLike
 		}
 		#endregion
 
-		private void OnGamePause()
+		private void OnGamePause(GamePause _)
 		{
 			_animator.enabled = false;
 			_playerLocomotion.rigidbody.isKinematic = true;
 		}
 
-		private void OnGameResume()
+		private void OnGameResume(GameResume _)
 		{
 			_animator.enabled = true;
 			_playerLocomotion.rigidbody.isKinematic = false;
 		}
-
-		private void PauseAction(object _) => OnGamePause();
-
-		private void ResumeAction(object _) => OnGameResume();
 	}
 }

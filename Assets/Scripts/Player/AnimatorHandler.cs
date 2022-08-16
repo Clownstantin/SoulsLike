@@ -20,14 +20,14 @@ namespace SoulsLike
 
 		private void OnEnable()
 		{
-			this.AddListener(EventID.OnHealthChanged, OnHealthChangedAction);
-			this.AddListener(EventID.OnPlayerDeath, OnPlayerDeathAction);
+			this.AddListener<HealthChanged>(OnHealthChangedAction);
+			this.AddListener<PlayerDied>(OnPlayerDeathAction);
 		}
 
 		private void OnDisable()
 		{
-			this.RemoveListener(EventID.OnHealthChanged, OnHealthChangedAction);
-			this.RemoveListener(EventID.OnPlayerDeath, OnPlayerDeathAction);
+			this.RemoveListener<HealthChanged>(OnHealthChangedAction);
+			this.RemoveListener<PlayerDied>(OnPlayerDeathAction);
 		}
 
 		private void OnAnimatorMove()
@@ -104,8 +104,8 @@ namespace SoulsLike
 		public void DisableCombo() => _animator.SetBool(_canDoComboHash, false);
 		#endregion
 
-		private void OnPlayerDeathAction(object _) => PlayTargetAnimation(AnimationNameBase.Death, true);
+		private void OnPlayerDeathAction(PlayerDied _) => PlayTargetAnimation(AnimationNameBase.Death, true);
 
-		private void OnHealthChangedAction(object _) => PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
+		private void OnHealthChangedAction(HealthChanged _) => PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
 	}
 }

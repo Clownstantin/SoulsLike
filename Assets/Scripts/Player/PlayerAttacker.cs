@@ -12,9 +12,9 @@ namespace SoulsLike
 		private string _lastAttack = default;
 		private bool _comboFlag = default;
 
-		private void OnEnable() => this.AddListener(EventID.OnRightWeaponAttack, OnRightWeaponAttack);
+		private void OnEnable() => this.AddListener<RightWeaponAttack>(OnRightWeaponAttack);
 
-		private void OnDisable() => this.RemoveListener(EventID.OnRightWeaponAttack, OnRightWeaponAttack);
+		private void OnDisable() => this.RemoveListener<RightWeaponAttack>(OnRightWeaponAttack);
 
 		public void Init(PlayerInventory playerInventory, AnimatorHandler animatorHandler, WeaponSlotManager weaponSlotManager)
 		{
@@ -23,11 +23,11 @@ namespace SoulsLike
 			_weaponSlotManager = weaponSlotManager;
 		}
 
-		private void AttackWithRightWeapon((bool lightAttackInput, bool heavyAttackInput, bool isInteracting, bool canDoCombo) conditions)
+		private void OnRightWeaponAttack(RightWeaponAttack eventInfo)
 		{
 			WeaponItem weapon = _playerInventory.RightWeapon;
 
-			if(conditions.canDoCombo)
+			if(eventInfo.canDoCombo)
 			{
 				_comboFlag = true;
 				HandleWeaponCombo(weapon);
@@ -35,10 +35,10 @@ namespace SoulsLike
 			}
 			else
 			{
-				if(conditions.isInteracting) return;
+				if(eventInfo.isInteracting) return;
 
-				weapon.Do(HandleLightAttack, conditions.lightAttackInput)
-					  .Do(HandleHeavyAttack, conditions.heavyAttackInput);
+				weapon.Do(HandleLightAttack, eventInfo.lightAttackInput)
+					  .Do(HandleHeavyAttack, eventInfo.heavyAttackInput);
 			}
 		}
 
@@ -67,9 +67,5 @@ namespace SoulsLike
 			_animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack01, true);
 			_lastAttack = weapon.OneHandedHeavyAttack01;
 		}
-
-		#region Actions
-		private void OnRightWeaponAttack(object c) => AttackWithRightWeapon(((bool, bool, bool, bool))c);
-		#endregion
 	}
 }

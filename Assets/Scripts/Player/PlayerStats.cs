@@ -8,19 +8,21 @@ namespace SoulsLike
 		{
 			InitStats();
 
-			this.TriggerEvent(EventID.OnHealthInit, unitData.maxHealth);
-			this.TriggerEvent(EventID.OnStaminaInit, unitData.maxStamina);
+			TriggerInitHealthEvent();
+			TriggerInitStaminaEvent();
 		}
 
 		public override void TakeDamage(int damage)
 		{
 			base.TakeDamage(damage);
-			this.TriggerEvent(EventID.OnHealthChanged, unitData.currentHealth);
+			TriggerHealthChangedEvent();
 
 			if(unitData.currentHealth > 0) return;
 
 			unitData.currentHealth = 0;
-			this.TriggerEvent(EventID.OnPlayerDeath);
+
+			PlayerDied playerDied = Instance<PlayerDied>.value;
+			this.TriggerEvent(playerDied);
 
 			//Handle Player Death
 		}
@@ -28,7 +30,35 @@ namespace SoulsLike
 		public override void StaminaDrain(int drainValue)
 		{
 			unitData.currentStamina -= drainValue;
-			this.TriggerEvent(EventID.OnStaminaChanged, unitData.currentStamina);
+			TriggerStaminaChangedEvent();
+		}
+
+		private void TriggerInitStaminaEvent()
+		{
+			StaminaInit staminaInit = Instance<StaminaInit>.value;
+			staminaInit.Init(unitData.maxStamina);
+			this.TriggerEvent(staminaInit);
+		}
+
+		private void TriggerInitHealthEvent()
+		{
+			HealthInit healthInit = Instance<HealthInit>.value;
+			healthInit.Init(unitData.maxHealth);
+			this.TriggerEvent(healthInit);
+		}
+
+		private void TriggerHealthChangedEvent()
+		{
+			HealthChanged healthChanged = Instance<HealthChanged>.value;
+			healthChanged.Init(unitData.currentHealth);
+			this.TriggerEvent(healthChanged);
+		}
+
+		private void TriggerStaminaChangedEvent()
+		{
+			StaminaChanged staminaChanged = Instance<StaminaChanged>.value;
+			staminaChanged.Init(unitData.currentStamina);
+			this.TriggerEvent(staminaChanged);
 		}
 	}
 }

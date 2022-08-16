@@ -23,9 +23,9 @@ namespace SoulsLike
 		public WeaponItem RightWeapon => _rightWeapon;
 		public WeaponItem LeftWeapon => _leftWeapon;
 
-		private void OnEnable() => this.AddListener(EventID.OnWeaponSwitch, OnWeaponSwitch);
+		private void OnEnable() => this.AddListener<WeaponSwitch>(ChangeWeaponInSlot);
 
-		private void OnDisable() => this.RemoveListener(EventID.OnWeaponSwitch, OnWeaponSwitch);
+		private void OnDisable() => this.RemoveListener<WeaponSwitch>(ChangeWeaponInSlot);
 
 		public void Init()
 		{
@@ -34,16 +34,17 @@ namespace SoulsLike
 			_rightWeapon = _unarmedWeapon;
 			_leftWeapon = _unarmedWeapon;
 
-			var weapons = (_rightWeapon, _leftWeapon);
-			this.TriggerEvent(EventID.OnWeaponInit, weapons);
+			WeaponInit weaponInit = Instance<WeaponInit>.value;
+			weaponInit.Init(_rightWeapon, _leftWeapon);
+			this.TriggerEvent(weaponInit);
 		}
 
 		public void AddItemToInventory(Item item) => _itemInventory.Add(item);
 
-		private void ChangeWeaponInSlot((bool rightInput, bool leftInput) inputs)
+		private void ChangeWeaponInSlot(WeaponSwitch eventInfo)
 		{
-			if(inputs.leftInput) HandleWeaponSwitch(ref _currentLeftWeaponIndex, out _leftWeapon, _leftHandWeapons, true);
-			else if(inputs.rightInput) HandleWeaponSwitch(ref _currentRightWeaponIndex, out _rightWeapon, _rightHandWeapons);
+			if(eventInfo.leftInput) HandleWeaponSwitch(ref _currentLeftWeaponIndex, out _leftWeapon, _leftHandWeapons, true);
+			else if(eventInfo.rightInput) HandleWeaponSwitch(ref _currentRightWeaponIndex, out _rightWeapon, _rightHandWeapons);
 		}
 
 		private void HandleWeaponSwitch(ref int index, out WeaponItem weapon, IReadOnlyList<WeaponItem> targetWeapons, bool isLeft = false)
@@ -57,12 +58,9 @@ namespace SoulsLike
 			}
 			else weapon = targetWeapons[index];
 
-			var parameters = (weapon, isLeft);
-			this.TriggerEvent(EventID.OnWeaponLoad, parameters);
+			WeaponLoad weaponLoad = Instance<WeaponLoad>.value;
+			weaponLoad.Init(weapon, isLeft);
+			this.TriggerEvent(weaponLoad);
 		}
-
-		#region Actions
-		private void OnWeaponSwitch(object i) => ChangeWeaponInSlot(((bool, bool))i);
-		#endregion
 	}
 }

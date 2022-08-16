@@ -1,45 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace SoulsLike
 {
-	public class EventManager : MonoBehaviour
+	public class EventManager : IDisposable
 	{
-		private Dictionary<EventID, Action<object>> _listeners = default;
+		private Dictionary<Type, Action<IGameEvent>> _events = default;
+		private Dictionary<Delegate, Action<IGameEvent>> _eventLookups = default;
 
-		private void Awake() => _listeners = new Dictionary<EventID, Action<object>>((int)EventID.Length);
-
-		private void OnDestroy() => _listeners.Clear();
-
-		public void AddListener(EventID eventID, Action<object> callback)
+		public EventManager()
 		{
-			if(_listeners.ContainsKey(eventID)) _listeners[eventID] += callback;
+			_events = new Dictionary<Type, Action<IGameEvent>>();
+			_eventLookups = new Dictionary<Delegate, Action<IGameEvent>>();
+		}
+
+		public void AddListener<T>(Action<T> callback) where T : IGameEvent
+		{
+			Type type = typeof(T);
+
+			if(_eventLookups.ContainsKey(callback)) return;
+			_eventLookups[callback] = OverrideAction;
+
+			if(_events.TryGetValue(type, out Action<IGameEvent> internalAction))
+				_events[type] = internalAction += OverrideAction;
 			else
+				_events[type] = OverrideAction;
+
+			void OverrideAction(IGameEvent e) => callback((T)e);
+		}
+
+		public void TriggerEvent(IGameEvent gameEvent)
+		{
+			if(_events.TryGetValue(gameEvent.GetType(), out Action<IGameEvent> action))
+				action?.Invoke(gameEvent);
+		}
+
+		public void RemoveListener<T>(Action<T> callback) where T : IGameEvent
+		{
+			if(_eventLookups.TryGetValue(callback, out Action<IGameEvent> action))
 			{
-				_listeners.Add(eventID, null);
-				_listeners[eventID] += callback;
+				if(_events.TryGetValue(typeof(T), out Action<IGameEvent> tempAction))
+				{
+					tempAction -= action;
+
+					if(tempAction == null) _events.Remove(typeof(T));
+					else _events[typeof(T)] = tempAction;
+				}
+
+				_eventLookups.Remove(callback);
 			}
 		}
 
-		public void TriggerEvent(EventID eventID, object param = null)
+		public void Dispose()
 		{
-			if(!_listeners.ContainsKey(eventID)) return;
-
-			Action<object> callback = _listeners[eventID];
-
-			if(callback != null) callback(param);
-			else
-			{
-				Log.Send($"Callback doesn't exist {eventID}");
-				_listeners.Remove(eventID);
-			}
-		}
-
-		public void RemoveListener(EventID eventID, Action<object> callback)
-		{
-			if(_listeners.ContainsKey(eventID)) _listeners[eventID] -= callback;
-			else Log.Send("Remove listener failed. Key not found.");
+			_events.Clear();
+			_eventLookups.Clear();
 		}
 	}
 }
