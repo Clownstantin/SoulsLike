@@ -1,3 +1,4 @@
+using SoulsLike.Extentions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,8 +7,6 @@ namespace SoulsLike
 	public class PlayerInputHandler : MonoBehaviour
 	{
 		private PlayerControls _inputActions = default;
-		private PlayerAttacker _playerAttacker = default;
-		private PlayerInventory _playerInventory = default;
 
 		private Vector2 _movementInput = default;
 		private Vector2 _cameraInput = default;
@@ -29,7 +28,6 @@ namespace SoulsLike
 		private bool _quickSlotRightInput = default;
 
 		private bool _sprintFlag = default;
-		private bool _comboFlag = default;
 		private bool _rollFlag = default;
 		private float _rollInputTimer = default;
 
@@ -41,31 +39,23 @@ namespace SoulsLike
 
 		public bool RollFlag => _rollFlag;
 		public bool SprintFlag => _sprintFlag;
-		public bool ComboFlag => _comboFlag;
-
 		public bool InteractInput => _interactInput;
 
 		private void OnEnable()
 		{
 			_inputActions ??= new PlayerControls();
-			_inputActions.PlayerMovement.Movement.performed += m => _movementInput = m.ReadValue<Vector2>();
-			_inputActions.PlayerMovement.Camera.performed += c => _cameraInput = c.ReadValue<Vector2>();
+			_inputActions.PlayerMovement.Movement.performed += SetMovementInput;
+			_inputActions.PlayerMovement.Camera.performed += SetCameraInput;
 
 			_inputActions.Enable();
 		}
 
 		private void OnDisable()
 		{
-			_inputActions.PlayerMovement.Movement.performed -= m => _movementInput = m.ReadValue<Vector2>();
-			_inputActions.PlayerMovement.Camera.performed -= c => _cameraInput = c.ReadValue<Vector2>();
+			_inputActions.PlayerMovement.Movement.performed -= SetMovementInput;
+			_inputActions.PlayerMovement.Camera.performed -= SetCameraInput;
 
 			_inputActions.Disable();
-		}
-
-		public void Init(PlayerAttacker playerAttacker, PlayerInventory playerInventory)
-		{
-			_playerAttacker = playerAttacker;
-			_playerInventory = playerInventory;
 		}
 
 		public void TickInput(float delta, bool isInteracting, bool canDoCombo)
@@ -77,19 +67,19 @@ namespace SoulsLike
 			HandleQuickSlotsInput();
 		}
 
-		public void ResetFlags(bool state = false)
+		public void ResetFlags()
 		{
-			_interactInput = state;
-			_rollFlag = state;
-			_sprintFlag = state;
+			_interactInput = false;
+			_rollFlag = false;
+			_sprintFlag = false;
 
-			_rightLightAttackInput = state;
-			_rightHeavyAttackInput = state;
+			_rightLightAttackInput = false;
+			_rightHeavyAttackInput = false;
 
-			_quickSlotUpInput = state;
-			_quickSlotDownInput = state;
-			_quickSlotLeftInput = state;
-			_quickSlotRightInput = state;
+			_quickSlotUpInput = false;
+			_quickSlotDownInput = false;
+			_quickSlotLeftInput = false;
+			_quickSlotRightInput = false;
 		}
 
 		private void MoveInput()
@@ -100,6 +90,10 @@ namespace SoulsLike
 			_mouseX = _cameraInput.x;
 			_mouseY = _cameraInput.y;
 		}
+
+		private void SetCameraInput(InputAction.CallbackContext c) => _cameraInput = c.ReadValue<Vector2>();
+
+		private void SetMovementInput(InputAction.CallbackContext m) => _movementInput = m.ReadValue<Vector2>();
 
 		private void HandleRollInput(float delta)
 		{
@@ -112,7 +106,7 @@ namespace SoulsLike
 			}
 			else
 			{
-				if(_rollInputTimer > 0 && _rollInputTimer < 0.5f)
+				if(_rollInputTimer is > 0 and < 0.5f)
 				{
 					_sprintFlag = false;
 					_rollFlag = true;
@@ -130,7 +124,10 @@ namespace SoulsLike
 			_rightLightAttackInput = CheckInput(_inputActions.PlayerActions.LightAttack);
 			_rightHeavyAttackInput = CheckInput(_inputActions.PlayerActions.HeavyAttack);
 
-			PerformAttack(_rightLightAttackInput, _rightHeavyAttackInput, isInteracting, canDocombo, _playerInventory.RightWeapon);
+			if(!_rightLightAttackInput && !_rightHeavyAttackInput) return;
+
+			var conditions = (_rightLightAttackInput, _rightHeavyAttackInput, isInteracting, canDocombo);
+			this.TriggerEvent(EventID.OnRightWeaponAttack, conditions);
 		}
 
 		private void HandleQuickSlotsInput()
@@ -138,30 +135,12 @@ namespace SoulsLike
 			_quickSlotRightInput = CheckInput(_inputActions.PlayerActions.DPadRight);
 			_quickSlotLeftInput = CheckInput(_inputActions.PlayerActions.DPadLeft);
 
-			if(_quickSlotRightInput) _playerInventory.ChangeWeaponInSlot();
-			else if(_quickSlotLeftInput) _playerInventory.ChangeWeaponInSlot(true);
+			if(!_quickSlotRightInput && !_quickSlotLeftInput) return;
+
+			var conditions = (_quickSlotRightInput, _quickSlotLeftInput);
+			this.TriggerEvent(EventID.OnWeaponSwitch, conditions);
 		}
 
-		private bool CheckInput(InputAction action) => action.WasPerformedThisFrame();
-
-		private void PerformAttack(bool lightAttackInput, bool heavyAttackInput, bool isInteracting, bool canDoCombo, WeaponItem weapon)
-		{
-			if(lightAttackInput || heavyAttackInput)
-			{
-				if(canDoCombo)
-				{
-					_comboFlag = true;
-					_playerAttacker.HandleWeaponCombo(weapon);
-					_comboFlag = false;
-				}
-				else
-				{
-					if(isInteracting || canDoCombo) return;
-
-					if(lightAttackInput) _playerAttacker.HandleLightAttack(weapon);
-					else if(heavyAttackInput) _playerAttacker.HandleHeavyAttack(weapon);
-				}
-			}
-		}
+		private static bool CheckInput(InputAction action) => action.WasPerformedThisFrame();
 	}
 }

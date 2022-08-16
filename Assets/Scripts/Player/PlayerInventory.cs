@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SoulsLike.Extentions;
 using UnityEngine;
 
 namespace SoulsLike
@@ -14,7 +15,6 @@ namespace SoulsLike
 		[SerializeField] private WeaponItem[] _rightHandWeapons = default;
 		[SerializeField] private WeaponItem[] _leftHandWeapons = default;
 
-		private WeaponSlotManager _weaponSlotManager = default;
 		private List<Item> _itemInventory = default;
 
 		private int _currentRightWeaponIndex = -1;
@@ -23,41 +23,46 @@ namespace SoulsLike
 		public WeaponItem RightWeapon => _rightWeapon;
 		public WeaponItem LeftWeapon => _leftWeapon;
 
-		public void Init(WeaponSlotManager weaponSlotManager)
+		private void OnEnable() => this.AddListener(EventID.OnWeaponSwitch, OnWeaponSwitch);
+
+		private void OnDisable() => this.RemoveListener(EventID.OnWeaponSwitch, OnWeaponSwitch);
+
+		public void Init()
 		{
-			_weaponSlotManager = weaponSlotManager;
+			_itemInventory = new List<Item>();
 
 			_rightWeapon = _unarmedWeapon;
 			_leftWeapon = _unarmedWeapon;
-			_weaponSlotManager.LoadWeaponOnSlot(_rightWeapon);
-			_weaponSlotManager.LoadWeaponOnSlot(_leftWeapon, true);
 
-			_itemInventory = new List<Item>();
-		}
-
-		public void ChangeWeaponInSlot(bool isLeftSlot = false)
-		{
-			if(isLeftSlot) HandleWeaponLoad(ref _currentLeftWeaponIndex, ref _leftWeapon, _leftHandWeapons, isLeftSlot);
-			else HandleWeaponLoad(ref _currentRightWeaponIndex, ref _rightWeapon, _rightHandWeapons);
+			var weapons = (_rightWeapon, _leftWeapon);
+			this.TriggerEvent(EventID.OnWeaponInit, weapons);
 		}
 
 		public void AddItemToInventory(Item item) => _itemInventory.Add(item);
 
-		private void HandleWeaponLoad(ref int index, ref WeaponItem weapon, WeaponItem[] targetWeapons, bool isLeft = false)
+		private void ChangeWeaponInSlot((bool rightInput, bool leftInput) inputs)
+		{
+			if(inputs.leftInput) HandleWeaponSwitch(ref _currentLeftWeaponIndex, out _leftWeapon, _leftHandWeapons, true);
+			else if(inputs.rightInput) HandleWeaponSwitch(ref _currentRightWeaponIndex, out _rightWeapon, _rightHandWeapons);
+		}
+
+		private void HandleWeaponSwitch(ref int index, out WeaponItem weapon, IReadOnlyList<WeaponItem> targetWeapons, bool isLeft = false)
 		{
 			index++;
 
-			if(index < targetWeapons.Length)
-			{
-				weapon = targetWeapons[index];
-				_weaponSlotManager.LoadWeaponOnSlot(weapon, isLeft);
-			}
-			else
+			if(index >= targetWeapons.Count)
 			{
 				index = -1;
 				weapon = _unarmedWeapon;
-				_weaponSlotManager.LoadWeaponOnSlot(weapon, isLeft);
 			}
+			else weapon = targetWeapons[index];
+
+			var parameters = (weapon, isLeft);
+			this.TriggerEvent(EventID.OnWeaponLoad, parameters);
 		}
+
+		#region Actions
+		private void OnWeaponSwitch(object i) => ChangeWeaponInSlot(((bool, bool))i);
+		#endregion
 	}
 }

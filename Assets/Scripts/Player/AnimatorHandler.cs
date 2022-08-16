@@ -20,14 +20,14 @@ namespace SoulsLike
 
 		private void OnEnable()
 		{
-			this.AddListener(EventID.OnHealthChanged, _ => PlayTargetAnimation(AnimationNameBase.DamageTaken, true));
-			this.AddListener(EventID.OnPlayerDeath, _ => PlayTargetAnimation(AnimationNameBase.Death, true));
+			this.AddListener(EventID.OnHealthChanged, OnHealthChangedAction);
+			this.AddListener(EventID.OnPlayerDeath, OnPlayerDeathAction);
 		}
 
 		private void OnDisable()
 		{
-			this.RemoveListener(EventID.OnHealthChanged, _ => PlayTargetAnimation(AnimationNameBase.DamageTaken, true));
-			this.RemoveListener(EventID.OnPlayerDeath, _ => PlayTargetAnimation(AnimationNameBase.Death, true));
+			this.RemoveListener(EventID.OnHealthChanged, OnHealthChangedAction);
+			this.RemoveListener(EventID.OnPlayerDeath, OnPlayerDeathAction);
 		}
 
 		private void OnAnimatorMove()
@@ -80,25 +80,32 @@ namespace SoulsLike
 			_animator.CrossFade(animationName, 0.2f);
 		}
 
+		private static float ClampAxis(float axis)
+		{
+			axis = axis switch
+			{
+				> 0 and < 0.55f => 0.5f,
+				> 0.55f => 1f,
+				< 0 and > -0.55f => -0.5f,
+				< -0.55f => -1f,
+				_ => 0
+			};
+
+			return axis;
+		}
+
+		#region AnimationEvents
 		public void EnableRotation() => _canRotate = true;
 
 		public void StopRotation() => _canRotate = false;
 
-		#region AnimationEvents
 		public void EnableCombo() => _animator.SetBool(_canDoComboHash, true);
 
 		public void DisableCombo() => _animator.SetBool(_canDoComboHash, false);
 		#endregion
 
-		private float ClampAxis(float axis)
-		{
-			if(axis > 0 && axis < 0.55f) axis = 0.5f;
-			else if(axis > 0.55f) axis = 1f;
-			else if(axis < 0 && axis > -0.55f) axis = -0.5f;
-			else if(axis < -0.55f) axis = -1f;
-			else axis = 0;
+		private void OnPlayerDeathAction(object _) => PlayTargetAnimation(AnimationNameBase.Death, true);
 
-			return axis;
-		}
+		private void OnHealthChangedAction(object _) => PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
 	}
 }

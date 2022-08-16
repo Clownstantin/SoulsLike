@@ -17,19 +17,12 @@ namespace SoulsLike
 
 		private void OnDisable() => Unsubscribe();
 
-		private void OnWeaponSwitch(Item weapon, bool isLeft = false)
-		{
-			if(isLeft) SetWeaponSpriteToImage(_leftWeaponIcon, weapon);
-			else SetWeaponSpriteToImage(_rightWeaponIcon, weapon);
-		}
-
-		private void SetWeaponSpriteToImage(Image image, Item weapon)
+		private static void SetWeaponSpriteToImage(Image image, Item weapon)
 		{
 			if(weapon.ItemIcon)
 			{
 				image.sprite = weapon.ItemIcon;
 				image.enabled = true;
-
 			}
 			else
 			{
@@ -38,40 +31,53 @@ namespace SoulsLike
 			}
 		}
 
-		private void OnHealthInit(int maxHealth)
+		private void LoadWeaponImage((WeaponItem weapon, bool isLeft) parameters) =>
+			SetWeaponSpriteToImage(parameters.isLeft ? _leftWeaponIcon : _rightWeaponIcon, parameters.weapon);
+
+		private void HealthSliderInit(int maxHealth)
 		{
 			_healthBarSlider.maxValue = maxHealth;
 			_healthBarSlider.value = maxHealth;
 		}
 
-		private void OnStaminaInit(int maxStamina)
+		private void StaminaSliderInit(int maxStamina)
 		{
 			_staminaBarSlider.maxValue = maxStamina;
 			_staminaBarSlider.value = maxStamina;
 		}
 
-		private void OnHealthChanged(int currentHealth) => _healthBarSlider.value = currentHealth;
+		private void SetHealth(int currentHealth) => _healthBarSlider.value = currentHealth;
 
-		private void OnStaminaChanged(int currentStamina) => _staminaBarSlider.value = currentStamina;
+		private void SetStamina(int currentStamina) => _staminaBarSlider.value = currentStamina;
 
 		private void Subscribe()
 		{
-			this.AddListener(EventID.OnHealthInit, h => OnHealthInit((int)h));
-			this.AddListener(EventID.OnStaminaInit, s => OnStaminaInit((int)s));
-			this.AddListener(EventID.OnHealthChanged, h => OnHealthChanged((int)h));
-			this.AddListener(EventID.OnStaminaChanged, s => OnStaminaChanged((int)s));
-			this.AddListener(EventID.OnLeftWeaponSwitch, w => OnWeaponSwitch((Item)w, true));
-			this.AddListener(EventID.OnRightWeaponSwitch, w => OnWeaponSwitch((Item)w));
+			this.AddListener(EventID.OnHealthInit, OnHealthInit);
+			this.AddListener(EventID.OnStaminaInit, OnStaminaInit);
+			this.AddListener(EventID.OnHealthChanged, OnHealthChanged);
+			this.AddListener(EventID.OnStaminaChanged, OnStaminaChanged);
+			this.AddListener(EventID.OnWeaponLoad, OnWeaponLoad);
 		}
 
 		private void Unsubscribe()
 		{
-			this.RemoveListener(EventID.OnHealthInit, h => OnHealthInit((int)h));
-			this.RemoveListener(EventID.OnStaminaInit, s => OnStaminaInit((int)s));
-			this.RemoveListener(EventID.OnHealthChanged, h => OnHealthChanged((int)h));
-			this.RemoveListener(EventID.OnStaminaChanged, s => OnStaminaChanged((int)s));
-			this.RemoveListener(EventID.OnLeftWeaponSwitch, w => OnWeaponSwitch((Item)w, true));
-			this.RemoveListener(EventID.OnRightWeaponSwitch, w => OnWeaponSwitch((Item)w));
+			this.RemoveListener(EventID.OnHealthInit, OnHealthInit);
+			this.RemoveListener(EventID.OnStaminaInit, OnStaminaInit);
+			this.RemoveListener(EventID.OnHealthChanged, OnHealthChanged);
+			this.RemoveListener(EventID.OnStaminaChanged, OnStaminaChanged);
+			this.RemoveListener(EventID.OnWeaponLoad, OnWeaponLoad);
 		}
+
+		#region Actions
+		private void OnHealthInit(object health) => HealthSliderInit((int)health);
+
+		private void OnStaminaInit(object stamina) => StaminaSliderInit((int)stamina);
+
+		private void OnHealthChanged(object health) => SetHealth((int)health);
+
+		private void OnStaminaChanged(object stamina) => SetStamina((int)stamina);
+
+		private void OnWeaponLoad(object weapon) => LoadWeaponImage(((WeaponItem, bool))weapon);
+		#endregion
 	}
 }

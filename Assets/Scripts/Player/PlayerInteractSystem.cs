@@ -22,18 +22,16 @@ namespace SoulsLike
 			_playerLocomotion = playerLocomotion;
 		}
 
-		public void CheckForInteractableObject(bool interactInput)
+		public void CheckObjectToInteract(bool interactInput)
 		{
-			if(Physics.SphereCast(_myTransform.position, _checkRadius, _myTransform.forward, out RaycastHit hit, _checkDistance, _playerLocomotion.IgnoreForGroundCheck))
-			{
-				if(hit.collider.TryGetComponent(out Interactable interactableObj))
-				{
-					string interactableText = interactableObj.InteractableText;
-					//UI pop up
+			if(!Physics.SphereCast(_myTransform.position, _checkRadius, _myTransform.forward,
+				out RaycastHit hit, _checkDistance, _playerLocomotion.IgnoreForGroundCheck) ||
+			   !hit.collider.TryGetComponent(out Interactable interactableObj)) return;
 
-					if(interactInput) interactableObj.PickUp(w => OnPickUp(w));
-				}
-			}
+			string interactableText = interactableObj.InteractableText;
+			//UI pop up
+
+			if(interactInput) interactableObj.PickUp(OnPickUp);
 		}
 
 		private void OnPickUp(Item weapon)

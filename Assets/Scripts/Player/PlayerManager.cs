@@ -43,14 +43,14 @@ namespace SoulsLike
 
 		private void OnEnable()
 		{
-			this.AddListener(EventID.OnGamePause, _ => OnGamePause());
-			this.AddListener(EventID.OnGameResume, _ => OnGameResume());
+			this.AddListener(EventID.OnGamePause, PauseAction);
+			this.AddListener(EventID.OnGameResume, ResumeAction);
 		}
 
 		private void OnDisable()
 		{
-			this.RemoveListener(EventID.OnGamePause, _ => OnGamePause());
-			this.RemoveListener(EventID.OnGameResume, _ => OnGameResume());
+			this.RemoveListener(EventID.OnGamePause, PauseAction);
+			this.RemoveListener(EventID.OnGameResume, ResumeAction);
 		}
 
 		protected override void OnStart()
@@ -58,12 +58,11 @@ namespace SoulsLike
 			_myTransform = transform;
 			_cameraHandler = GameManager.Instance.CameraHandler;
 
-			_playerLocomotion.Init(_animatorHandler, _inputHandler);
-			_playerAttacker.Init(_inputHandler, _animatorHandler, _weaponSlotManager);
-			_playerInventory.Init(_weaponSlotManager);
+			_playerAttacker.Init(_playerInventory, _animatorHandler, _weaponSlotManager);
 			_interactSystem.Init(_animatorHandler, _playerInventory, _playerLocomotion);
-			_inputHandler.Init(_playerAttacker, _playerInventory);
+			_playerLocomotion.Init(_animatorHandler, _inputHandler);
 			_animatorHandler.Init(_playerLocomotion, _animator);
+			_playerInventory.Init();
 			_playerStats.Init();
 		}
 
@@ -83,16 +82,14 @@ namespace SoulsLike
 
 			_playerLocomotion.HandleFalling(delta, _isInteracting);
 
-			_interactSystem.CheckForInteractableObject(_inputHandler.InteractInput);
+			_interactSystem.CheckObjectToInteract(_inputHandler.InteractInput);
 		}
 
 		public override void OnFixedUpdate(float delta)
 		{
-			if(_cameraHandler != null)
-			{
-				_cameraHandler.FollowTarget(delta, _myTransform.position);
-				_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
-			}
+			if(_cameraHandler == null) return;
+			_cameraHandler.FollowTarget(delta, _myTransform.position);
+			_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
 		}
 
 		public override void OnLateUpdate(float delta)
@@ -113,5 +110,9 @@ namespace SoulsLike
 			_animator.enabled = true;
 			_playerLocomotion.rigidbody.isKinematic = false;
 		}
+
+		private void PauseAction(object _) => OnGamePause();
+
+		private void ResumeAction(object _) => OnGameResume();
 	}
 }

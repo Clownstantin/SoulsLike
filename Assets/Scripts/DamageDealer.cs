@@ -7,7 +7,7 @@ namespace SoulsLike
 	{
 		[SerializeField] private int _currentWeaponDamage = 25;
 
-		private Collider _damageCollider;
+		private Collider _damageCollider = default;
 
 		private void Awake()
 		{

@@ -19,9 +19,9 @@ MonoBehaviour:
   _baseStamina: 20
   _lightAttackMultiplier: 1
   _heavyAttackMultiplier: 2
-  _rightHandAnimation: RighArm_Idle
-  _leftHandAnimation: LeftArm_Idle
-  _oneHandedLightAttack_01: OH_LightAttack_01
-  _oneHandedLightAttack_02: OH_LightAttack_02
-  _oneHandedHeavyAttack_01: OH_HeavyAttack_01
-  _oneHandedHeavyAttack_02: OH_HeavyAttack_02
+  _rightHandAnimation: RighArmIdle
+  _leftHandAnimation: LeftArmIdle
+  _oneHandedLightAttack01: OhLightAttack01
+  _oneHandedLightAttack02: OhLightAttack02
+  _oneHandedHeavyAttack01: OhHeavyAttack01
+  _oneHandedHeavyAttack02: OhHeavyAttack02

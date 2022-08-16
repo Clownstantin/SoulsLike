@@ -14,9 +14,6 @@ namespace SoulsLike
 			_enemyStats = GetComponent<EnemyStats>();
 		}
 
-		private void Start()
-		{
-			_enemyStats.Init(_animator);
-		}
+		private void Start() => _enemyStats.Init(_animator);
 	}
 }

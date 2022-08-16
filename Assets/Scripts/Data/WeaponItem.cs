@@ -14,14 +14,14 @@ namespace SoulsLike
 		[SerializeField] private int _heavyAttackMultiplier = 2;
 
 		[Header("Idle Animations")]
-		[SerializeField] private string _rightHandAnimation = AnimationNameBase.RighArm_Idle;
-		[SerializeField] private string _leftHandAnimation = AnimationNameBase.LeftArm_Idle;
+		[SerializeField] private string _rightHandAnimation = AnimationNameBase.RighArmIdle;
+		[SerializeField] private string _leftHandAnimation = AnimationNameBase.LeftArmIdle;
 
 		[Header("One Handed Attack Animations")]
-		[SerializeField] private string _oneHandedLightAttack_01 = AnimationNameBase.OH_LightAttack_01;
-		[SerializeField] private string _oneHandedLightAttack_02 = AnimationNameBase.OH_LightAttack_02;
-		[SerializeField] private string _oneHandedHeavyAttack_01 = AnimationNameBase.OH_HeavyAttack_01;
-		[SerializeField] private string _oneHandedHeavyAttack_02 = AnimationNameBase.OH_HeavyAttack_02;
+		[SerializeField] private string _oneHandedLightAttack01 = AnimationNameBase.OhLightAttack01;
+		[SerializeField] private string _oneHandedLightAttack02 = AnimationNameBase.OhLightAttack02;
+		[SerializeField] private string _oneHandedHeavyAttack01 = AnimationNameBase.OhHeavyAttack01;
+		[SerializeField] private string _oneHandedHeavyAttack02 = AnimationNameBase.OhHeavyAttack02;
 
 		public Weapon WeaponPrefab => _weaponPrefab;
 		public bool IsUnarmed => _isUnarmed;
@@ -33,9 +33,9 @@ namespace SoulsLike
 		public string RightHandAnimation => _rightHandAnimation;
 		public string LeftHandAnimation => _leftHandAnimation;
 
-		public string OneHandedLightAttack_01 => _oneHandedLightAttack_01;
-		public string OneHandedLightAttack_02 => _oneHandedLightAttack_02;
-		public string OneHandedHeavyAttack_01 => _oneHandedHeavyAttack_01;
-		public string OneHandedHeavyAttack_02 => _oneHandedHeavyAttack_02;
+		public string OneHandedLightAttack01 => _oneHandedLightAttack01;
+		public string OneHandedLightAttack02 => _oneHandedLightAttack02;
+		public string OneHandedHeavyAttack01 => _oneHandedHeavyAttack01;
+		public string OneHandedHeavyAttack02 => _oneHandedHeavyAttack02;
 	}
 }

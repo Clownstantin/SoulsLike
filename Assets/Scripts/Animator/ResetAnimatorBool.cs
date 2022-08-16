@@ -4,8 +4,8 @@ namespace SoulsLike
 {
 	public class ResetAnimatorBool : StateMachineBehaviour
 	{
-		[SerializeField] private bool _isInteracting;
-		[SerializeField] private bool _canDoCombo;
+		[SerializeField] private bool _isInteracting = default;
+		[SerializeField] private bool _canDoCombo = default;
 
 		public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{

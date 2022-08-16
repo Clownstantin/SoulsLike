@@ -1,47 +1,75 @@
-﻿using UnityEngine;
+﻿using SoulsLike.Extentions;
+using UnityEngine;
 
 namespace SoulsLike
 {
 	public class PlayerAttacker : MonoBehaviour
 	{
-		private PlayerInputHandler _inputHandler = default;
 		private AnimatorHandler _animatorHandler = default;
 		private WeaponSlotManager _weaponSlotManager = default;
+		private PlayerInventory _playerInventory = default;
 
 		private string _lastAttack = default;
+		private bool _comboFlag = default;
 
-		public void Init(PlayerInputHandler inputHandler, AnimatorHandler animatorHandler, WeaponSlotManager weaponSlotManager)
+		private void OnEnable() => this.AddListener(EventID.OnRightWeaponAttack, OnRightWeaponAttack);
+
+		private void OnDisable() => this.RemoveListener(EventID.OnRightWeaponAttack, OnRightWeaponAttack);
+
+		public void Init(PlayerInventory playerInventory, AnimatorHandler animatorHandler, WeaponSlotManager weaponSlotManager)
 		{
-			_inputHandler = inputHandler;
+			_playerInventory = playerInventory;
 			_animatorHandler = animatorHandler;
 			_weaponSlotManager = weaponSlotManager;
 		}
 
-		public void HandleWeaponCombo(WeaponItem weapon)
+		private void AttackWithRightWeapon((bool lightAttackInput, bool heavyAttackInput, bool isInteracting, bool canDoCombo) conditions)
 		{
-			if(_inputHandler.ComboFlag)
-			{
-				_animatorHandler.DisableCombo();
+			WeaponItem weapon = _playerInventory.RightWeapon;
 
-				if(_lastAttack == weapon.OneHandedLightAttack_01)
-					_animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack_02, true);
-				else if(_lastAttack == weapon.OneHandedHeavyAttack_01)
-					_animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack_02, true);
+			if(conditions.canDoCombo)
+			{
+				_comboFlag = true;
+				HandleWeaponCombo(weapon);
+				_comboFlag = false;
+			}
+			else
+			{
+				if(conditions.isInteracting) return;
+
+				weapon.Do(HandleLightAttack, conditions.lightAttackInput)
+					  .Do(HandleHeavyAttack, conditions.heavyAttackInput);
 			}
 		}
 
-		public void HandleLightAttack(WeaponItem weapon)
+		private void HandleWeaponCombo(WeaponItem weapon)
 		{
-			_weaponSlotManager.SetAttackingWeapon(weapon);
-			_animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack_01, true);
-			_lastAttack = weapon.OneHandedLightAttack_01;
+			if(!_comboFlag) return;
+
+			_animatorHandler.DisableCombo();
+
+			if(_lastAttack == weapon.OneHandedLightAttack01)
+				_animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack02, true);
+			else if(_lastAttack == weapon.OneHandedHeavyAttack01)
+				_animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack02, true);
 		}
 
-		public void HandleHeavyAttack(WeaponItem weapon)
+		private void HandleLightAttack(WeaponItem weapon)
 		{
 			_weaponSlotManager.SetAttackingWeapon(weapon);
-			_animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack_01, true);
-			_lastAttack = weapon.OneHandedHeavyAttack_01;
+			_animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack01, true);
+			_lastAttack = weapon.OneHandedLightAttack01;
 		}
+
+		private void HandleHeavyAttack(WeaponItem weapon)
+		{
+			_weaponSlotManager.SetAttackingWeapon(weapon);
+			_animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack01, true);
+			_lastAttack = weapon.OneHandedHeavyAttack01;
+		}
+
+		#region Actions
+		private void OnRightWeaponAttack(object c) => AttackWithRightWeapon(((bool, bool, bool, bool))c);
+		#endregion
 	}
 }

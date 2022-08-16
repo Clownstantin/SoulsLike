@@ -6,7 +6,6 @@ namespace SoulsLike
 	{
 		[SerializeField] private int _damage = 25;
 
-
 		private void OnTriggerEnter(Collider other)
 		{
 			if(other.TryGetComponent(out IUnitStats stats))

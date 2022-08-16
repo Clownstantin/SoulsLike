@@ -26,8 +26,7 @@ namespace SoulsLike
 
 			Weapon weaponModel = Instantiate(weaponItem.WeaponPrefab);
 
-			if(_parentOverride) weaponModel.transform.SetParent(_parentOverride);
-			else weaponModel.transform.SetParent(transform);
+			weaponModel.transform.SetParent(_parentOverride ? _parentOverride : transform);
 
 			weaponModel.transform.localPosition = Vector3.zero;
 			weaponModel.transform.localRotation = Quaternion.identity;

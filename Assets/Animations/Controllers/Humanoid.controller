@@ -105,7 +105,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: OH_LightAttack_01
+  m_Name: OhLightAttack01
   m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
@@ -188,7 +188,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: OH_HeavyAttack_01
+  m_Name: OhHeavyAttack01
   m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
@@ -215,7 +215,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: OH_LightAttack_02
+  m_Name: OhLightAttack02
   m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
@@ -788,7 +788,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LeftArm_Idle
+  m_Name: LeftArmIdle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -962,7 +962,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RighArm_Idle
+  m_Name: RighArmIdle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -1014,7 +1014,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: OH_HeavyAttack_02
+  m_Name: OhHeavyAttack02
   m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:

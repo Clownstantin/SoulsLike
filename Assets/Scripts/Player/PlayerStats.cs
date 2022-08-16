@@ -17,13 +17,12 @@ namespace SoulsLike
 			base.TakeDamage(damage);
 			this.TriggerEvent(EventID.OnHealthChanged, unitData.currentHealth);
 
-			if(unitData.currentHealth <= 0)
-			{
-				unitData.currentHealth = 0;
-				this.TriggerEvent(EventID.OnPlayerDeath);
+			if(unitData.currentHealth > 0) return;
 
-				//Handle Player Death
-			}
+			unitData.currentHealth = 0;
+			this.TriggerEvent(EventID.OnPlayerDeath);
+
+			//Handle Player Death
 		}
 
 		public override void StaminaDrain(int drainValue)

@@ -18,13 +18,12 @@ namespace SoulsLike
 
 			_animator.Play(AnimationNameBase.DamageTaken);
 
-			if(unitData.currentHealth <= 0)
-			{
-				unitData.currentHealth = 0;
-				_animator.Play(AnimationNameBase.Death);
+			if(unitData.currentHealth > 0) return;
 
-				//Handle Enemy Death
-			}
+			unitData.currentHealth = 0;
+			_animator.Play(AnimationNameBase.Death);
+
+			//Handle Enemy Death
 		}
 	}
 }

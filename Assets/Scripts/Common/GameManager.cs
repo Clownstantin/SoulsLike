@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SoulsLike.Extentions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace SoulsLike
 {
@@ -40,14 +41,14 @@ namespace SoulsLike
 		private void OnEnable()
 		{
 			_gameControls ??= new GameControls();
-			_gameControls.GameActions.Pause.performed += _ => OnPausePress();
+			_gameControls.GameActions.Pause.performed += OnPausePress;
 
 			_gameControls.Enable();
 		}
 
 		private void OnDisable()
 		{
-			_gameControls.GameActions.Pause.performed -= _ => OnPausePress();
+			_gameControls.GameActions.Pause.performed -= OnPausePress;
 			_gameControls.Disable();
 		}
 
@@ -63,7 +64,7 @@ namespace SoulsLike
 			if(!_updateableObjects.Contains(obj)) _updateableObjects.Add(obj);
 			else
 			{
-				Object gameObj = (Object)obj;
+				var gameObj = (Object)obj;
 				Log.Send($"{gameObj.name} is already registered");
 			}
 		}
@@ -75,22 +76,21 @@ namespace SoulsLike
 
 		private void RunUpdate(bool isFixed = false, bool isLate = false)
 		{
-			if(!_isPaused && _updateableObjects != null)
+			if(_isPaused || _updateableObjects == null) return;
+
+			float delta = isFixed ? Time.fixedDeltaTime : Time.deltaTime;
+
+			for(int i = _updateableObjects.Count - 1; i >= 0; i--)
 			{
-				float delta = isFixed ? Time.fixedDeltaTime : Time.deltaTime;
+				var updateable = (UpdateableComponent)_updateableObjects[i];
 
-				for(int i = _updateableObjects.Count - 1; i >= 0; i--)
-				{
-					UpdateableComponent updateable = (UpdateableComponent)_updateableObjects[i];
-
-					if(isFixed) updateable.OnFixedUpdate(delta);
-					else if(isLate) updateable.OnLateUpdate(delta);
-					else updateable.OnUpdate(delta);
-				}
+				if(isFixed) updateable.OnFixedUpdate(delta);
+				else if(isLate) updateable.OnLateUpdate(delta);
+				else updateable.OnUpdate(delta);
 			}
 		}
 
-		private void OnPausePress()
+		private void OnPausePress(InputAction.CallbackContext _)
 		{
 			_isPaused = !_isPaused;
 
