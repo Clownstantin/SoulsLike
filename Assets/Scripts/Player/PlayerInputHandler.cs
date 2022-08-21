@@ -126,9 +126,7 @@ namespace SoulsLike
 
 			if(!_rightLightAttackInput && !_rightHeavyAttackInput) return;
 
-			RightWeaponAttack rightAttack = Instance<RightWeaponAttack>.value;
-			rightAttack.Init(_rightLightAttackInput, _rightHeavyAttackInput, isInteracting, canDocombo);
-			this.TriggerEvent(rightAttack);
+			this.TriggerEvent(new RightWeaponAttack(_rightLightAttackInput, _rightHeavyAttackInput, isInteracting, canDocombo));
 		}
 
 		private void HandleQuickSlotsInput()
@@ -138,9 +136,7 @@ namespace SoulsLike
 
 			if(!_quickSlotRightInput && !_quickSlotLeftInput) return;
 
-			WeaponSwitch onWeaponSwitch = Instance<WeaponSwitch>.value;
-			onWeaponSwitch.Init(_quickSlotRightInput, _quickSlotLeftInput);
-			this.TriggerEvent(onWeaponSwitch);
+			this.TriggerEvent(new WeaponSwitch(_quickSlotRightInput, _quickSlotLeftInput));
 		}
 
 		private static bool CheckInput(InputAction action) => action.WasPerformedThisFrame();

@@ -2,12 +2,12 @@ namespace SoulsLike
 {
 	public struct RightWeaponAttack : IGameEvent
 	{
-		public bool lightAttackInput;
-		public bool heavyAttackInput;
-		public bool isInteracting;
-		public bool canDoCombo;
+		public readonly bool lightAttackInput;
+		public readonly bool heavyAttackInput;
+		public readonly bool isInteracting;
+		public readonly bool canDoCombo;
 
-		public void Init(bool lightAttackInput,bool heavyAttackInput,bool isInteracting,bool canDocombo)
+		public RightWeaponAttack(bool lightAttackInput,bool heavyAttackInput,bool isInteracting,bool canDocombo)
 		{
 			this.lightAttackInput = lightAttackInput;
 			this.heavyAttackInput = heavyAttackInput;

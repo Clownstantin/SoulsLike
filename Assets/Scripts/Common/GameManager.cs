@@ -9,7 +9,7 @@ namespace SoulsLike
 	{
 		private static GameManager s_instance = default;
 
-		private List<IUpdateable> _updateableObjects = default;
+		private List<UpdateableComponent> _updateableObjects = default;
 
 		private EventManager _eventManager = default;
 		private CameraHandler _cameraHandler = default;
@@ -33,7 +33,7 @@ namespace SoulsLike
 			else Destroy(gameObject);
 
 			_eventManager = new EventManager();
-			_updateableObjects = new List<IUpdateable>();
+			_updateableObjects = new List<UpdateableComponent>();
 
 			_cameraHandler = GetComponentInChildren<CameraHandler>();
 		}
@@ -61,7 +61,7 @@ namespace SoulsLike
 		private void OnDestroy() => _eventManager.Dispose();
 		#endregion
 
-		public void RegisterUpdatableObject(IUpdateable obj)
+		public void RegisterUpdatableObject(UpdateableComponent obj)
 		{
 			if(!_updateableObjects.Contains(obj)) _updateableObjects.Add(obj);
 			else
@@ -71,7 +71,7 @@ namespace SoulsLike
 			}
 		}
 
-		public void UnregisterUpdatableObject(IUpdateable obj)
+		public void UnregisterUpdatableObject(UpdateableComponent obj)
 		{
 			if(_updateableObjects.Contains(obj)) _updateableObjects.Remove(obj);
 		}
@@ -84,11 +84,9 @@ namespace SoulsLike
 
 			for(int i = _updateableObjects.Count - 1; i >= 0; i--)
 			{
-				var updateable = (UpdateableComponent)_updateableObjects[i];
-
-				if(isFixed) updateable.OnFixedUpdate(delta);
-				else if(isLate) updateable.OnLateUpdate(delta);
-				else updateable.OnUpdate(delta);
+				if(isFixed) _updateableObjects[i].OnFixedUpdate(delta);
+				else if(isLate) _updateableObjects[i].OnLateUpdate(delta);
+				else _updateableObjects[i].OnUpdate(delta);
 			}
 		}
 
@@ -96,14 +94,8 @@ namespace SoulsLike
 		{
 			_isPaused = !_isPaused;
 
-			if(_isPaused) TriggerEscButtonEvent<GamePause>();
-			else TriggerEscButtonEvent<GameResume>();
-		}
-
-		private void TriggerEscButtonEvent<T>() where T : struct, IGameEvent
-		{
-			T gameEvent = Instance<T>.value;
-			this.TriggerEvent(gameEvent);
+			if(_isPaused) this.TriggerEvent(new GamePause());
+			else this.TriggerEvent(new GameResume());
 		}
 	}
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public abstract class UpdateableComponent : MonoBehaviour, IUpdateable
+	public abstract class UpdateableComponent : MonoBehaviour
 	{
 		private void Start()
 		{

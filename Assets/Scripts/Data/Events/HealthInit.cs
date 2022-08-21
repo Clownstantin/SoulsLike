@@ -2,8 +2,8 @@ namespace SoulsLike
 {
 	public struct HealthInit : IGameEvent
 	{
-		public int health;
+		public readonly int health;
 
-		public void Init(int maxHealth) => health = maxHealth;
+		public HealthInit(int maxHealth) => health = maxHealth;
 	}
 }

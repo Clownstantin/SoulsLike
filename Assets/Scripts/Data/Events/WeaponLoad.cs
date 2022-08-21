@@ -2,10 +2,10 @@ namespace SoulsLike
 {
 	public struct WeaponLoad : IGameEvent
 	{
-		public WeaponItem weapon;
-		public bool isLeft;
+		public readonly WeaponItem weapon;
+		public readonly bool isLeft;
 
-		public void Init(WeaponItem weapon, bool isLeft)
+		public WeaponLoad(WeaponItem weapon, bool isLeft)
 		{
 			this.weapon = weapon;
 			this.isLeft = isLeft;

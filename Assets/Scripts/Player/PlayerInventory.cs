@@ -34,9 +34,7 @@ namespace SoulsLike
 			_rightWeapon = _unarmedWeapon;
 			_leftWeapon = _unarmedWeapon;
 
-			WeaponInit weaponInit = Instance<WeaponInit>.value;
-			weaponInit.Init(_rightWeapon, _leftWeapon);
-			this.TriggerEvent(weaponInit);
+			this.TriggerEvent(new WeaponInit(_rightWeapon, _leftWeapon));
 		}
 
 		public void AddItemToInventory(Item item) => _itemInventory.Add(item);
@@ -58,9 +56,7 @@ namespace SoulsLike
 			}
 			else weapon = targetWeapons[index];
 
-			WeaponLoad weaponLoad = Instance<WeaponLoad>.value;
-			weaponLoad.Init(weapon, isLeft);
-			this.TriggerEvent(weaponLoad);
+			this.TriggerEvent(new WeaponLoad(weapon, isLeft));
 		}
 	}
 }

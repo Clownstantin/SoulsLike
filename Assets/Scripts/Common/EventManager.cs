@@ -5,8 +5,8 @@ namespace SoulsLike
 {
 	public class EventManager : IDisposable
 	{
-		private Dictionary<Type, Action<IGameEvent>> _events = default;
-		private Dictionary<Delegate, Action<IGameEvent>> _eventLookups = default;
+		private readonly Dictionary<Type, Action<IGameEvent>> _events = default;
+		private readonly Dictionary<Delegate, Action<IGameEvent>> _eventLookups = default;
 
 		public EventManager()
 		{
