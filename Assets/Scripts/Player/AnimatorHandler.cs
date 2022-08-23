@@ -6,7 +6,7 @@ namespace SoulsLike
 	public class AnimatorHandler : MonoBehaviour
 	{
 		private Animator _animator = default;
-		private PlayerLocomotion _playerLocomotion = default;
+		private Rigidbody _rigidbody = default;
 
 		private int _verticalHash = default;
 		private int _horizontalHash = default;
@@ -36,17 +36,17 @@ namespace SoulsLike
 
 			float delta = Time.deltaTime;
 
-			_playerLocomotion.rigidbody.drag = 0;
+			_rigidbody.drag = 0;
 			Vector3 deltaPosition = _animator.deltaPosition;
 			deltaPosition.y = 0;
 			Vector3 velocity = deltaPosition / delta;
-			_playerLocomotion.rigidbody.velocity = velocity;
+			_rigidbody.velocity = velocity;
 		}
 
-		public void Init(PlayerLocomotion playerLocomotion, Animator animator)
+		public void Init(Rigidbody rigidbody, Animator animator)
 		{
 			_animator = animator;
-			_playerLocomotion = playerLocomotion;
+			_rigidbody = rigidbody;
 
 			_verticalHash = Animator.StringToHash(AnimatorParameterBase.Vertical);
 			_horizontalHash = Animator.StringToHash(AnimatorParameterBase.Horizontal);

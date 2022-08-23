@@ -6,8 +6,6 @@ namespace SoulsLike
 	{
 		[SerializeField] protected UnitData unitData = default;
 
-		public virtual void StaminaDrain(int drain) { }
-
 		public virtual void TakeDamage(int damage) => unitData.currentHealth -= damage;
 
 		protected void InitStats()

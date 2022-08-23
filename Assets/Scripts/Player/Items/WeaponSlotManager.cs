@@ -16,7 +16,6 @@ namespace SoulsLike
 		private DamageDealer _rightDamageDialer = default;
 
 		private Animator _animator = default;
-		private IUnitStats _playerStats = default;
 
 		private void OnEnable()
 		{
@@ -30,10 +29,9 @@ namespace SoulsLike
 			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
 		}
 
-		public void Init(Animator animator, IUnitStats playerStats)
+		public void Init(Animator animator)
 		{
 			_animator = animator;
-			_playerStats = playerStats;
 
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
 
@@ -80,14 +78,14 @@ namespace SoulsLike
 		{
 			if(!_attackingWeapon) return;
 			int drain = _attackingWeapon.BaseStamina * _attackingWeapon.LightAttackMultiplier;
-			_playerStats.StaminaDrain(drain);
+			this.TriggerEvent(new StaminaDrain(drain));
 		}
 
 		private void DrainStaminaOnHeavyAttack()
 		{
 			if(!_attackingWeapon) return;
 			int drain = _attackingWeapon.BaseStamina * _attackingWeapon.HeavyAttackMultiplier;
-			_playerStats.StaminaDrain(drain);
+			this.TriggerEvent(new StaminaDrain(drain));
 		}
 
 		private void OpenLeftDamageCollider() => _leftDamageDialer.EnableDamageCollider();

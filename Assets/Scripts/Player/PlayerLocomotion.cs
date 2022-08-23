@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	[RequireComponent(typeof(Rigidbody))]
 	public class PlayerLocomotion : MonoBehaviour
 	{
 		[SerializeField] private MovementData _movementData = default;
@@ -11,6 +10,7 @@ namespace SoulsLike
 		private AnimatorHandler _animatorHandler = default;
 		private Transform _cameraObject = default;
 		private Transform _myTransform = default;
+		private Rigidbody _rigidbody = default;
 
 		private Vector3 _normalVector = default;
 		private Vector3 _moveDirection = default;
@@ -22,14 +22,9 @@ namespace SoulsLike
 		private bool _isInAir = default;
 		private float _inAirTimer = default;
 
-		[HideInInspector] public new Rigidbody rigidbody = default;
-
-		public LayerMask IgnoreForGroundCheck => _ignoreForGroundCheck;
-
-		public void Init(AnimatorHandler animatorHandler, PlayerInputHandler inputHandler)
+		public void Init(Rigidbody rigidbody, AnimatorHandler animatorHandler, PlayerInputHandler inputHandler)
 		{
-			rigidbody = GetComponent<Rigidbody>();
-
+			_rigidbody = rigidbody;
 			_inputHandler = inputHandler;
 			_animatorHandler = animatorHandler;
 
@@ -61,7 +56,7 @@ namespace SoulsLike
 			_moveDirection *= speed;
 
 			Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
-			rigidbody.velocity = projectedVelocity;
+			_rigidbody.velocity = projectedVelocity;
 
 			_animatorHandler.UpdateAnimatorValues(_inputHandler.MoveAmount, 0, _isSprinting);
 			if(_animatorHandler.CanRotate) HandleRotation(delta);
@@ -80,7 +75,10 @@ namespace SoulsLike
 			else _animatorHandler.PlayTargetAnimation(AnimationNameBase.Stepback, true);
 		}
 
-		public void HandleInAirTimer(float delta) => _inAirTimer += _isInAir ? delta : 0;
+		public void HandleInAirTimer(float delta)
+		{
+			if(_isInAir) _inAirTimer += delta;
+		}
 
 		public void HandleFalling(float delta, bool isInteracting)
 		{
@@ -97,8 +95,8 @@ namespace SoulsLike
 
 			if(_isInAir)
 			{
-				rigidbody.AddForce(Vector3.down * fallingSpeed);
-				rigidbody.AddForce(_moveDirection * fallingSpeed / 10f);
+				_rigidbody.AddForce(Vector3.down * fallingSpeed);
+				_rigidbody.AddForce(_moveDirection * fallingSpeed / 10f);
 			}
 
 			origin += _moveDirection * _movementData.groundDirectionRayDistance;
@@ -139,9 +137,9 @@ namespace SoulsLike
 				{
 					if(!isInteracting) _animatorHandler.PlayTargetAnimation(AnimationNameBase.Fall, true);
 
-					Vector3 velocity = rigidbody.velocity;
+					Vector3 velocity = _rigidbody.velocity;
 					velocity.Normalize();
-					rigidbody.velocity = velocity * (moveSpeed * 0.5f);
+					_rigidbody.velocity = velocity * (moveSpeed * 0.5f);
 					_isInAir = true;
 				}
 			}

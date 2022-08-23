@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SoulsLike.Extentions;
+using UnityEngine;
 
 namespace SoulsLike
 {
@@ -7,37 +8,50 @@ namespace SoulsLike
 		[SerializeField] private float _checkRadius = default;
 		[SerializeField] private float _checkDistance = default;
 
-		private PlayerLocomotion _playerLocomotion = default;
 		private AnimatorHandler _animatorHandler = default;
 		private PlayerInventory _playerInventory = default;
 
+		private Rigidbody _rigidbody = default;
 		private Transform _myTransform = default;
 
-		public void Init(AnimatorHandler animatorHandler, PlayerInventory playerInventory, PlayerLocomotion playerLocomotion)
+		private LayerMask _ignoreForGroundCheck = default;
+
+		public void Init(Rigidbody rigidbody, AnimatorHandler animatorHandler, PlayerInventory playerInventory)
 		{
 			_myTransform = transform;
 
+			_rigidbody = rigidbody;
 			_animatorHandler = animatorHandler;
 			_playerInventory = playerInventory;
-			_playerLocomotion = playerLocomotion;
+
+			_ignoreForGroundCheck = ~(1 << 8 | 1 << 11);
 		}
 
 		public void CheckObjectToInteract(bool interactInput)
 		{
-			if(!Physics.SphereCast(_myTransform.position, _checkRadius, _myTransform.forward,
-				out RaycastHit hit, _checkDistance, _playerLocomotion.IgnoreForGroundCheck) ||
-			   !hit.collider.TryGetComponent(out Interactable interactableObj)) return;
+			if(Physics.SphereCast(_myTransform.position, _checkRadius, _myTransform.forward,
+				out RaycastHit hit, _checkDistance, _ignoreForGroundCheck) &&
+			   hit.collider.TryGetComponent(out Interactable interactableObj))
+			{
+				string interactableText = interactableObj.InteractableText;
 
-			string interactableText = interactableObj.InteractableText;
-			//UI pop up
+				this.TriggerEvent(new InteractTextPopUp(interactableText, true));
 
-			if(interactInput) interactableObj.PickUp(OnPickUp);
+				if(interactInput) interactableObj.PickUp(OnPickUp);
+			}
+			else
+			{
+				this.TriggerEvent(new InteractTextPopUp(null, false));
+				if(interactInput) this.TriggerEvent(new ItemTextPopUp(null, false));
+			}
 		}
 
 		private void OnPickUp(Item weapon)
 		{
-			_playerLocomotion.rigidbody.velocity = Vector3.zero;
+			_rigidbody.velocity = Vector3.zero;
 			_animatorHandler.PlayTargetAnimation(AnimationNameBase.PickUp, true);
+
+			this.TriggerEvent(new ItemTextPopUp(weapon, true));
 			_playerInventory.AddItemToInventory(weapon);
 		}
 	}

@@ -4,10 +4,11 @@ using UnityEngine;
 namespace SoulsLike
 {
 	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerAttacker)),
-	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInputHandler))]
+	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInputHandler), typeof(Rigidbody))]
 	public class PlayerManager : UpdateableComponent
 	{
 		private Animator _animator = default;
+		private Rigidbody _rigidbody = default;
 		private AnimatorHandler _animatorHandler = default;
 		private CameraHandler _cameraHandler = default;
 
@@ -33,12 +34,13 @@ namespace SoulsLike
 			_playerInventory = GetComponent<PlayerInventory>();
 			_inputHandler = GetComponent<PlayerInputHandler>();
 			_interactSystem = GetComponent<PlayerInteractSystem>();
+			_rigidbody = GetComponent<Rigidbody>();
 
 			_animator = GetComponentInChildren<Animator>();
 			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
 
-			_weaponSlotManager.Init(_animator, _playerStats);
+			_weaponSlotManager.Init(_animator);
 		}
 
 		private void OnEnable()
@@ -59,9 +61,9 @@ namespace SoulsLike
 			_cameraHandler = GameManager.Instance.CameraHandler;
 
 			_playerAttacker.Init(_playerInventory, _animatorHandler, _weaponSlotManager);
-			_interactSystem.Init(_animatorHandler, _playerInventory, _playerLocomotion);
-			_playerLocomotion.Init(_animatorHandler, _inputHandler);
-			_animatorHandler.Init(_playerLocomotion, _animator);
+			_interactSystem.Init(_rigidbody, _animatorHandler, _playerInventory);
+			_playerLocomotion.Init(_rigidbody, _animatorHandler, _inputHandler);
+			_animatorHandler.Init(_rigidbody, _animator);
 			_playerInventory.Init();
 			_playerStats.Init();
 		}
@@ -102,13 +104,13 @@ namespace SoulsLike
 		private void OnGamePause(GamePause _)
 		{
 			_animator.enabled = false;
-			_playerLocomotion.rigidbody.isKinematic = true;
+			_rigidbody.isKinematic = true;
 		}
 
 		private void OnGameResume(GameResume _)
 		{
 			_animator.enabled = true;
-			_playerLocomotion.rigidbody.isKinematic = false;
+			_rigidbody.isKinematic = false;
 		}
 	}
 }

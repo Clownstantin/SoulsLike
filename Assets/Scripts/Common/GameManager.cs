@@ -94,8 +94,7 @@ namespace SoulsLike
 		{
 			_isPaused = !_isPaused;
 
-			if(_isPaused) this.TriggerEvent(new GamePause());
-			else this.TriggerEvent(new GameResume());
+			this.TriggerEvent(_isPaused ? new GamePause() : new GameResume());
 		}
 	}
 }

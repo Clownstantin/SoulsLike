@@ -1,4 +1,5 @@
 using SoulsLike.Extentions;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,12 @@ namespace SoulsLike
 		[Header("QuickSlots")]
 		[SerializeField] private Image _leftWeaponIcon = default;
 		[SerializeField] private Image _rightWeaponIcon = default;
+		[Header("PopUp")]
+		[SerializeField] private GameObject _interactPopUpContainer = default;
+		[SerializeField] private GameObject _itemPopUpContainer = default;
+		[SerializeField] private TMP_Text _interactText = default;
+		[SerializeField] private TMP_Text _itemText = default;
+		[SerializeField] private Image _itemImage = default;
 
 		private void OnEnable() => Subscribe();
 
@@ -50,6 +57,26 @@ namespace SoulsLike
 
 		private void OnStaminaChanged(StaminaChanged eventInfo) => _staminaBarSlider.value = eventInfo.currentStamina;
 
+		private void OnInteractTextPopUp(InteractTextPopUp eventInfo)
+		{
+			if(_interactPopUpContainer.activeSelf == eventInfo.isActive) return;
+			_interactText.text = eventInfo.interactableText;
+			_interactPopUpContainer.SetActive(eventInfo.isActive);
+		}
+
+		private void OnItemTextPopUp(ItemTextPopUp eventInfo)
+		{
+			if(_itemPopUpContainer.activeSelf == eventInfo.isActive) return;
+
+			if(eventInfo.item)
+			{
+				_itemText.text = eventInfo.item.ItemName;
+				_itemImage.sprite = eventInfo.item.ItemIcon;
+			}
+
+			_itemPopUpContainer.SetActive(eventInfo.isActive);
+		}
+
 		private void Subscribe()
 		{
 			this.AddListener<HealthInit>(OnHealthInit);
@@ -57,6 +84,8 @@ namespace SoulsLike
 			this.AddListener<HealthChanged>(OnHealthChanged);
 			this.AddListener<StaminaChanged>(OnStaminaChanged);
 			this.AddListener<WeaponLoad>(OnWeaponLoad);
+			this.AddListener<InteractTextPopUp>(OnInteractTextPopUp);
+			this.AddListener<ItemTextPopUp>(OnItemTextPopUp);
 		}
 
 		private void Unsubscribe()
@@ -66,6 +95,8 @@ namespace SoulsLike
 			this.RemoveListener<HealthChanged>(OnHealthChanged);
 			this.RemoveListener<StaminaChanged>(OnStaminaChanged);
 			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
+			this.RemoveListener<InteractTextPopUp>(OnInteractTextPopUp);
+			this.RemoveListener<ItemTextPopUp>(OnItemTextPopUp);
 		}
 	}
 }

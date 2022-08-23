@@ -1,4 +1,4 @@
 namespace SoulsLike
 {
-	public struct GameResume : IGameEvent {}
+	public struct GameResume : IGameEvent { }
 }

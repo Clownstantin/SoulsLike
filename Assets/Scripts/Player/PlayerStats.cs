@@ -4,6 +4,10 @@ namespace SoulsLike
 {
 	public class PlayerStats : Stats
 	{
+		private void OnEnable() => this.AddListener<StaminaDrain>(OnStaminaDrain);
+
+		private void OnDisable() => this.RemoveListener<StaminaDrain>(OnStaminaDrain);
+
 		public void Init()
 		{
 			InitStats();
@@ -25,9 +29,9 @@ namespace SoulsLike
 			//Handle Player Death
 		}
 
-		public override void StaminaDrain(int drainValue)
+		private void OnStaminaDrain(StaminaDrain eventInfo)
 		{
-			unitData.currentStamina -= drainValue;
+			unitData.currentStamina -= eventInfo.drainDamage;
 			this.TriggerEvent(new StaminaChanged(unitData.currentStamina));
 		}
 	}
