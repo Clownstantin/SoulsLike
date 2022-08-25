@@ -9,6 +9,7 @@
 		public const string LeftArmIdle = nameof(LeftArmIdle);
 
 		public const string Roll = nameof(Roll);
+		public const string Jump = nameof(Jump);
 		public const string Stepback = nameof(Stepback);
 		public const string Land = nameof(Land);
 		public const string Fall = nameof(Fall);

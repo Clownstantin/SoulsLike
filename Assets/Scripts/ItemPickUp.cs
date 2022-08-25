@@ -1,4 +1,4 @@
-﻿using System;
+﻿using SoulsLike.Extentions;
 using UnityEngine;
 
 namespace SoulsLike
@@ -8,9 +8,10 @@ namespace SoulsLike
 		[Header("")]
 		[SerializeField] private Item _item = default;
 
-		public override void PickUp(Action<Item> action)
+		public override void PickUp()
 		{
-			action?.Invoke(_item);
+			this.TriggerEvent(new PickUp(_item));
+			this.TriggerEvent(new ItemTextPopUp(_item, true));
 			Destroy(gameObject);
 		}
 	}

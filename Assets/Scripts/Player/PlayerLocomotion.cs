@@ -1,3 +1,4 @@
+using SoulsLike.Extentions;
 using UnityEngine;
 
 namespace SoulsLike
@@ -6,8 +7,7 @@ namespace SoulsLike
 	{
 		[SerializeField] private MovementData _movementData = default;
 
-		private PlayerInputHandler _inputHandler = default;
-		private AnimatorHandler _animatorHandler = default;
+		private PlayerInput _inputHandler = default;
 		private Transform _cameraObject = default;
 		private Transform _myTransform = default;
 		private Rigidbody _rigidbody = default;
@@ -22,11 +22,17 @@ namespace SoulsLike
 		private bool _isInAir = default;
 		private float _inAirTimer = default;
 
-		public void Init(Rigidbody rigidbody, AnimatorHandler animatorHandler, PlayerInputHandler inputHandler)
+		public bool IsSprinting => _isSprinting;
+		public bool IsInAir => _isInAir;
+
+		private void OnEnable() => Subscribe();
+
+		private void OnDisable() => Unsubscribe();
+
+		public void Init(Rigidbody rigidbody, PlayerInput inputHandler)
 		{
 			_rigidbody = rigidbody;
 			_inputHandler = inputHandler;
-			_animatorHandler = animatorHandler;
 
 			_cameraObject = Camera.main.transform;
 			_myTransform = transform;
@@ -57,9 +63,6 @@ namespace SoulsLike
 
 			Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
 			_rigidbody.velocity = projectedVelocity;
-
-			_animatorHandler.UpdateAnimatorValues(_inputHandler.MoveAmount, 0, _isSprinting);
-			if(_animatorHandler.CanRotate) HandleRotation(delta);
 		}
 
 		public void HandleRollingAndSprinting()
@@ -67,12 +70,10 @@ namespace SoulsLike
 			if(!_inputHandler.RollFlag) return;
 			HandleMoveDirection();
 
-			if(_inputHandler.MoveAmount > 0)
-			{
-				_animatorHandler.PlayTargetAnimation(AnimationNameBase.Roll, true);
-				_myTransform.rotation = Quaternion.LookRotation(_moveDirection);
-			}
-			else _animatorHandler.PlayTargetAnimation(AnimationNameBase.Stepback, true);
+			bool isMoving = _inputHandler.MoveAmount > 0;
+			if(isMoving) _myTransform.rotation = Quaternion.LookRotation(_moveDirection);
+
+			this.TriggerEvent(new Roll(isMoving));
 		}
 
 		public void HandleInAirTimer(float delta)
@@ -113,18 +114,15 @@ namespace SoulsLike
 
 				if(_isInAir)
 				{
-					if(_inAirTimer > 0.5f)
+					bool isLongLand = _inAirTimer > 0.5f;
+					if(isLongLand)
 					{
 						Debug.Log($"You were in the air for {_inAirTimer}");
-						_animatorHandler.PlayTargetAnimation(AnimationNameBase.Land, true);
 						_inAirTimer = 0;
 					}
-					else
-					{
-						_animatorHandler.PlayTargetAnimation(AnimationNameBase.Empty, false);
-						_inAirTimer = 0;
-					}
+					else _inAirTimer = 0;
 
+					this.TriggerEvent(new Landed(isLongLand));
 					_isInAir = false;
 				}
 			}
@@ -135,7 +133,7 @@ namespace SoulsLike
 
 				if(!_isInAir)
 				{
-					if(!isInteracting) _animatorHandler.PlayTargetAnimation(AnimationNameBase.Fall, true);
+					if(!isInteracting) this.TriggerEvent(new Fall());
 
 					Vector3 velocity = _rigidbody.velocity;
 					velocity.Normalize();
@@ -150,8 +148,9 @@ namespace SoulsLike
 				_myTransform.position = _targetPosition;
 		}
 
-		private void HandleRotation(float delta)
+		public void HandleRotation(float delta, bool canRotate)
 		{
+			if(!canRotate) return;
 			HandleMoveDirection();
 
 			if(_moveDirection == Vector3.zero) _moveDirection = _myTransform.forward;
@@ -163,12 +162,43 @@ namespace SoulsLike
 			_myTransform.rotation = targetRotation;
 		}
 
+		private void OnJump(Jump eventInfo)
+		{
+			if(eventInfo.moveAmount > 0)
+			{
+				HandleMoveDirection();
+				_myTransform.rotation = Quaternion.LookRotation(_moveDirection);
+			}
+		}
+
 		private void HandleMoveDirection()
 		{
 			_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
 			_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
 			_moveDirection.Normalize();
 			_moveDirection.y = 0;
+		}
+
+		private void OnPickUp(PickUp _) => _rigidbody.velocity = Vector3.zero;
+
+		private void OnGameResume(GameResume _) => _rigidbody.isKinematic = false;
+
+		private void OnGamePause(GamePause _) => _rigidbody.isKinematic = true;
+
+		private void Subscribe()
+		{
+			this.AddListener<PickUp>(OnPickUp);
+			this.AddListener<Jump>(OnJump);
+			this.AddListener<GamePause>(OnGamePause);
+			this.AddListener<GameResume>(OnGameResume);
+		}
+
+		private void Unsubscribe()
+		{
+			this.RemoveListener<PickUp>(OnPickUp);
+			this.RemoveListener<Jump>(OnJump);
+			this.RemoveListener<GamePause>(OnGamePause);
+			this.RemoveListener<GameResume>(OnGameResume);
 		}
 	}
 }

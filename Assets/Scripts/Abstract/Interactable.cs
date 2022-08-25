@@ -1,4 +1,4 @@
-﻿using System;
+﻿using SoulsLike.Extentions;
 using UnityEngine;
 
 namespace SoulsLike
@@ -17,8 +17,8 @@ namespace SoulsLike
 			Gizmos.DrawWireSphere(transform.position + _offset, _radius);
 		}
 
-		public virtual void Interact(Action action) => action?.Invoke();
+		public virtual void Interact() => this.TriggerEvent(new Interact());
 
-		public virtual void PickUp(Action<Item> action) { }
+		public virtual void PickUp() { }
 	}
 }

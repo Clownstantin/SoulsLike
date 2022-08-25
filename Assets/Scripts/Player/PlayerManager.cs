@@ -1,10 +1,9 @@
-﻿using SoulsLike.Extentions;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SoulsLike
 {
-	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerAttacker)),
-	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInputHandler), typeof(Rigidbody))]
+	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerAttackSystem)),
+	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInput), typeof(Rigidbody))]
 	public class PlayerManager : UpdateableComponent
 	{
 		private Animator _animator = default;
@@ -12,27 +11,24 @@ namespace SoulsLike
 		private AnimatorHandler _animatorHandler = default;
 		private CameraHandler _cameraHandler = default;
 
-		private PlayerInputHandler _inputHandler = default;
+		private PlayerInput _inputHandler = default;
 		private PlayerInteractSystem _interactSystem = default;
 		private PlayerLocomotion _playerLocomotion = default;
 		private PlayerStats _playerStats = default;
-		private PlayerAttacker _playerAttacker = default;
+		private PlayerAttackSystem _playerAttack = default;
 		private PlayerInventory _playerInventory = default;
 
 		private WeaponSlotManager _weaponSlotManager = default;
 		private Transform _myTransform = default;
-
-		private bool _isInteracting = default;
-		private bool _canDoCombo = default;
 
 		#region MonoBehaviour
 		private void Awake()
 		{
 			_playerStats = GetComponent<PlayerStats>();
 			_playerLocomotion = GetComponent<PlayerLocomotion>();
-			_playerAttacker = GetComponent<PlayerAttacker>();
+			_playerAttack = GetComponent<PlayerAttackSystem>();
 			_playerInventory = GetComponent<PlayerInventory>();
-			_inputHandler = GetComponent<PlayerInputHandler>();
+			_inputHandler = GetComponent<PlayerInput>();
 			_interactSystem = GetComponent<PlayerInteractSystem>();
 			_rigidbody = GetComponent<Rigidbody>();
 
@@ -43,47 +39,34 @@ namespace SoulsLike
 			_weaponSlotManager.Init(_animator);
 		}
 
-		private void OnEnable()
-		{
-			this.AddListener<GamePause>(OnGamePause);
-			this.AddListener<GameResume>(OnGameResume);
-		}
-
-		private void OnDisable()
-		{
-			this.RemoveListener<GamePause>(OnGamePause);
-			this.RemoveListener<GameResume>(OnGameResume);
-		}
-
 		protected override void OnStart()
 		{
 			_myTransform = transform;
 			_cameraHandler = GameManager.Instance.CameraHandler;
 
-			_playerAttacker.Init(_playerInventory, _animatorHandler, _weaponSlotManager);
-			_interactSystem.Init(_rigidbody, _animatorHandler, _playerInventory);
-			_playerLocomotion.Init(_rigidbody, _animatorHandler, _inputHandler);
+			_playerAttack.Init(_playerInventory, _animatorHandler, _weaponSlotManager);
+			_playerLocomotion.Init(_rigidbody, _inputHandler);
 			_animatorHandler.Init(_rigidbody, _animator);
+			_interactSystem.Init();
 			_playerInventory.Init();
 			_playerStats.Init();
 		}
 
 		public override void OnUpdate(float delta)
 		{
-			_isInteracting = _animator.GetBool(AnimatorParameterBase.IsInteracting);
-			_canDoCombo = _animator.GetBool(AnimatorParameterBase.CanDoCombo);
+			bool isInteracting = _animatorHandler.IsInteracting;
 
-			_inputHandler.TickInput(delta, _isInteracting, _canDoCombo);
-			_animatorHandler.UpdateIsInteractingFlag(_isInteracting);
+			_inputHandler.TickInput(delta, isInteracting, _animatorHandler.CanDoCombo);
+			_animatorHandler.UpdateAnimatorValues(delta, _inputHandler.MoveAmount, 0, _playerLocomotion.IsSprinting, _playerLocomotion.IsInAir);
 
-			if(!_isInteracting)
+			if(!isInteracting)
 			{
 				_playerLocomotion.HandleMovement(delta);
+				_playerLocomotion.HandleRotation(delta, _animatorHandler.CanRotate);
 				_playerLocomotion.HandleRollingAndSprinting();
 			}
 
-			_playerLocomotion.HandleFalling(delta, _isInteracting);
-
+			_playerLocomotion.HandleFalling(delta, isInteracting);
 			_interactSystem.CheckObjectToInteract(_inputHandler.InteractInput);
 		}
 
@@ -100,17 +83,5 @@ namespace SoulsLike
 			_playerLocomotion.HandleInAirTimer(delta);
 		}
 		#endregion
-
-		private void OnGamePause(GamePause _)
-		{
-			_animator.enabled = false;
-			_rigidbody.isKinematic = true;
-		}
-
-		private void OnGameResume(GameResume _)
-		{
-			_animator.enabled = true;
-			_rigidbody.isKinematic = false;
-		}
 	}
 }

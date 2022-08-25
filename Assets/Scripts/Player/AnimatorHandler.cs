@@ -12,23 +12,19 @@ namespace SoulsLike
 		private int _horizontalHash = default;
 		private int _isInteractingHash = default;
 		private int _canDoComboHash = default;
+		private int _isInAirHash = default;
 
 		private bool _canRotate = default;
 		private bool _isInteracting = default;
+		private bool _canDoCombo = default;
 
 		public bool CanRotate => _canRotate;
+		public bool IsInteracting => _isInteracting;
+		public bool CanDoCombo => _canDoCombo;
 
-		private void OnEnable()
-		{
-			this.AddListener<HealthChanged>(OnHealthChangedAction);
-			this.AddListener<PlayerDied>(OnPlayerDeathAction);
-		}
+		private void OnEnable() => Subscribe();
 
-		private void OnDisable()
-		{
-			this.RemoveListener<HealthChanged>(OnHealthChangedAction);
-			this.RemoveListener<PlayerDied>(OnPlayerDeathAction);
-		}
+		private void OnDisable() => Unsubscribe();
 
 		private void OnAnimatorMove()
 		{
@@ -52,12 +48,16 @@ namespace SoulsLike
 			_horizontalHash = Animator.StringToHash(AnimatorParameterBase.Horizontal);
 			_isInteractingHash = Animator.StringToHash(AnimatorParameterBase.IsInteracting);
 			_canDoComboHash = Animator.StringToHash(AnimatorParameterBase.CanDoCombo);
+			_isInAirHash = Animator.StringToHash(AnimatorParameterBase.IsInAir);
 
 			EnableRotation();
 		}
 
-		public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement, bool isSprinting)
+		public void UpdateAnimatorValues(float delta, float verticalMovement, float horizontalMovement, bool isSprinting, bool isInAir)
 		{
+			_isInteracting = _animator.GetBool(AnimatorParameterBase.IsInteracting);
+			_canDoCombo = _animator.GetBool(AnimatorParameterBase.CanDoCombo);
+
 			float vertical = ClampAxis(verticalMovement);
 			float horizontal = ClampAxis(horizontalMovement);
 
@@ -67,11 +67,10 @@ namespace SoulsLike
 				horizontal = horizontalMovement;
 			}
 
-			_animator.SetFloat(_verticalHash, vertical, 0.1f, Time.deltaTime);
-			_animator.SetFloat(_horizontalHash, horizontal, 0.1f, Time.deltaTime);
+			_animator.SetFloat(_verticalHash, vertical, 0.1f, delta);
+			_animator.SetFloat(_horizontalHash, horizontal, 0.1f, delta);
+			_animator.SetBool(_isInAirHash, isInAir);
 		}
-
-		public void UpdateIsInteractingFlag(bool isInteracting) => _isInteracting = isInteracting;
 
 		public void PlayTargetAnimation(string animationName, bool isInteracting)
 		{
@@ -82,7 +81,7 @@ namespace SoulsLike
 
 		private static float ClampAxis(float axis)
 		{
-			axis = axis switch
+			return axis switch
 			{
 				> 0 and < 0.55f => 0.5f,
 				> 0.55f => 1f,
@@ -90,16 +89,14 @@ namespace SoulsLike
 				< -0.55f => -1f,
 				_ => 0
 			};
-
-			return axis;
 		}
 
 		#region AnimationEvents
-		public void EnableRotation() => _canRotate = true;
+		private void EnableRotation() => _canRotate = true;
 
-		public void StopRotation() => _canRotate = false;
+		private void StopRotation() => _canRotate = false;
 
-		public void EnableCombo() => _animator.SetBool(_canDoComboHash, true);
+		private void EnableCombo() => _animator.SetBool(_canDoComboHash, true);
 
 		public void DisableCombo() => _animator.SetBool(_canDoComboHash, false);
 		#endregion
@@ -107,5 +104,47 @@ namespace SoulsLike
 		private void OnPlayerDeathAction(PlayerDied _) => PlayTargetAnimation(AnimationNameBase.Death, true);
 
 		private void OnHealthChangedAction(HealthChanged _) => PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
+
+		private void OnFall(Fall _) => PlayTargetAnimation(AnimationNameBase.Fall, true);
+
+		private void OnPickUp(PickUp _) => PlayTargetAnimation(AnimationNameBase.PickUp, true);
+
+		private void OnJump(Jump _) => PlayTargetAnimation(AnimationNameBase.Jump, true);
+
+		private void OnRoll(Roll eventInfo) =>
+			PlayTargetAnimation(eventInfo.isMoving ? AnimationNameBase.Roll : AnimationNameBase.Stepback, eventInfo.isMoving);
+
+		private void OnLand(Landed eventInfo) =>
+			PlayTargetAnimation(eventInfo.isLongLand ? AnimationNameBase.Land : AnimationNameBase.Empty, eventInfo.isLongLand);
+
+		private void OnGameResume(GameResume _) => _animator.enabled = true;
+
+		private void OnGamePause(GamePause _) => _animator.enabled = false;
+
+		private void Subscribe()
+		{
+			this.AddListener<HealthChanged>(OnHealthChangedAction);
+			this.AddListener<PlayerDied>(OnPlayerDeathAction);
+			this.AddListener<Landed>(OnLand);
+			this.AddListener<Fall>(OnFall);
+			this.AddListener<Roll>(OnRoll);
+			this.AddListener<PickUp>(OnPickUp);
+			this.AddListener<Jump>(OnJump);
+			this.AddListener<GamePause>(OnGamePause);
+			this.AddListener<GameResume>(OnGameResume);
+		}
+
+		private void Unsubscribe()
+		{
+			this.RemoveListener<HealthChanged>(OnHealthChangedAction);
+			this.RemoveListener<PlayerDied>(OnPlayerDeathAction);
+			this.RemoveListener<Landed>(OnLand);
+			this.RemoveListener<Fall>(OnFall);
+			this.RemoveListener<Roll>(OnRoll);
+			this.RemoveListener<PickUp>(OnPickUp);
+			this.RemoveListener<Jump>(OnJump);
+			this.RemoveListener<GamePause>(OnGamePause);
+			this.RemoveListener<GameResume>(OnGameResume);
+		}
 	}
 }
