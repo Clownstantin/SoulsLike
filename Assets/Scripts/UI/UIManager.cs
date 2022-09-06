@@ -13,33 +13,34 @@ namespace SoulsLike
 		[Header("QuickSlots")]
 		[SerializeField] private Image _leftWeaponIcon = default;
 		[SerializeField] private Image _rightWeaponIcon = default;
-		[Header("PopUp")]
+		[Header("Text PopUp")]
 		[SerializeField] private GameObject _interactPopUpContainer = default;
 		[SerializeField] private GameObject _itemPopUpContainer = default;
 		[SerializeField] private TMP_Text _interactText = default;
 		[SerializeField] private TMP_Text _itemText = default;
 		[SerializeField] private Image _itemImage = default;
+		[Header("Windows PopUp")]
+		[SerializeField] private GameObject _selectionWindow = default;
+
+		private bool _inventoryActive = default;
+
+		private void Awake() => _inventoryActive = true;
 
 		private void OnEnable() => Subscribe();
 
 		private void OnDisable() => Unsubscribe();
 
-		private static void SetWeaponSpriteToImage(Image image, Item weapon)
+		private static void SetWeaponSpriteToImage(Image image, Item weapon, bool hasIcon)
 		{
-			if(weapon.ItemIcon)
-			{
-				image.sprite = weapon.ItemIcon;
-				image.enabled = true;
-			}
-			else
-			{
-				image.sprite = null;
-				image.enabled = false;
-			}
+			image.sprite = weapon.ItemIcon;
+			image.enabled = hasIcon;
 		}
 
-		private void OnWeaponLoad(WeaponLoad eventInfo) =>
-			SetWeaponSpriteToImage(eventInfo.isLeft ? _leftWeaponIcon : _rightWeaponIcon, eventInfo.weapon);
+		private void OnWeaponLoad(WeaponLoad eventInfo)
+		{
+			WeaponItem weapon = eventInfo.weapon;
+			SetWeaponSpriteToImage(eventInfo.isLeft ? _leftWeaponIcon : _rightWeaponIcon, weapon, weapon.ItemIcon);
+		}
 
 		private void OnHealthInit(HealthInit eventInfo)
 		{
@@ -77,6 +78,12 @@ namespace SoulsLike
 			_itemPopUpContainer.SetActive(eventInfo.isActive);
 		}
 
+		private void OnInventoryToggle(ToggleInventoryEvent _)
+		{
+			_inventoryActive = !_inventoryActive;
+			_selectionWindow.SetActive(_inventoryActive);
+		}
+
 		private void Subscribe()
 		{
 			this.AddListener<HealthInit>(OnHealthInit);
@@ -86,6 +93,7 @@ namespace SoulsLike
 			this.AddListener<WeaponLoad>(OnWeaponLoad);
 			this.AddListener<InteractTextPopUp>(OnInteractTextPopUp);
 			this.AddListener<ItemTextPopUp>(OnItemTextPopUp);
+			this.AddListener<ToggleInventoryEvent>(OnInventoryToggle);
 		}
 
 		private void Unsubscribe()
@@ -97,6 +105,7 @@ namespace SoulsLike
 			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
 			this.RemoveListener<InteractTextPopUp>(OnInteractTextPopUp);
 			this.RemoveListener<ItemTextPopUp>(OnItemTextPopUp);
+			this.RemoveListener<ToggleInventoryEvent>(OnInventoryToggle);
 		}
 	}
 }

@@ -27,6 +27,7 @@ namespace SoulsLike
 		private bool _quickSlotDownInput = default;
 		private bool _quickSlotLeftInput = default;
 		private bool _quickSlotRightInput = default;
+		private bool _inventoryInput = default;
 
 		private bool _sprintFlag = default;
 		private bool _rollFlag = default;
@@ -65,6 +66,7 @@ namespace SoulsLike
 			HandleAttackInput(isInteracting, canDoCombo);
 			HandleQuickSlotsInput();
 			HandleJumpInput(isInteracting);
+			HandleInventoryInput();
 		}
 
 		public void ResetFlags()
@@ -133,7 +135,13 @@ namespace SoulsLike
 		private void HandleJumpInput(bool isInteracting)
 		{
 			_jumpInput = CheckInput(_inputActions.PlayerActions.Jump);
-			if(_jumpInput && !isInteracting) this.TriggerEvent(new Jump(_moveAmount));
+			if(_jumpInput && !isInteracting) this.TriggerEvent(new JumpEvent(_moveAmount));
+		}
+
+		private void HandleInventoryInput()
+		{
+			_inventoryInput = CheckInput(_inputActions.PlayerActions.Inventory);
+			if(_inventoryInput) this.TriggerEvent(new ToggleInventoryEvent());
 		}
 
 		private static bool CheckInput(InputAction action) => action.WasPerformedThisFrame();

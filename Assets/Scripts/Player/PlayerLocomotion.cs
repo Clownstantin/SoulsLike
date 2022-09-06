@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
+	[RequireComponent(typeof(Rigidbody))]
 	public class PlayerLocomotion : MonoBehaviour
 	{
 		[SerializeField] private MovementData _movementData = default;
@@ -29,9 +30,9 @@ namespace SoulsLike
 
 		private void OnDisable() => Unsubscribe();
 
-		public void Init(Rigidbody rigidbody, PlayerInput inputHandler)
+		public void Init(PlayerInput inputHandler)
 		{
-			_rigidbody = rigidbody;
+			_rigidbody = GetComponent<Rigidbody>();
 			_inputHandler = inputHandler;
 
 			_cameraObject = Camera.main.transform;
@@ -41,7 +42,7 @@ namespace SoulsLike
 			_ignoreForGroundCheck = ~(1 << 8 | 1 << 11);
 		}
 
-		public void HandleMovement(float delta)
+		public void HandleMovement()
 		{
 			if(_inputHandler.RollFlag) return;
 			HandleMoveDirection();
@@ -162,7 +163,7 @@ namespace SoulsLike
 			_myTransform.rotation = targetRotation;
 		}
 
-		private void OnJump(Jump eventInfo)
+		private void OnJump(JumpEvent eventInfo)
 		{
 			if(eventInfo.moveAmount > 0)
 			{
@@ -185,10 +186,17 @@ namespace SoulsLike
 
 		private void OnGamePause(GamePause _) => _rigidbody.isKinematic = true;
 
+		private void OnAnimationPlay(AnimationPlay eventInfo)
+		{
+			_rigidbody.drag = 0;
+			_rigidbody.velocity = eventInfo.velocity;
+		}
+
 		private void Subscribe()
 		{
 			this.AddListener<PickUp>(OnPickUp);
-			this.AddListener<Jump>(OnJump);
+			this.AddListener<JumpEvent>(OnJump);
+			this.AddListener<AnimationPlay>(OnAnimationPlay);
 			this.AddListener<GamePause>(OnGamePause);
 			this.AddListener<GameResume>(OnGameResume);
 		}
@@ -196,7 +204,8 @@ namespace SoulsLike
 		private void Unsubscribe()
 		{
 			this.RemoveListener<PickUp>(OnPickUp);
-			this.RemoveListener<Jump>(OnJump);
+			this.RemoveListener<JumpEvent>(OnJump);
+			this.RemoveListener<AnimationPlay>(OnAnimationPlay);
 			this.RemoveListener<GamePause>(OnGamePause);
 			this.RemoveListener<GameResume>(OnGameResume);
 		}

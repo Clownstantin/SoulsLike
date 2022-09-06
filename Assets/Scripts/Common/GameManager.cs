@@ -93,7 +93,6 @@ namespace SoulsLike
 		private void OnPausePress(InputAction.CallbackContext _)
 		{
 			_isPaused = !_isPaused;
-
 			this.TriggerEvent(_isPaused ? new GamePause() : new GameResume());
 		}
 	}

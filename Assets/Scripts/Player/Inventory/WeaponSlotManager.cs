@@ -5,8 +5,6 @@ namespace SoulsLike
 {
 	public class WeaponSlotManager : MonoBehaviour
 	{
-		[SerializeField] private float _crossFadeTransitionDuration = 0.2f;
-
 		private WeaponItem _attackingWeapon = default;
 
 		private WeaponHolderSlot _leftHandSlot = default;
@@ -14,8 +12,6 @@ namespace SoulsLike
 
 		private DamageDealer _leftDamageDialer = default;
 		private DamageDealer _rightDamageDialer = default;
-
-		private Animator _animator = default;
 
 		private void OnEnable()
 		{
@@ -29,10 +25,8 @@ namespace SoulsLike
 			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
 		}
 
-		public void Init(Animator animator)
+		public void Init()
 		{
-			_animator = animator;
-
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
 
 			foreach(WeaponHolderSlot weaponSlot in weaponHolderSlots)
@@ -42,6 +36,8 @@ namespace SoulsLike
 			}
 		}
 
+		public void SetAttackingWeapon(WeaponItem weapon) => _attackingWeapon = weapon;
+
 		private void OnWeaponInit(WeaponInit eventInfo)
 		{
 			_rightHandSlot.LoadWeaponModel(eventInfo.rightWeapon);
@@ -49,9 +45,6 @@ namespace SoulsLike
 
 			_rightDamageDialer = _rightHandSlot.CurrentWeaponModel.DamageDealer;
 			_leftDamageDialer = _leftHandSlot.CurrentWeaponModel.DamageDealer;
-
-			_animator.CrossFade(eventInfo.rightWeapon.RightHandAnimation, _crossFadeTransitionDuration);
-			_animator.CrossFade(eventInfo.leftWeapon.LeftHandAnimation, _crossFadeTransitionDuration);
 		}
 
 		private void OnWeaponLoad(WeaponLoad eventInfo)
@@ -60,18 +53,11 @@ namespace SoulsLike
 			WeaponItem weaponItem = eventInfo.weapon;
 
 			WeaponHolderSlot slot = isLeft ? _leftHandSlot : _rightHandSlot;
-			string weaponAnimationName = isLeft ? weaponItem.LeftHandAnimation : weaponItem.RightHandAnimation;
-			string emptyAnimationName = isLeft ? AnimationNameBase.LeftArmEmpty : AnimationNameBase.RightArmEmpty;
-
 			slot.LoadWeaponModel(weaponItem);
 
 			if(isLeft) _leftDamageDialer = _leftHandSlot.CurrentWeaponModel.DamageDealer;
 			else _rightDamageDialer = _rightHandSlot.CurrentWeaponModel.DamageDealer;
-
-			_animator.CrossFade(weaponItem ? weaponAnimationName : emptyAnimationName, _crossFadeTransitionDuration);
 		}
-
-		public void SetAttackingWeapon(WeaponItem weapon) => _attackingWeapon = weapon;
 
 		#region AnimationEvents
 		private void DrainStaminaOnLightAttack()

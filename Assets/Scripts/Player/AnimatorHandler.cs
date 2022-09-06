@@ -3,10 +3,12 @@ using UnityEngine;
 
 namespace SoulsLike
 {
+	[RequireComponent(typeof(Animator))]
 	public class AnimatorHandler : MonoBehaviour
 	{
+		[SerializeField] private float _crossFadeTransitionDuration = 0.2f;
+
 		private Animator _animator = default;
-		private Rigidbody _rigidbody = default;
 
 		private int _verticalHash = default;
 		private int _horizontalHash = default;
@@ -32,17 +34,15 @@ namespace SoulsLike
 
 			float delta = Time.deltaTime;
 
-			_rigidbody.drag = 0;
 			Vector3 deltaPosition = _animator.deltaPosition;
 			deltaPosition.y = 0;
 			Vector3 velocity = deltaPosition / delta;
-			_rigidbody.velocity = velocity;
+			this.TriggerEvent(new AnimationPlay(velocity));
 		}
 
-		public void Init(Rigidbody rigidbody, Animator animator)
+		public void Init()
 		{
-			_animator = animator;
-			_rigidbody = rigidbody;
+			_animator = GetComponent<Animator>();
 
 			_verticalHash = Animator.StringToHash(AnimatorParameterBase.Vertical);
 			_horizontalHash = Animator.StringToHash(AnimatorParameterBase.Horizontal);
@@ -109,7 +109,7 @@ namespace SoulsLike
 
 		private void OnPickUp(PickUp _) => PlayTargetAnimation(AnimationNameBase.PickUp, true);
 
-		private void OnJump(Jump _) => PlayTargetAnimation(AnimationNameBase.Jump, true);
+		private void OnJump(JumpEvent _) => PlayTargetAnimation(AnimationNameBase.Jump, true);
 
 		private void OnRoll(Roll eventInfo) =>
 			PlayTargetAnimation(eventInfo.isMoving ? AnimationNameBase.Roll : AnimationNameBase.Stepback, eventInfo.isMoving);
@@ -121,6 +121,22 @@ namespace SoulsLike
 
 		private void OnGamePause(GamePause _) => _animator.enabled = false;
 
+		private void OnWeaponInit(WeaponInit eventInfo)
+		{
+			_animator.CrossFade(eventInfo.rightWeapon.RightHandAnimation, _crossFadeTransitionDuration);
+			_animator.CrossFade(eventInfo.leftWeapon.LeftHandAnimation, _crossFadeTransitionDuration);
+		}
+
+		private void OnWeaponLoad(WeaponLoad eventInfo)
+		{
+			bool isLeft = eventInfo.isLeft;
+			WeaponItem weaponItem = eventInfo.weapon;
+			string weaponAnimationName = isLeft ? weaponItem.LeftHandAnimation : weaponItem.RightHandAnimation;
+			string emptyAnimationName = isLeft ? AnimationNameBase.LeftArmEmpty : AnimationNameBase.RightArmEmpty;
+
+			_animator.CrossFade(weaponItem ? weaponAnimationName : emptyAnimationName, _crossFadeTransitionDuration);
+		}
+
 		private void Subscribe()
 		{
 			this.AddListener<HealthChanged>(OnHealthChangedAction);
@@ -129,7 +145,9 @@ namespace SoulsLike
 			this.AddListener<Fall>(OnFall);
 			this.AddListener<Roll>(OnRoll);
 			this.AddListener<PickUp>(OnPickUp);
-			this.AddListener<Jump>(OnJump);
+			this.AddListener<JumpEvent>(OnJump);
+			this.AddListener<WeaponInit>(OnWeaponInit);
+			this.AddListener<WeaponLoad>(OnWeaponLoad);
 			this.AddListener<GamePause>(OnGamePause);
 			this.AddListener<GameResume>(OnGameResume);
 		}
@@ -142,7 +160,9 @@ namespace SoulsLike
 			this.RemoveListener<Fall>(OnFall);
 			this.RemoveListener<Roll>(OnRoll);
 			this.RemoveListener<PickUp>(OnPickUp);
-			this.RemoveListener<Jump>(OnJump);
+			this.RemoveListener<WeaponInit>(OnWeaponInit);
+			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
+			this.RemoveListener<JumpEvent>(OnJump);
 			this.RemoveListener<GamePause>(OnGamePause);
 			this.RemoveListener<GameResume>(OnGameResume);
 		}

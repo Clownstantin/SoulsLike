@@ -3,11 +3,9 @@
 namespace SoulsLike
 {
 	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerAttackSystem)),
-	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInput), typeof(Rigidbody))]
+	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInput))]
 	public class PlayerManager : UpdateableComponent
 	{
-		private Animator _animator = default;
-		private Rigidbody _rigidbody = default;
 		private AnimatorHandler _animatorHandler = default;
 		private CameraHandler _cameraHandler = default;
 
@@ -30,13 +28,9 @@ namespace SoulsLike
 			_playerInventory = GetComponent<PlayerInventory>();
 			_inputHandler = GetComponent<PlayerInput>();
 			_interactSystem = GetComponent<PlayerInteractSystem>();
-			_rigidbody = GetComponent<Rigidbody>();
 
-			_animator = GetComponentInChildren<Animator>();
 			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
-
-			_weaponSlotManager.Init(_animator);
 		}
 
 		protected override void OnStart()
@@ -44,9 +38,10 @@ namespace SoulsLike
 			_myTransform = transform;
 			_cameraHandler = GameManager.Instance.CameraHandler;
 
+			_weaponSlotManager.Init();
 			_playerAttack.Init(_playerInventory, _animatorHandler, _weaponSlotManager);
-			_playerLocomotion.Init(_rigidbody, _inputHandler);
-			_animatorHandler.Init(_rigidbody, _animator);
+			_playerLocomotion.Init(_inputHandler);
+			_animatorHandler.Init();
 			_interactSystem.Init();
 			_playerInventory.Init();
 			_playerStats.Init();
@@ -61,7 +56,7 @@ namespace SoulsLike
 
 			if(!isInteracting)
 			{
-				_playerLocomotion.HandleMovement(delta);
+				_playerLocomotion.HandleMovement();
 				_playerLocomotion.HandleRotation(delta, _animatorHandler.CanRotate);
 				_playerLocomotion.HandleRollingAndSprinting();
 			}
