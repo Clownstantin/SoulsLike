@@ -127,7 +127,7 @@ namespace SoulsLike
 
 			if(!_quickSlotRightInput && !_quickSlotLeftInput) return;
 
-			this.TriggerEvent(new WeaponSwitch(_quickSlotRightInput, _quickSlotLeftInput));
+			this.TriggerEvent(new WeaponSwitchEvent(_quickSlotRightInput, _quickSlotLeftInput));
 		}
 
 		private void HandleInteractInput() => _interactInput = CheckInput(_inputActions.PlayerActions.Interact);
@@ -141,7 +141,7 @@ namespace SoulsLike
 		private void HandleInventoryInput()
 		{
 			_inventoryInput = CheckInput(_inputActions.PlayerActions.Inventory);
-			if(_inventoryInput) this.TriggerEvent(new ToggleInventoryEvent());
+			if(_inventoryInput) this.TriggerEvent(new ToggleSelectionMenuEvent());
 		}
 
 		private static bool CheckInput(InputAction action) => action.WasPerformedThisFrame();

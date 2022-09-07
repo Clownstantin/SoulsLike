@@ -37,7 +37,7 @@ namespace SoulsLike
 			Vector3 deltaPosition = _animator.deltaPosition;
 			deltaPosition.y = 0;
 			Vector3 velocity = deltaPosition / delta;
-			this.TriggerEvent(new AnimationPlay(velocity));
+			this.TriggerEvent(new AnimationPlayEvent(velocity));
 		}
 
 		public void Init()
@@ -107,7 +107,7 @@ namespace SoulsLike
 
 		private void OnFall(Fall _) => PlayTargetAnimation(AnimationNameBase.Fall, true);
 
-		private void OnPickUp(PickUp _) => PlayTargetAnimation(AnimationNameBase.PickUp, true);
+		private void OnPickUp(PickUpEvent _) => PlayTargetAnimation(AnimationNameBase.PickUp, true);
 
 		private void OnJump(JumpEvent _) => PlayTargetAnimation(AnimationNameBase.Jump, true);
 
@@ -121,13 +121,13 @@ namespace SoulsLike
 
 		private void OnGamePause(GamePause _) => _animator.enabled = false;
 
-		private void OnWeaponInit(WeaponInit eventInfo)
+		private void OnWeaponInit(WeaponInitEvent eventInfo)
 		{
 			_animator.CrossFade(eventInfo.rightWeapon.RightHandAnimation, _crossFadeTransitionDuration);
 			_animator.CrossFade(eventInfo.leftWeapon.LeftHandAnimation, _crossFadeTransitionDuration);
 		}
 
-		private void OnWeaponLoad(WeaponLoad eventInfo)
+		private void OnWeaponLoad(WeaponLoadEvent eventInfo)
 		{
 			bool isLeft = eventInfo.isLeft;
 			WeaponItem weaponItem = eventInfo.weapon;
@@ -144,10 +144,10 @@ namespace SoulsLike
 			this.AddListener<Landed>(OnLand);
 			this.AddListener<Fall>(OnFall);
 			this.AddListener<Roll>(OnRoll);
-			this.AddListener<PickUp>(OnPickUp);
+			this.AddListener<PickUpEvent>(OnPickUp);
 			this.AddListener<JumpEvent>(OnJump);
-			this.AddListener<WeaponInit>(OnWeaponInit);
-			this.AddListener<WeaponLoad>(OnWeaponLoad);
+			this.AddListener<WeaponInitEvent>(OnWeaponInit);
+			this.AddListener<WeaponLoadEvent>(OnWeaponLoad);
 			this.AddListener<GamePause>(OnGamePause);
 			this.AddListener<GameResume>(OnGameResume);
 		}
@@ -159,9 +159,9 @@ namespace SoulsLike
 			this.RemoveListener<Landed>(OnLand);
 			this.RemoveListener<Fall>(OnFall);
 			this.RemoveListener<Roll>(OnRoll);
-			this.RemoveListener<PickUp>(OnPickUp);
-			this.RemoveListener<WeaponInit>(OnWeaponInit);
-			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
+			this.RemoveListener<PickUpEvent>(OnPickUp);
+			this.RemoveListener<WeaponInitEvent>(OnWeaponInit);
+			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
 			this.RemoveListener<JumpEvent>(OnJump);
 			this.RemoveListener<GamePause>(OnGamePause);
 			this.RemoveListener<GameResume>(OnGameResume);

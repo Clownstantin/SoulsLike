@@ -180,13 +180,13 @@ namespace SoulsLike
 			_moveDirection.y = 0;
 		}
 
-		private void OnPickUp(PickUp _) => _rigidbody.velocity = Vector3.zero;
+		private void OnPickUp(PickUpEvent _) => _rigidbody.velocity = Vector3.zero;
 
 		private void OnGameResume(GameResume _) => _rigidbody.isKinematic = false;
 
 		private void OnGamePause(GamePause _) => _rigidbody.isKinematic = true;
 
-		private void OnAnimationPlay(AnimationPlay eventInfo)
+		private void OnAnimationPlay(AnimationPlayEvent eventInfo)
 		{
 			_rigidbody.drag = 0;
 			_rigidbody.velocity = eventInfo.velocity;
@@ -194,18 +194,18 @@ namespace SoulsLike
 
 		private void Subscribe()
 		{
-			this.AddListener<PickUp>(OnPickUp);
+			this.AddListener<PickUpEvent>(OnPickUp);
 			this.AddListener<JumpEvent>(OnJump);
-			this.AddListener<AnimationPlay>(OnAnimationPlay);
+			this.AddListener<AnimationPlayEvent>(OnAnimationPlay);
 			this.AddListener<GamePause>(OnGamePause);
 			this.AddListener<GameResume>(OnGameResume);
 		}
 
 		private void Unsubscribe()
 		{
-			this.RemoveListener<PickUp>(OnPickUp);
+			this.RemoveListener<PickUpEvent>(OnPickUp);
 			this.RemoveListener<JumpEvent>(OnJump);
-			this.RemoveListener<AnimationPlay>(OnAnimationPlay);
+			this.RemoveListener<AnimationPlayEvent>(OnAnimationPlay);
 			this.RemoveListener<GamePause>(OnGamePause);
 			this.RemoveListener<GameResume>(OnGameResume);
 		}

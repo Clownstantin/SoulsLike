@@ -10,7 +10,7 @@ namespace SoulsLike
 
 		public override void PickUp()
 		{
-			this.TriggerEvent(new PickUp(_item));
+			this.TriggerEvent(new PickUpEvent(_item));
 			this.TriggerEvent(new ItemTextPopUp(_item, true));
 			Destroy(gameObject);
 		}

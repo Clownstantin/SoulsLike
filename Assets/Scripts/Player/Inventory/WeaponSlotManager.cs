@@ -15,14 +15,14 @@ namespace SoulsLike
 
 		private void OnEnable()
 		{
-			this.AddListener<WeaponInit>(OnWeaponInit);
-			this.AddListener<WeaponLoad>(OnWeaponLoad);
+			this.AddListener<WeaponInitEvent>(OnWeaponInit);
+			this.AddListener<WeaponLoadEvent>(OnWeaponLoad);
 		}
 
 		private void OnDisable()
 		{
-			this.RemoveListener<WeaponInit>(OnWeaponInit);
-			this.RemoveListener<WeaponLoad>(OnWeaponLoad);
+			this.RemoveListener<WeaponInitEvent>(OnWeaponInit);
+			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
 		}
 
 		public void Init()
@@ -38,7 +38,7 @@ namespace SoulsLike
 
 		public void SetAttackingWeapon(WeaponItem weapon) => _attackingWeapon = weapon;
 
-		private void OnWeaponInit(WeaponInit eventInfo)
+		private void OnWeaponInit(WeaponInitEvent eventInfo)
 		{
 			_rightHandSlot.LoadWeaponModel(eventInfo.rightWeapon);
 			_leftHandSlot.LoadWeaponModel(eventInfo.leftWeapon);
@@ -47,7 +47,7 @@ namespace SoulsLike
 			_leftDamageDialer = _leftHandSlot.CurrentWeaponModel.DamageDealer;
 		}
 
-		private void OnWeaponLoad(WeaponLoad eventInfo)
+		private void OnWeaponLoad(WeaponLoadEvent eventInfo)
 		{
 			bool isLeft = eventInfo.isLeft;
 			WeaponItem weaponItem = eventInfo.weapon;

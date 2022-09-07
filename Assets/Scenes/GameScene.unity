@@ -2558,6 +2558,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2203275372582256915, guid: e79456d6cdf3016468813e91b1901fff, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2203275372582256915, guid: e79456d6cdf3016468813e91b1901fff, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8894405215528987896, guid: e79456d6cdf3016468813e91b1901fff, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8894405215528987896, guid: e79456d6cdf3016468813e91b1901fff, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8894405216497940816, guid: e79456d6cdf3016468813e91b1901fff, type: 3}
       propertyPath: m_Name
       value: Player UI

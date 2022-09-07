@@ -25,14 +25,16 @@ namespace SoulsLike
 
 		private void OnEnable()
 		{
-			this.AddListener<WeaponSwitch>(ChangeWeaponInSlot);
-			this.AddListener<PickUp>(OnPickUp);
+			this.AddListener<WeaponSwitchEvent>(ChangeWeaponInSlot);
+			this.AddListener<PickUpEvent>(OnPickUp);
+			this.AddListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
 		}
 
 		private void OnDisable()
 		{
-			this.RemoveListener<WeaponSwitch>(ChangeWeaponInSlot);
-			this.RemoveListener<PickUp>(OnPickUp);
+			this.RemoveListener<WeaponSwitchEvent>(ChangeWeaponInSlot);
+			this.RemoveListener<PickUpEvent>(OnPickUp);
+			this.RemoveListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
 		}
 
 		public void Init()
@@ -42,16 +44,16 @@ namespace SoulsLike
 			_rightWeapon = _unarmedWeapon;
 			_leftWeapon = _unarmedWeapon;
 
-			this.TriggerEvent(new WeaponInit(_rightWeapon, _leftWeapon));
+			this.TriggerEvent(new WeaponInitEvent(_rightWeapon, _leftWeapon));
 		}
 
-		private void ChangeWeaponInSlot(WeaponSwitch eventInfo)
+		private void ChangeWeaponInSlot(WeaponSwitchEvent eventInfo)
 		{
 			if(eventInfo.leftInput) HandleWeaponSwitch(ref _currentLeftWeaponIndex, out _leftWeapon, _leftHandWeapons, true);
 			else if(eventInfo.rightInput) HandleWeaponSwitch(ref _currentRightWeaponIndex, out _rightWeapon, _rightHandWeapons);
 		}
 
-		private void OnPickUp(PickUp eventInfo) => _itemInventory.Add(eventInfo.item);
+		private void OnPickUp(PickUpEvent eventInfo) => _itemInventory.Add(eventInfo.item);
 
 		private void HandleWeaponSwitch(ref int index, out WeaponItem weapon, IReadOnlyList<WeaponItem> targetWeapons, bool isLeft = false)
 		{
@@ -64,7 +66,9 @@ namespace SoulsLike
 			}
 			else weapon = targetWeapons[index];
 
-			this.TriggerEvent(new WeaponLoad(weapon, isLeft));
+			this.TriggerEvent(new WeaponLoadEvent(weapon, isLeft));
 		}
+
+		private void OnSelectionMenuToggle(ToggleSelectionMenuEvent _) => this.TriggerEvent(new UpdateInventoryEvent(_itemInventory));
 	}
 }
