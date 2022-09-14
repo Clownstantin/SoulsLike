@@ -36,8 +36,8 @@ namespace SoulsLike
 
 		public void HandleCameraRotation(float delta, float mouseXInput, float mouseYInput)
 		{
-			_lookAngle += mouseXInput * _cameraData.lookSpeed / delta;
-			_pivotAngle -= mouseYInput * _cameraData.pivotSpeed / delta;
+			_lookAngle += mouseXInput * _cameraData.lookSpeed * delta;
+			_pivotAngle -= mouseYInput * _cameraData.pivotSpeed * delta;
 			_pivotAngle = Mathf.Clamp(_pivotAngle, -_cameraData.clampPivot, _cameraData.clampPivot);
 
 			Vector3 rotation = Vector3.zero;

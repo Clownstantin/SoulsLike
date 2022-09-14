@@ -18,6 +18,8 @@ namespace SoulsLike
 		private Vector3 _targetPosition = default;
 		private LayerMask _ignoreForGroundCheck = default;
 
+		private float _currentSpeed = default;
+
 		private bool _isGrounded = default;
 		private bool _isSprinting = default;
 		private bool _isInAir = default;
@@ -45,30 +47,33 @@ namespace SoulsLike
 		public void HandleMovement()
 		{
 			if(_inputHandler.RollFlag) return;
+
 			HandleMoveDirection();
-
-			float speed = _movementData.movementSpeed;
-
-			if(_inputHandler.SprintFlag && _inputHandler.MoveAmount > 0.5f)
-			{
-				speed = _movementData.sprintSpeed;
-				_isSprinting = true;
-			}
-			else
-			{
-				if(_inputHandler.MoveAmount < 0.5f) speed = _movementData.walkingSpeed;
-				_isSprinting = false;
-			}
-
-			_moveDirection *= speed;
+			_moveDirection *= _currentSpeed;
 
 			Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
 			_rigidbody.velocity = projectedVelocity;
 		}
 
-		public void HandleRollingAndSprinting()
+		public void HandleSprinting()
 		{
-			if(!_inputHandler.RollFlag) return;
+			_currentSpeed = _movementData.movementSpeed;
+
+			if(_inputHandler.SprintFlag && _inputHandler.MoveAmount > 0.5f)
+			{
+				_currentSpeed = _movementData.sprintSpeed;
+				_isSprinting = true;
+			}
+			else
+			{
+				if(_inputHandler.MoveAmount < 0.5f) _currentSpeed = _movementData.walkingSpeed;
+				_isSprinting = false;
+			}
+		}
+
+		public void HandleRolling(bool rollFlag)
+		{
+			if(!rollFlag) return;
 			HandleMoveDirection();
 
 			bool isMoving = _inputHandler.MoveAmount > 0;
@@ -163,6 +168,14 @@ namespace SoulsLike
 			_myTransform.rotation = targetRotation;
 		}
 
+		private void HandleMoveDirection()
+		{
+			_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
+			_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
+			_moveDirection.Normalize();
+			_moveDirection.y = 0;
+		}
+
 		private void OnJump(JumpEvent eventInfo)
 		{
 			if(eventInfo.moveAmount > 0)
@@ -170,14 +183,6 @@ namespace SoulsLike
 				HandleMoveDirection();
 				_myTransform.rotation = Quaternion.LookRotation(_moveDirection);
 			}
-		}
-
-		private void HandleMoveDirection()
-		{
-			_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
-			_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
-			_moveDirection.Normalize();
-			_moveDirection.y = 0;
 		}
 
 		private void OnPickUp(PickUpEvent _) => _rigidbody.velocity = Vector3.zero;

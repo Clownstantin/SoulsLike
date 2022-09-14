@@ -19,6 +19,8 @@ namespace SoulsLike
 		private WeaponSlotManager _weaponSlotManager = default;
 		private Transform _myTransform = default;
 
+		private bool _isInteracting = default;
+
 		#region MonoBehaviour
 		private void Awake()
 		{
@@ -49,33 +51,40 @@ namespace SoulsLike
 
 		public override void OnUpdate(float delta)
 		{
-			bool isInteracting = _animatorHandler.IsInteracting;
+			_isInteracting = _animatorHandler.IsInteracting;
 
-			_inputHandler.TickInput(delta, isInteracting, _animatorHandler.CanDoCombo);
+			_inputHandler.TickInput(delta, _isInteracting, _animatorHandler.CanDoCombo);
 			_animatorHandler.UpdateAnimatorValues(delta, _inputHandler.MoveAmount, 0, _playerLocomotion.IsSprinting, _playerLocomotion.IsInAir);
-
-			if(!isInteracting)
-			{
-				_playerLocomotion.HandleMovement();
-				_playerLocomotion.HandleRotation(delta, _animatorHandler.CanRotate);
-				_playerLocomotion.HandleRollingAndSprinting();
-			}
-
-			_playerLocomotion.HandleFalling(delta, isInteracting);
 			_interactSystem.CheckObjectToInteract(_inputHandler.InteractInput);
+
+			if(!_isInteracting)
+			{
+				_playerLocomotion.HandleRolling(_inputHandler.RollFlag);
+				_playerLocomotion.HandleSprinting();
+			}
 		}
 
 		public override void OnFixedUpdate(float delta)
 		{
-			if(_cameraHandler == null) return;
-			_cameraHandler.FollowTarget(delta, _myTransform.position);
-			_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
+			if(!_isInteracting)
+			{
+				_playerLocomotion.HandleMovement();
+				_playerLocomotion.HandleRotation(delta, _animatorHandler.CanRotate);
+			}
+
+			_playerLocomotion.HandleFalling(delta, _isInteracting);
 		}
 
 		public override void OnLateUpdate(float delta)
 		{
 			_inputHandler.ResetFlags();
 			_playerLocomotion.HandleInAirTimer(delta);
+
+			if(_cameraHandler)
+			{
+				_cameraHandler.FollowTarget(delta, _myTransform.position);
+				_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
+			}
 		}
 		#endregion
 	}

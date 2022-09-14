@@ -45,6 +45,7 @@ namespace SoulsLike
 			_leftWeapon = _unarmedWeapon;
 
 			this.TriggerEvent(new WeaponInitEvent(_rightWeapon, _leftWeapon));
+			this.TriggerEvent(new UpdateInventoryEvent(_itemInventory, _rightHandWeapons, _leftHandWeapons));
 		}
 
 		private void ChangeWeaponInSlot(WeaponSwitchEvent eventInfo)
@@ -69,6 +70,7 @@ namespace SoulsLike
 			this.TriggerEvent(new WeaponLoadEvent(weapon, isLeft));
 		}
 
-		private void OnSelectionMenuToggle(ToggleSelectionMenuEvent _) => this.TriggerEvent(new UpdateInventoryEvent(_itemInventory));
+		private void OnSelectionMenuToggle(ToggleSelectionMenuEvent _) =>
+			this.TriggerEvent(new UpdateInventoryEvent(_itemInventory, _rightHandWeapons, _leftHandWeapons));
 	}
 }
