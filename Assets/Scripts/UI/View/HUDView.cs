@@ -17,6 +17,7 @@ namespace SoulsLike.UI
 		[SerializeField] private GameObject _hudWindow;
 		[SerializeField] private GameObject _selectionWindow;
 		[SerializeField] private GameObject _inventoryWindow;
+		[SerializeField] private GameObject _equipmentWindow;
 		[SerializeField] private bool _isSelectionMenuActive;
 
 		public void Subscribe()
@@ -73,7 +74,11 @@ namespace SoulsLike.UI
 			_selectionWindow.SetActive(_isSelectionMenuActive);
 			_hudWindow.SetActive(!_isSelectionMenuActive);
 
-			if(!_isSelectionMenuActive) _inventoryWindow.SetActive(false);
+			if(!_isSelectionMenuActive)
+			{
+				_inventoryWindow.SetActive(false);
+				_equipmentWindow.SetActive(false);
+			}
 		}
 	}
 }

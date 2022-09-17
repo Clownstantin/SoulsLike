@@ -18,5 +18,10 @@ namespace SoulsLike
 		public float cameraSphereRadius;
 		public float cameraCollisionOffset;
 		public float minCollisionOffset;
+		[Header("LockOn Settings")]
+		public float lockOnLerpSpeed;
+		public float maxLockOnDistance;
+		public float lockOnSphereRadius;
+		public float clampAngle;
 	}
 }

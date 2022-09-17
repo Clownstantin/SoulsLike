@@ -2,8 +2,8 @@
 
 namespace SoulsLike
 {
-	[RequireComponent(typeof(IUnitStats))]
-	public class EnemyManager : MonoBehaviour
+	[RequireComponent(typeof(EnemyStats))]
+	public class EnemyManager : UnitManager
 	{
 		private Animator _animator = default;
 		private EnemyStats _enemyStats = default;
@@ -12,6 +12,10 @@ namespace SoulsLike
 		{
 			_animator = GetComponentInChildren<Animator>();
 			_enemyStats = GetComponent<EnemyStats>();
+		}
+
+		public override void OnUpdate(float delta)
+		{
 		}
 
 		private void Start() => _enemyStats.Init(_animator);

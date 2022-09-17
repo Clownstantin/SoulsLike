@@ -18,6 +18,8 @@ namespace SoulsLike
 		private float _mouseY = default;
 
 		private bool _interactInput = default;
+		private bool _lockOnInput = default;
+
 		private bool _rollInput = default;
 		private bool _jumpInput = default;
 		private bool _rightLightAttackInput = default;
@@ -67,6 +69,7 @@ namespace SoulsLike
 			HandleQuickSlotsInput();
 			HandleJumpInput(isInteracting);
 			HandleInventoryInput();
+			HandleLockOnInput();
 		}
 
 		public void ResetFlags()
@@ -116,7 +119,6 @@ namespace SoulsLike
 			_rightHeavyAttackInput = CheckInput(_inputActions.PlayerActions.HeavyAttack);
 
 			if(!_rightLightAttackInput && !_rightHeavyAttackInput) return;
-
 			this.TriggerEvent(new RightWeaponAttack(_rightLightAttackInput, _rightHeavyAttackInput, isInteracting, canDocombo));
 		}
 
@@ -142,6 +144,12 @@ namespace SoulsLike
 		{
 			_inventoryInput = CheckInput(_inputActions.PlayerActions.Inventory);
 			if(_inventoryInput) this.TriggerEvent(new ToggleSelectionMenuEvent());
+		}
+
+		private void HandleLockOnInput()
+		{
+			_lockOnInput = CheckInput(_inputActions.PlayerActions.LockOn);
+			if(_lockOnInput) this.TriggerEvent(new LockOnTargetEvent());
 		}
 
 		private static bool CheckInput(InputAction action) => action.WasPerformedThisFrame();

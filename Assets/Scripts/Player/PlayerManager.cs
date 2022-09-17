@@ -4,7 +4,7 @@ namespace SoulsLike
 {
 	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerAttackSystem)),
 	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInput))]
-	public class PlayerManager : UpdateableComponent
+	public class PlayerManager : UnitManager
 	{
 		private AnimatorHandler _animatorHandler = default;
 		private CameraHandler _cameraHandler = default;
@@ -41,6 +41,7 @@ namespace SoulsLike
 			_cameraHandler = GameManager.Instance.CameraHandler;
 
 			_weaponSlotManager.Init();
+			_cameraHandler.Init(_myTransform);
 			_playerAttack.Init(_playerInventory, _animatorHandler, _weaponSlotManager);
 			_playerLocomotion.Init(_inputHandler);
 			_animatorHandler.Init();
@@ -82,7 +83,7 @@ namespace SoulsLike
 
 			if(_cameraHandler)
 			{
-				_cameraHandler.FollowTarget(delta, _myTransform.position);
+				_cameraHandler.FollowTarget(delta);
 				_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
 			}
 		}
