@@ -9,9 +9,11 @@ namespace SoulsLike
 		[SerializeField] private CameraData _cameraData = default;
 
 		private List<UnitManager> _availableTargets = default;
-		private Transform _nearestLockOnTarget = default;
+		private Transform _currentLockOnTarget = default;
+		private Transform _leftLockOnTarget = default;
+		private Transform _rightLockOnTarget = default;
 
-		private Transform _targetTransform = default;
+		private Transform _playerTransform = default;
 		private Transform _myTransform = default;
 
 		private Vector3 _cameraPosition = default;
@@ -34,16 +36,24 @@ namespace SoulsLike
 			_ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
 		}
 
-		private void OnEnable() => this.AddListener<LockOnTargetEvent>(OnLockOnTarget);
+		private void OnEnable()
+		{
+			this.AddListener<LockOnTargetEvent>(OnLockOnTarget);
+			this.AddListener<SwitchOnTargetEvent>(OnSwitchTarget);
+		}
 
-		private void OnDisable() => this.RemoveListener<LockOnTargetEvent>(OnLockOnTarget);
+		private void OnDisable()
+		{
+			this.RemoveListener<LockOnTargetEvent>(OnLockOnTarget);
+			this.RemoveListener<SwitchOnTargetEvent>(OnSwitchTarget);
+		}
 		#endregion
 
-		public void Init(Transform targetTransform) => _targetTransform = targetTransform;
+		public void Init(Transform playerTransform) => _playerTransform = playerTransform;
 
 		public void FollowTarget(float delta)
 		{
-			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, _targetTransform.position,
+			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, _playerTransform.position,
 								ref _cameraFollowVelocity, delta * _cameraData.followSpeed);
 			_myTransform.position = targetPos;
 
@@ -74,11 +84,11 @@ namespace SoulsLike
 			{
 				float velocity = 0;
 
-				Vector3 dir = (_nearestLockOnTarget.position - _myTransform.position).normalized;
+				Vector3 dir = (_currentLockOnTarget.position - _myTransform.position).normalized;
 				dir.y = 0;
 				_myTransform.rotation = Quaternion.Lerp(_myTransform.rotation, Quaternion.LookRotation(dir), delta * _cameraData.lockOnLerpSpeed);
 
-				dir = (_nearestLockOnTarget.position - cameraPivotTransform.position).normalized;
+				dir = (_currentLockOnTarget.position - cameraPivotTransform.position).normalized;
 				Vector3 eulerAngle = Quaternion.LookRotation(dir).eulerAngles;
 				eulerAngle.y = 0;
 				cameraPivotTransform.localEulerAngles = eulerAngle;
@@ -101,31 +111,63 @@ namespace SoulsLike
 
 			for(int i = 0; i < _availableTargets.Count; i++)
 			{
-				float distanceFromTarget = Vector3.Distance(_targetTransform.position, _availableTargets[i].transform.position);
+				float distanceFromTarget = Vector3.Distance(_playerTransform.position, _availableTargets[i].transform.position);
 
 				if(distanceFromTarget < shortestDistance)
 				{
 					shortestDistance = distanceFromTarget;
-					_nearestLockOnTarget = _availableTargets[i].LockOnTransform;
+					_currentLockOnTarget = _availableTargets[i].LockOnTransform;
 				}
 			}
 		}
 
+		private void OnSwitchTarget(SwitchOnTargetEvent eventInfo)
+		{
+			if(!_isLockedOnTarget) return;
+
+			float shortestLeftTargetDistance = Mathf.Infinity;
+			float shortestRightTargetDistance = Mathf.Infinity;
+
+			for(int i = 0; i < _availableTargets.Count; i++)
+			{
+				Vector3 relativeTargetPos = _currentLockOnTarget.InverseTransformPoint(_availableTargets[i].transform.position);
+				float distanceFromLeftTarget = _currentLockOnTarget.transform.position.x - _availableTargets[i].transform.position.x;
+				float distanceFromRightTarget = _currentLockOnTarget.transform.position.x + _availableTargets[i].transform.position.x;
+
+				if(relativeTargetPos.x > 0 && distanceFromLeftTarget < shortestLeftTargetDistance)
+				{
+					shortestLeftTargetDistance = distanceFromLeftTarget;
+					_leftLockOnTarget = _availableTargets[i].LockOnTransform;
+				}
+
+				if(relativeTargetPos.x < 0 && distanceFromRightTarget < shortestRightTargetDistance)
+				{
+					shortestRightTargetDistance = distanceFromRightTarget;
+					_rightLockOnTarget = _availableTargets[i].LockOnTransform;
+				}
+			}
+
+			Log.Send($"Targets to switch {_availableTargets.Count}");
+
+			if(eventInfo.isLeftTarget && _leftLockOnTarget) _currentLockOnTarget = _leftLockOnTarget;
+			else if(eventInfo.isRightTarget && _rightLockOnTarget) _currentLockOnTarget = _rightLockOnTarget;
+		}
+
 		private void FindAvailableTargets()
 		{
-			Collider[] colliders = Physics.OverlapSphere(_targetTransform.position, _cameraData.lockOnSphereRadius);
+			Collider[] colliders = Physics.OverlapSphere(_playerTransform.position, _cameraData.lockOnSphereRadius);
 
 			for(int i = 0; i < colliders.Length; i++)
 			{
-				if(colliders[i].TryGetComponent(out UnitManager character))
+				if(colliders[i].TryGetComponent(out UnitManager unit))
 				{
-					Vector3 lockTargetDir = (character.transform.position - _targetTransform.position).normalized;
-					float distanceFromTarget = Vector3.Distance(_targetTransform.position, character.transform.position);
+					Vector3 lockTargetDir = (unit.transform.position - _playerTransform.position).normalized;
+					float distanceFromTarget = Vector3.Distance(_playerTransform.position, unit.transform.position);
 					float viewAngle = Vector3.Angle(lockTargetDir, _cameraData.cameraTransform.forward);
 
-					if(character.transform.root != _targetTransform.root && viewAngle > -_cameraData.clampAngle &&
+					if(unit.transform.root != _playerTransform.root && viewAngle > -_cameraData.clampAngle &&
 						viewAngle < _cameraData.clampAngle && distanceFromTarget <= _cameraData.maxLockOnDistance)
-						_availableTargets.Add(character);
+						_availableTargets.Add(unit);
 				}
 			}
 		}
@@ -133,7 +175,9 @@ namespace SoulsLike
 		private void ClearAvailableTargets()
 		{
 			_availableTargets.Clear();
-			_nearestLockOnTarget = null;
+			_currentLockOnTarget = null;
+			_rightLockOnTarget = null;
+			_leftLockOnTarget = null;
 		}
 
 		private void HandleCameraCollisions(float delta)

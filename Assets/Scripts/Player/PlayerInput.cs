@@ -19,6 +19,8 @@ namespace SoulsLike
 
 		private bool _interactInput = default;
 		private bool _lockOnInput = default;
+		private bool _lockOnLeftInput = default;
+		private bool _lockOnRightInput = default;
 
 		private bool _rollInput = default;
 		private bool _jumpInput = default;
@@ -124,11 +126,10 @@ namespace SoulsLike
 
 		private void HandleQuickSlotsInput()
 		{
-			_quickSlotRightInput = CheckInput(_inputActions.PlayerActions.DPadRight);
-			_quickSlotLeftInput = CheckInput(_inputActions.PlayerActions.DPadLeft);
+			_quickSlotRightInput = CheckInput(_inputActions.PlayerQuickSlots.DPadRight);
+			_quickSlotLeftInput = CheckInput(_inputActions.PlayerQuickSlots.DPadLeft);
 
 			if(!_quickSlotRightInput && !_quickSlotLeftInput) return;
-
 			this.TriggerEvent(new WeaponSwitchEvent(_quickSlotRightInput, _quickSlotLeftInput));
 		}
 
@@ -149,7 +150,13 @@ namespace SoulsLike
 		private void HandleLockOnInput()
 		{
 			_lockOnInput = CheckInput(_inputActions.PlayerActions.LockOn);
+			_lockOnLeftInput = CheckInput(_inputActions.PlayerActions.LockSwitchLeft);
+			_lockOnRightInput = CheckInput(_inputActions.PlayerActions.LockSwitchRight);
+
 			if(_lockOnInput) this.TriggerEvent(new LockOnTargetEvent());
+
+			if(!_lockOnLeftInput && !_lockOnRightInput) return;
+			this.TriggerEvent(new SwitchOnTargetEvent(_lockOnLeftInput, _lockOnRightInput));
 		}
 
 		private static bool CheckInput(InputAction action) => action.WasPerformedThisFrame();
