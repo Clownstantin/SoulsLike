@@ -9,7 +9,9 @@ namespace SoulsLike
 		[SerializeField] private MovementData _movementData = default;
 
 		private PlayerInput _inputHandler = default;
-		private Transform _cameraObject = default;
+		private CameraHandler _cameraHandler = default;
+
+		private Transform _cameraTransform = default;
 		private Transform _myTransform = default;
 		private Rigidbody _rigidbody = default;
 
@@ -32,12 +34,13 @@ namespace SoulsLike
 
 		private void OnDisable() => Unsubscribe();
 
-		public void Init(PlayerInput inputHandler)
+		public void Init(PlayerInput inputHandler, CameraHandler cameraHandler)
 		{
 			_rigidbody = GetComponent<Rigidbody>();
 			_inputHandler = inputHandler;
+			_cameraHandler = cameraHandler;
 
-			_cameraObject = Camera.main.transform;
+			_cameraTransform = _cameraHandler.CameraTransform;
 			_myTransform = transform;
 
 			_isGrounded = true;
@@ -154,15 +157,29 @@ namespace SoulsLike
 				_myTransform.position = _targetPosition;
 		}
 
-		public void HandleRotation(float delta, bool canRotate)
+		public void HandleRotation(float delta)
 		{
-			if(!canRotate) return;
-			HandleMoveDirection();
+			if(_cameraHandler.IsLockedOnTarget && !_inputHandler.SprintFlag && !_inputHandler.RollFlag)
+			{
+				Vector3 rotationDir = _cameraHandler.CurrentLockOnTarget.transform.position - _myTransform.position;
+				rotationDir.y = 0;
+				rotationDir.Normalize();
 
-			if(_moveDirection == Vector3.zero) _moveDirection = _myTransform.forward;
+				RotateTowardsDirection(delta, rotationDir);
+			}
+			else
+			{
+				HandleMoveDirection();
 
+				if(_moveDirection == Vector3.zero) _moveDirection = _myTransform.forward;
+				RotateTowardsDirection(delta, _moveDirection);
+			}
+		}
+
+		private void RotateTowardsDirection(float delta, Vector3 direction)
+		{
 			float rotSpeed = _movementData.rotationSpeed;
-			Quaternion lookRotation = Quaternion.LookRotation(_moveDirection);
+			Quaternion lookRotation = Quaternion.LookRotation(direction);
 			Quaternion targetRotation = Quaternion.Slerp(_myTransform.rotation, lookRotation, rotSpeed * delta);
 
 			_myTransform.rotation = targetRotation;
@@ -170,8 +187,8 @@ namespace SoulsLike
 
 		private void HandleMoveDirection()
 		{
-			_moveDirection = _cameraObject.forward * _inputHandler.Vertical;
-			_moveDirection += _cameraObject.right * _inputHandler.Horizontal;
+			_moveDirection = _cameraTransform.forward * _inputHandler.Vertical;
+			_moveDirection += _cameraTransform.right * _inputHandler.Horizontal;
 			_moveDirection.Normalize();
 			_moveDirection.y = 0;
 		}

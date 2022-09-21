@@ -17,7 +17,7 @@ namespace SoulsLike
 		private Transform _myTransform = default;
 
 		private Vector3 _cameraPosition = default;
-		private Vector3 _cameraFollowVelocity = default;
+		private Vector3 _cameraVelocity = default;
 		private LayerMask _ignoreLayers = default;
 
 		private float _defaultPositionZ = default;
@@ -26,6 +26,10 @@ namespace SoulsLike
 		private float _pivotAngle = default;
 
 		private bool _isLockedOnTarget = default;
+
+		public bool IsLockedOnTarget => _isLockedOnTarget;
+		public Transform CurrentLockOnTarget => _currentLockOnTarget;
+		public Transform CameraTransform => _cameraData.cameraTransform;
 
 		#region Monobehavior
 		private void Awake()
@@ -54,7 +58,7 @@ namespace SoulsLike
 		public void FollowTarget(float delta)
 		{
 			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, _playerTransform.position,
-								ref _cameraFollowVelocity, delta * _cameraData.followSpeed);
+								ref _cameraVelocity, delta * _cameraData.followSpeed);
 			_myTransform.position = targetPos;
 
 			HandleCameraCollisions(delta);
@@ -82,8 +86,6 @@ namespace SoulsLike
 			}
 			else
 			{
-				float velocity = 0;
-
 				Vector3 dir = (_currentLockOnTarget.position - _myTransform.position).normalized;
 				dir.y = 0;
 				_myTransform.rotation = Quaternion.Lerp(_myTransform.rotation, Quaternion.LookRotation(dir), delta * _cameraData.lockOnLerpSpeed);
@@ -93,6 +95,17 @@ namespace SoulsLike
 				eulerAngle.y = 0;
 				cameraPivotTransform.localEulerAngles = eulerAngle;
 			}
+		}
+
+		public void HandleCameraHeight(float delta)
+		{
+			Vector3 velocity = Vector3.zero;
+			var newLockedPos = new Vector3(0, _cameraData.lockedPivotPosition);
+			var newUnlockedPos = new Vector3(0, _cameraData.unlockedPivotPosition);
+			Vector3 camLocalPos = _cameraData.cameraPivotTransform.localPosition;
+
+			_cameraData.cameraPivotTransform.localPosition = Vector3.SmoothDamp(camLocalPos, _isLockedOnTarget ? newLockedPos :
+															 newUnlockedPos, ref velocity, delta);
 		}
 
 		private void OnLockOnTarget(LockOnTargetEvent _)
@@ -165,9 +178,13 @@ namespace SoulsLike
 					float distanceFromTarget = Vector3.Distance(_playerTransform.position, unit.transform.position);
 					float viewAngle = Vector3.Angle(lockTargetDir, _cameraData.cameraTransform.forward);
 
-					if(unit.transform.root != _playerTransform.root && viewAngle > -_cameraData.clampAngle &&
-						viewAngle < _cameraData.clampAngle && distanceFromTarget <= _cameraData.maxLockOnDistance)
-						_availableTargets.Add(unit);
+					if(unit.transform.root != _playerTransform.root && viewAngle > -_cameraData.clampViewAngle &&
+					   viewAngle < _cameraData.clampViewAngle && distanceFromTarget <= _cameraData.maxLockOnDistance)
+					{
+						if(Physics.Linecast(_playerTransform.position, unit.LockOnTransform.position, out RaycastHit hit) &&
+						   hit.transform.gameObject.layer != 6)
+							_availableTargets.Add(unit);
+					}
 				}
 			}
 		}

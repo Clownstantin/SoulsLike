@@ -64,7 +64,7 @@ namespace SoulsLike
 
 		public void TickInput(float delta, bool isInteracting, bool canDoCombo)
 		{
-			MoveInput();
+			HandleMoveInput();
 			HandleInteractInput();
 			HandleRollInput(delta);
 			HandleAttackInput(isInteracting, canDoCombo);
@@ -80,7 +80,7 @@ namespace SoulsLike
 			_sprintFlag = false;
 		}
 
-		private void MoveInput()
+		private void HandleMoveInput()
 		{
 			_horizontal = _movementInput.x;
 			_vertical = _movementInput.y;

@@ -22,6 +22,8 @@ namespace SoulsLike
 		public float lockOnLerpSpeed;
 		public float maxLockOnDistance;
 		public float lockOnSphereRadius;
-		public float clampAngle;
+		public float clampViewAngle;
+		public float lockedPivotPosition;
+		public float unlockedPivotPosition;
 	}
 }

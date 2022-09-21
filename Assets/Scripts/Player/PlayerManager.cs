@@ -43,7 +43,7 @@ namespace SoulsLike
 			_weaponSlotManager.Init();
 			_cameraHandler.Init(_myTransform);
 			_playerAttack.Init(_playerInventory, _animatorHandler, _weaponSlotManager);
-			_playerLocomotion.Init(_inputHandler);
+			_playerLocomotion.Init(_inputHandler, _cameraHandler);
 			_animatorHandler.Init();
 			_interactSystem.Init();
 			_playerInventory.Init();
@@ -53,16 +53,21 @@ namespace SoulsLike
 		public override void OnUpdate(float delta)
 		{
 			_isInteracting = _animatorHandler.IsInteracting;
+			bool isSprinting = _playerLocomotion.IsSprinting;
+			bool isInAir = _playerLocomotion.IsInAir;
 
 			_inputHandler.TickInput(delta, _isInteracting, _animatorHandler.CanDoCombo);
-			_animatorHandler.UpdateAnimatorValues(delta, _inputHandler.MoveAmount, 0, _playerLocomotion.IsSprinting, _playerLocomotion.IsInAir);
+
+			if(_cameraHandler.IsLockedOnTarget && !_inputHandler.SprintFlag)
+				_animatorHandler.UpdateAnimatorValues(delta, _inputHandler.Vertical, _inputHandler.Horizontal, isSprinting, isInAir);
+			else
+				_animatorHandler.UpdateAnimatorValues(delta, _inputHandler.MoveAmount, 0, isSprinting, isInAir);
+
 			_interactSystem.CheckObjectToInteract(_inputHandler.InteractInput);
 
-			if(!_isInteracting)
-			{
-				_playerLocomotion.HandleRolling(_inputHandler.RollFlag);
-				_playerLocomotion.HandleSprinting();
-			}
+			if(_isInteracting) return;
+			_playerLocomotion.HandleRolling(_inputHandler.RollFlag);
+			_playerLocomotion.HandleSprinting();
 		}
 
 		public override void OnFixedUpdate(float delta)
@@ -70,7 +75,7 @@ namespace SoulsLike
 			if(!_isInteracting)
 			{
 				_playerLocomotion.HandleMovement();
-				_playerLocomotion.HandleRotation(delta, _animatorHandler.CanRotate);
+				_playerLocomotion.HandleRotation(delta);
 			}
 
 			_playerLocomotion.HandleFalling(delta, _isInteracting);
@@ -81,11 +86,10 @@ namespace SoulsLike
 			_inputHandler.ResetFlags();
 			_playerLocomotion.HandleInAirTimer(delta);
 
-			if(_cameraHandler)
-			{
-				_cameraHandler.FollowTarget(delta);
-				_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
-			}
+			if(!_cameraHandler) return;
+			_cameraHandler.FollowTarget(delta);
+			_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
+			_cameraHandler.HandleCameraHeight(delta);
 		}
 		#endregion
 	}
