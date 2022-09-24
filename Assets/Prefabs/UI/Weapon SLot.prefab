@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 5103806177592312502}
   - component: {fileID: 4448178496566690788}
   m_Layer: 5
-  m_Name: Weapon SLot
+  m_Name: Weapon Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -249,3 +249,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponIcon: {fileID: 5103806176644126863}
+  _inventoryWeaponButton: {fileID: 5103806176891092900}

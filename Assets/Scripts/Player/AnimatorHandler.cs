@@ -107,7 +107,7 @@ namespace SoulsLike
 
 		private void OnFall(Fall _) => PlayTargetAnimation(AnimationNameBase.Fall, true);
 
-		private void OnPickUp(PickUpEvent _) => PlayTargetAnimation(AnimationNameBase.PickUp, true);
+		private void OnPickUp(PickUpWeaponEvent _) => PlayTargetAnimation(AnimationNameBase.PickUp, true);
 
 		private void OnJump(JumpEvent _) => PlayTargetAnimation(AnimationNameBase.Jump, true);
 
@@ -144,7 +144,7 @@ namespace SoulsLike
 			this.AddListener<Landed>(OnLand);
 			this.AddListener<Fall>(OnFall);
 			this.AddListener<Roll>(OnRoll);
-			this.AddListener<PickUpEvent>(OnPickUp);
+			this.AddListener<PickUpWeaponEvent>(OnPickUp);
 			this.AddListener<JumpEvent>(OnJump);
 			this.AddListener<WeaponInitEvent>(OnWeaponInit);
 			this.AddListener<WeaponLoadEvent>(OnWeaponLoad);
@@ -159,7 +159,7 @@ namespace SoulsLike
 			this.RemoveListener<Landed>(OnLand);
 			this.RemoveListener<Fall>(OnFall);
 			this.RemoveListener<Roll>(OnRoll);
-			this.RemoveListener<PickUpEvent>(OnPickUp);
+			this.RemoveListener<PickUpWeaponEvent>(OnPickUp);
 			this.RemoveListener<WeaponInitEvent>(OnWeaponInit);
 			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
 			this.RemoveListener<JumpEvent>(OnJump);

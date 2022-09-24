@@ -28,6 +28,8 @@ namespace SoulsLike.UI
 			this.AddListener<StaminaChanged>(OnStaminaChanged);
 			this.AddListener<WeaponLoadEvent>(OnWeaponLoad);
 			this.AddListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
+			this.AddListener<EquipButtonClickEvent>(OnEquipButtonClicked);
+			this.AddListener<InventoryWeaponButtonClickEvent>(OnInventoryButtonClicked);
 		}
 
 		public void Unsubscribe()
@@ -38,6 +40,8 @@ namespace SoulsLike.UI
 			this.RemoveListener<StaminaChanged>(OnStaminaChanged);
 			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
 			this.RemoveListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
+			this.RemoveListener<EquipButtonClickEvent>(OnEquipButtonClicked);
+			this.RemoveListener<InventoryWeaponButtonClickEvent>(OnInventoryButtonClicked);
 		}
 
 		private static void SetWeaponSpriteToImage(Image image, Item weapon, bool hasIcon)
@@ -79,6 +83,18 @@ namespace SoulsLike.UI
 				_inventoryWindow.SetActive(false);
 				_equipmentWindow.SetActive(false);
 			}
+		}
+
+		private void OnEquipButtonClicked(EquipButtonClickEvent _)
+		{
+			_inventoryWindow.SetActive(true);
+			_equipmentWindow.SetActive(false);
+		}
+
+		private void OnInventoryButtonClicked(InventoryWeaponButtonClickEvent _)
+		{
+			_inventoryWindow.SetActive(false);
+			_equipmentWindow.SetActive(true);
 		}
 	}
 }

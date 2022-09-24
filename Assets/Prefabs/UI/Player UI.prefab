@@ -402,11 +402,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cd03e2981ee01d418ec7f4a232cdc8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _icon: {fileID: 371532338}
-  _isRightSlot01: 0
-  _isRightSlot02: 1
-  _isLeftSlot01: 0
-  _isLeftSlot02: 0
+  _weaponIcon: {fileID: 371532338}
+  _equipButton: {fileID: 334213771}
+  _slotType: 1
 --- !u!114 &334213772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -738,11 +736,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cd03e2981ee01d418ec7f4a232cdc8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _icon: {fileID: 1443485978}
-  _isRightSlot01: 0
-  _isRightSlot02: 0
-  _isLeftSlot01: 1
-  _isLeftSlot02: 0
+  _weaponIcon: {fileID: 1443485978}
+  _equipButton: {fileID: 497558294}
+  _slotType: 2
 --- !u!114 &497558295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1242,11 +1238,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cd03e2981ee01d418ec7f4a232cdc8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _icon: {fileID: 934458109}
-  _isRightSlot01: 0
-  _isRightSlot02: 0
-  _isLeftSlot01: 0
-  _isLeftSlot02: 1
+  _weaponIcon: {fileID: 934458109}
+  _equipButton: {fileID: 1353655670}
+  _slotType: 3
 --- !u!114 &1353655671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1862,11 +1856,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cd03e2981ee01d418ec7f4a232cdc8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _icon: {fileID: 1898842398}
-  _isRightSlot01: 1
-  _isRightSlot02: 0
-  _isLeftSlot01: 0
-  _isLeftSlot02: 0
+  _weaponIcon: {fileID: 1898842398}
+  _equipButton: {fileID: 1935631156}
+  _slotType: 0
 --- !u!114 &1935631157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4270,8 +4262,6 @@ MonoBehaviour:
     _weaponSlotPrefab: {fileID: 4448178496566690788, guid: 1f47e7a685a06344fada4943a0e6d105, type: 3}
     _weaponInventorySlotContainer: {fileID: 1853098555}
     _equipmentSlotContainer: {fileID: 1284932846}
-    _leftSlotButton: {fileID: 497558294}
-    _rightSlotButton: {fileID: 1935631156}
 --- !u!223 &8894405216497940819
 Canvas:
   m_ObjectHideFlags: 0
@@ -4342,7 +4332,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5103806177592312497, guid: 1f47e7a685a06344fada4943a0e6d105, type: 3}
       propertyPath: m_Name
-      value: Weapon SLot
+      value: Weapon Slot
       objectReference: {fileID: 0}
     - target: {fileID: 5103806177592312502, guid: 1f47e7a685a06344fada4943a0e6d105, type: 3}
       propertyPath: m_Pivot.x

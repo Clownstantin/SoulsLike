@@ -1,6 +1,5 @@
 ﻿namespace SoulsLike
 {
-
 	public struct InteractTextPopUp : IGameEvent
 	{
 		public readonly string interactableText;

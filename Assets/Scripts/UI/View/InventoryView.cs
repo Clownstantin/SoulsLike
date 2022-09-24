@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using SoulsLike.Extentions;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace SoulsLike.UI
 {
@@ -13,23 +12,43 @@ namespace SoulsLike.UI
 		[SerializeField] private RectTransform _weaponInventorySlotContainer;
 		[Header("Equipment Menu")]
 		[SerializeField] private RectTransform _equipmentSlotContainer;
-		[SerializeField] private Button _leftSlotButton;
-		[SerializeField] private Button _rightSlotButton;
 
 		private WeaponInventorySlot[] _weaponInventorySlots;
-		private HandWeaponSLot[] _handWeaponSlots;
+		private HandWeaponSlot[] _handWeaponSlots;
 
 		public void Init()
 		{
 			_weaponInventorySlots = _weaponInventorySlotContainer.GetComponentsInChildren<WeaponInventorySlot>();
-			_handWeaponSlots = _equipmentSlotContainer.GetComponentsInChildren<HandWeaponSLot>();
+			_handWeaponSlots = _equipmentSlotContainer.GetComponentsInChildren<HandWeaponSlot>();
 		}
 
-		public void Subscribe() => this.AddListener<UpdateInventoryEvent>(OnInventoryUpdate);
+		public void Subscribe()
+		{
+			this.AddListener<UpdateWeaponInventoryEvent>(OnInventoryUpdate);
+			SubscribeButtonEvent(_handWeaponSlots);
+			SubscribeButtonEvent(_weaponInventorySlots);
+		}
 
-		public void Unsubscribe() => this.RemoveListener<UpdateInventoryEvent>(OnInventoryUpdate);
+		public void Unsubscribe()
+		{
+			this.RemoveListener<UpdateWeaponInventoryEvent>(OnInventoryUpdate);
+			UnsubscribeButtonEvent(_handWeaponSlots);
+			UnsubscribeButtonEvent(_weaponInventorySlots);
+		}
 
-		private void OnInventoryUpdate(UpdateInventoryEvent eventInfo)
+		private void SubscribeButtonEvent(ISlot[] slot)
+		{
+			for(int i = 0; i < slot.Length; i++)
+				slot[i].Subscribe();
+		}
+
+		private void UnsubscribeButtonEvent(ISlot[] slot)
+		{
+			for(int i = 0; i < slot.Length; i++)
+				slot[i].Unsubscribe();
+		}
+
+		private void OnInventoryUpdate(UpdateWeaponInventoryEvent eventInfo)
 		{
 			UpdateWeaponInventory(eventInfo.itemInventory);
 			UpdateEquipment(eventInfo.rightHandWeapons, eventInfo.leftHandWeapons);
@@ -39,25 +58,29 @@ namespace SoulsLike.UI
 		{
 			for(int i = 0; i < _handWeaponSlots.Length; i++)
 			{
-				if(_handWeaponSlots[i].IsLeftSlot01) _handWeaponSlots[i].AddItem(leftWeapons[0]);
-				else if(_handWeaponSlots[i].IsLeftSlot02) _handWeaponSlots[i].AddItem(leftWeapons[1]);
-				else if(_handWeaponSlots[i].IsRightSlot01) _handWeaponSlots[i].AddItem(rightWeapons[0]);
-				else _handWeaponSlots[i].AddItem(rightWeapons[1]);
+				switch(_handWeaponSlots[i].SlotType)
+				{
+					case EquipmentSlotTypes.RightSlot01: _handWeaponSlots[i].AddItem(rightWeapons[0]); break;
+					case EquipmentSlotTypes.RightSlot02: _handWeaponSlots[i].AddItem(rightWeapons[1]); break;
+					case EquipmentSlotTypes.LeftSlot01: _handWeaponSlots[i].AddItem(leftWeapons[0]); break;
+					case EquipmentSlotTypes.LeftSlot02: _handWeaponSlots[i].AddItem(leftWeapons[1]); break;
+				}
 			}
 		}
 
-		private void UpdateWeaponInventory(List<Item> itemInventory)
+		private void UpdateWeaponInventory(List<WeaponItem> weaponInventory)
 		{
 			for(int i = 0; i < _weaponInventorySlots.Length; i++)
 			{
-				if(i < itemInventory.Count)
+				if(i < weaponInventory.Count)
 				{
-					if(_weaponInventorySlots.Length < itemInventory.Count)
+					if(_weaponInventorySlots.Length < weaponInventory.Count)
 					{
-						Object.Instantiate(_weaponSlotPrefab, _weaponInventorySlotContainer);
+						WeaponInventorySlot weaponSlot = Object.Instantiate(_weaponSlotPrefab, _weaponInventorySlotContainer);
+						weaponSlot.Subscribe();
 						_weaponInventorySlots = _weaponInventorySlotContainer.GetComponentsInChildren<WeaponInventorySlot>();
 					}
-					_weaponInventorySlots[i].AddItem(itemInventory[i]);
+					_weaponInventorySlots[i].AddItem(weaponInventory[i]);
 				}
 				else
 					_weaponInventorySlots[i].ClearInventorySlot();
