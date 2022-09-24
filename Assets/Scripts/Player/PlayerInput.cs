@@ -18,20 +18,6 @@ namespace SoulsLike
 		private float _mouseY = default;
 
 		private bool _interactInput = default;
-		private bool _lockOnInput = default;
-		private bool _lockOnLeftInput = default;
-		private bool _lockOnRightInput = default;
-
-		private bool _rollInput = default;
-		private bool _jumpInput = default;
-		private bool _rightLightAttackInput = default;
-		private bool _rightHeavyAttackInput = default;
-
-		private bool _quickSlotUpInput = default;
-		private bool _quickSlotDownInput = default;
-		private bool _quickSlotLeftInput = default;
-		private bool _quickSlotRightInput = default;
-		private bool _inventoryInput = default;
 
 		private bool _sprintFlag = default;
 		private bool _rollFlag = default;
@@ -95,9 +81,9 @@ namespace SoulsLike
 
 		private void HandleRollInput(float delta)
 		{
-			_rollInput = CheckRollInput();
+			bool rollInput = CheckRollInput();
 
-			if(_rollInput)
+			if(rollInput)
 			{
 				_rollInputTimer += delta;
 				_sprintFlag = true;
@@ -117,46 +103,46 @@ namespace SoulsLike
 
 		private void HandleAttackInput(bool isInteracting, bool canDocombo)
 		{
-			_rightLightAttackInput = CheckInput(_inputActions.PlayerActions.LightAttack);
-			_rightHeavyAttackInput = CheckInput(_inputActions.PlayerActions.HeavyAttack);
+			bool rightLightAttackInput = CheckInput(_inputActions.PlayerActions.LightAttack);
+			bool rightHeavyAttackInput = CheckInput(_inputActions.PlayerActions.HeavyAttack);
 
-			if(!_rightLightAttackInput && !_rightHeavyAttackInput) return;
-			this.TriggerEvent(new RightWeaponAttack(_rightLightAttackInput, _rightHeavyAttackInput, isInteracting, canDocombo));
+			if(!rightLightAttackInput && !rightHeavyAttackInput) return;
+			this.TriggerEvent(new RightWeaponAttack(rightLightAttackInput, rightHeavyAttackInput, isInteracting, canDocombo));
 		}
 
 		private void HandleQuickSlotsInput()
 		{
-			_quickSlotRightInput = CheckInput(_inputActions.PlayerQuickSlots.DPadRight);
-			_quickSlotLeftInput = CheckInput(_inputActions.PlayerQuickSlots.DPadLeft);
+			bool quickSlotRightInput = CheckInput(_inputActions.PlayerQuickSlots.DPadRight);
+			bool quickSlotLeftInput = CheckInput(_inputActions.PlayerQuickSlots.DPadLeft);
 
-			if(!_quickSlotRightInput && !_quickSlotLeftInput) return;
-			this.TriggerEvent(new WeaponSwitchEvent(_quickSlotRightInput, _quickSlotLeftInput));
+			if(!quickSlotRightInput && !quickSlotLeftInput) return;
+			this.TriggerEvent(new WeaponSwitchEvent(quickSlotRightInput, quickSlotLeftInput));
 		}
 
 		private void HandleInteractInput() => _interactInput = CheckInput(_inputActions.PlayerActions.Interact);
 
 		private void HandleJumpInput(bool isInteracting)
 		{
-			_jumpInput = CheckInput(_inputActions.PlayerActions.Jump);
-			if(_jumpInput && !isInteracting) this.TriggerEvent(new JumpEvent(_moveAmount));
+			bool jumpInput = CheckInput(_inputActions.PlayerActions.Jump);
+			if(jumpInput && !isInteracting) this.TriggerEvent(new JumpEvent(_moveAmount));
 		}
 
 		private void HandleInventoryInput()
 		{
-			_inventoryInput = CheckInput(_inputActions.PlayerActions.Inventory);
-			if(_inventoryInput) this.TriggerEvent(new ToggleSelectionMenuEvent());
+			bool inventoryInput = CheckInput(_inputActions.PlayerActions.Inventory);
+			if(inventoryInput) this.TriggerEvent(new ToggleSelectionMenuEvent());
 		}
 
 		private void HandleLockOnInput()
 		{
-			_lockOnInput = CheckInput(_inputActions.PlayerActions.LockOn);
-			_lockOnLeftInput = CheckInput(_inputActions.PlayerActions.LockSwitchLeft);
-			_lockOnRightInput = CheckInput(_inputActions.PlayerActions.LockSwitchRight);
+			bool lockOnInput = CheckInput(_inputActions.PlayerActions.LockOn);
+			bool lockOnLeftInput = CheckInput(_inputActions.PlayerActions.LockSwitchLeft);
+			bool lockOnRightInput = CheckInput(_inputActions.PlayerActions.LockSwitchRight);
 
-			if(_lockOnInput) this.TriggerEvent(new LockOnTargetEvent());
+			if(lockOnInput) this.TriggerEvent(new LockOnTargetEvent());
 
-			if(!_lockOnLeftInput && !_lockOnRightInput) return;
-			this.TriggerEvent(new SwitchOnTargetEvent(_lockOnLeftInput, _lockOnRightInput));
+			if(!lockOnLeftInput && !lockOnRightInput) return;
+			this.TriggerEvent(new SwitchOnTargetEvent(lockOnLeftInput, lockOnRightInput));
 		}
 
 		private static bool CheckInput(InputAction action) => action.WasPerformedThisFrame();

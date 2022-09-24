@@ -17,8 +17,8 @@ namespace SoulsLike
 
 		private List<WeaponItem> _weaponInventory = default;
 
-		private int _currentRightWeaponIndex = -1;
-		private int _currentLeftWeaponIndex = -1;
+		private int _currentRightWeaponIndex = default;
+		private int _currentLeftWeaponIndex = default;
 
 		public WeaponItem RightWeapon => _rightWeapon;
 		public WeaponItem LeftWeapon => _leftWeapon;
@@ -96,8 +96,8 @@ namespace SoulsLike
 				case UI.EquipmentSlotTypes.LeftSlot02: SwitchWeaponInHands(1, weapon); break;
 			}
 
-			_rightWeapon = _rightHandWeapons[0];
-			_leftWeapon = _leftHandWeapons[0];
+			_rightWeapon = _rightHandWeapons[_currentRightWeaponIndex];
+			_leftWeapon = _leftHandWeapons[_currentLeftWeaponIndex];
 			UpdateWeaponsInHands();
 
 			this.TriggerEvent(new UpdateWeaponInventoryEvent(_weaponInventory, _rightHandWeapons, _leftHandWeapons));
