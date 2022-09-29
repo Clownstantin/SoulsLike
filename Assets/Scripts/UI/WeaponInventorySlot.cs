@@ -15,13 +15,13 @@ namespace SoulsLike.UI
 		public void Subscribe()
 		{
 			_inventoryWeaponButton.onClick.AddListener(OnInventoryWeaponButtonClicked);
-			this.AddListener<EquipButtonClickEvent>(OnEquipButtonClicked);
+			this.AddListener<EquipButtonClick>(OnEquipButtonClicked);
 		}
 
 		public void Unsubscribe()
 		{
 			_inventoryWeaponButton.onClick.RemoveListener(OnInventoryWeaponButtonClicked);
-			this.RemoveListener<EquipButtonClickEvent>(OnEquipButtonClicked);
+			this.RemoveListener<EquipButtonClick>(OnEquipButtonClicked);
 		}
 
 		public void AddItem(WeaponItem weapon)
@@ -40,13 +40,15 @@ namespace SoulsLike.UI
 			gameObject.SetActive(false);
 		}
 
+		public void DisableButton() => _inventoryWeaponButton.interactable = false;
+
 		private void OnInventoryWeaponButtonClicked()
 		{
-			this.TriggerEvent(new InventoryWeaponButtonClickEvent(_slotType, _weapon));
+			this.TriggerEvent(new InventoryWeaponButtonClick(_slotType, _weapon));
 			_inventoryWeaponButton.interactable = false;
 		}
 
-		private void OnEquipButtonClicked(EquipButtonClickEvent eventInfo)
+		private void OnEquipButtonClicked(EquipButtonClick eventInfo)
 		{
 			_inventoryWeaponButton.interactable = true;
 			_slotType = eventInfo.slotType;

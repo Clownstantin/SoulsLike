@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerAttackSystem)),
+	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerCombatSystem)),
 	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInput))]
 	public class PlayerManager : UnitManager
 	{
@@ -13,7 +13,7 @@ namespace SoulsLike
 		private PlayerInteractSystem _interactSystem = default;
 		private PlayerLocomotion _playerLocomotion = default;
 		private PlayerStats _playerStats = default;
-		private PlayerAttackSystem _playerAttack = default;
+		private PlayerCombatSystem _playerAttack = default;
 		private PlayerInventory _playerInventory = default;
 
 		private WeaponSlotManager _weaponSlotManager = default;
@@ -26,7 +26,7 @@ namespace SoulsLike
 		{
 			_playerStats = GetComponent<PlayerStats>();
 			_playerLocomotion = GetComponent<PlayerLocomotion>();
-			_playerAttack = GetComponent<PlayerAttackSystem>();
+			_playerAttack = GetComponent<PlayerCombatSystem>();
 			_playerInventory = GetComponent<PlayerInventory>();
 			_inputHandler = GetComponent<PlayerInput>();
 			_interactSystem = GetComponent<PlayerInteractSystem>();

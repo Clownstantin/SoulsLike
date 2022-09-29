@@ -109,7 +109,7 @@
             "id": "edc9f074-2dff-4d29-af16-ffee828292c3",
             "actions": [
                 {
-                    "name": "Inventory",
+                    "name": "OpenMenu",
                     "type": "Button",
                     "id": "94883772-c3d1-49f5-84fd-4fc1d59f04ed",
                     "expectedControlType": "Button",
@@ -184,6 +184,15 @@
                     "name": "LockSwitchRight",
                     "type": "Button",
                     "id": "b58e5da7-e145-4777-ae7c-72c94f8916df",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TwoHand",
+                    "type": "Button",
+                    "id": "aafcbb54-53a9-4558-9fae-3aed74ccfb7e",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -297,7 +306,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse + Keyboard",
-                    "action": "Inventory",
+                    "action": "OpenMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -308,7 +317,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Inventory",
+                    "action": "OpenMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -353,6 +362,17 @@
                     "processors": "",
                     "groups": "Mouse + Keyboard",
                     "action": "LockSwitchRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4be573b1-9d7e-4eb9-96ee-3b7a8298b32d",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse + Keyboard",
+                    "action": "TwoHand",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

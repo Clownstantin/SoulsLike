@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 55507210}
   - component: {fileID: 55507209}
   m_Layer: 5
-  m_Name: Button
+  m_Name: OpenInventoryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -195,31 +195,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 55507210}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 349222014}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 1618218962}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &231453451
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,7 +209,7 @@ GameObject:
   - component: {fileID: 231453454}
   - component: {fileID: 231453453}
   m_Layer: 5
-  m_Name: Button
+  m_Name: OpenOptionsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -940,7 +916,7 @@ GameObject:
   - component: {fileID: 1180226962}
   - component: {fileID: 1180226961}
   m_Layer: 5
-  m_Name: Button
+  m_Name: OpenEquipmentButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4249,8 +4225,6 @@ MonoBehaviour:
     _itemText: {fileID: 3006807278724121067}
     _itemImage: {fileID: 9174914540014408345}
   _hudView:
-    _healthBarSlider: {fileID: 8894405215156137466}
-    _staminaBarSlider: {fileID: 1171502389181575244}
     _leftWeaponIcon: {fileID: 3006807279103361917}
     _rightWeaponIcon: {fileID: 3006807279012352403}
     _hudWindow: {fileID: 8894405214705593006}
@@ -4258,6 +4232,12 @@ MonoBehaviour:
     _inventoryWindow: {fileID: 349222014}
     _equipmentWindow: {fileID: 29678739}
     _isSelectionMenuActive: 0
+    _openInventoryButton: {fileID: 55507209}
+    _openEquipmentButton: {fileID: 1180226961}
+    _openOptionsButton: {fileID: 231453453}
+  _barView:
+    _healthBarSlider: {fileID: 8894405215156137466}
+    _staminaBarSlider: {fileID: 1171502389181575244}
   _inventoryView:
     _weaponSlotPrefab: {fileID: 4448178496566690788, guid: 1f47e7a685a06344fada4943a0e6d105, type: 3}
     _weaponInventorySlotContainer: {fileID: 1853098555}
@@ -4330,6 +4310,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1853098555}
     m_Modifications:
+    - target: {fileID: 5103806176891092900, guid: 1f47e7a685a06344fada4943a0e6d105, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5103806177592312497, guid: 1f47e7a685a06344fada4943a0e6d105, type: 3}
       propertyPath: m_Name
       value: Weapon Slot

@@ -24,13 +24,12 @@ namespace SoulsLike
 				return;
 			}
 
-			Weapon weaponModel = Instantiate(weaponItem.WeaponPrefab);
+			Weapon weaponModel = Instantiate(weaponItem.WeaponPrefab, _parentOverride ? _parentOverride : transform, true);
 
-			weaponModel.transform.SetParent(_parentOverride ? _parentOverride : transform);
-
-			weaponModel.transform.localPosition = Vector3.zero;
-			weaponModel.transform.localRotation = Quaternion.identity;
-			weaponModel.transform.localScale = Vector3.one;
+			Transform weaponModelTransform = weaponModel.transform;
+			weaponModelTransform.localPosition = Vector3.zero;
+			weaponModelTransform.localRotation = Quaternion.identity;
+			weaponModelTransform.localScale = Vector3.one;
 
 			_currentWeaponModel = weaponModel;
 		}

@@ -37,18 +37,17 @@ namespace SoulsLike
 
 		public void RemoveListener<T>(Action<T> callback) where T : IGameEvent
 		{
-			if(_eventLookups.TryGetValue(callback, out Action<IGameEvent> action))
+			if(!_eventLookups.TryGetValue(callback, out Action<IGameEvent> action)) return;
+
+			if(_events.TryGetValue(typeof(T), out Action<IGameEvent> tempAction))
 			{
-				if(_events.TryGetValue(typeof(T), out Action<IGameEvent> tempAction))
-				{
-					tempAction -= action;
+				tempAction -= action;
 
-					if(tempAction == null) _events.Remove(typeof(T));
-					else _events[typeof(T)] = tempAction;
-				}
-
-				_eventLookups.Remove(callback);
+				if(tempAction == null) _events.Remove(typeof(T));
+				else _events[typeof(T)] = tempAction;
 			}
+
+			_eventLookups.Remove(callback);
 		}
 
 		public void Dispose()

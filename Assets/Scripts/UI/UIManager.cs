@@ -6,6 +6,7 @@ namespace SoulsLike.UI
 	{
 		[SerializeField] private UITextView _textView = default;
 		[SerializeField] private HUDView _hudView = default;
+		[SerializeField] private BarsView _barView = default;
 		[SerializeField] private InventoryView _inventoryView = default;
 
 		private IView[] _views = default;
@@ -13,7 +14,7 @@ namespace SoulsLike.UI
 		private void Awake()
 		{
 			_inventoryView.Init();
-			_views = new IView[] { _textView, _hudView, _inventoryView };
+			_views = new IView[] { _textView, _hudView, _barView, _inventoryView };
 		}
 
 		private void OnEnable()

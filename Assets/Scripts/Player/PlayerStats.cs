@@ -12,8 +12,8 @@ namespace SoulsLike
 		{
 			InitStats();
 
-			this.TriggerEvent(new HealthInit(unitData.maxHealth));
-			this.TriggerEvent(new StaminaInit(unitData.maxStamina));
+			this.TriggerEvent(new HealthInitEvent(unitData.maxHealth));
+			this.TriggerEvent(new StaminaInitEvent(unitData.maxStamina));
 		}
 
 		public override void TakeDamage(int damage)

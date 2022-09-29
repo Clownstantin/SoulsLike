@@ -7,12 +7,12 @@ namespace SoulsLike
 		public readonly bool isInteracting;
 		public readonly bool canDoCombo;
 
-		public RightWeaponAttack(bool lightAttackInput,bool heavyAttackInput,bool isInteracting,bool canDocombo)
+		public RightWeaponAttack(bool lightAttackInput, bool heavyAttackInput, bool isInteracting, bool canDoCombo)
 		{
 			this.lightAttackInput = lightAttackInput;
 			this.heavyAttackInput = heavyAttackInput;
 			this.isInteracting = isInteracting;
-			this.canDoCombo = canDocombo;
+			this.canDoCombo = canDoCombo;
 		}
 	}
 }

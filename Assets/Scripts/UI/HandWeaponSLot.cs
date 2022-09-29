@@ -34,6 +34,6 @@ namespace SoulsLike.UI
 			gameObject.SetActive(false);
 		}
 
-		private void OnEquipButtonClicked() => this.TriggerEvent(new EquipButtonClickEvent(_slotType));
+		private void OnEquipButtonClicked() => this.TriggerEvent(new EquipButtonClick(_slotType));
 	}
 }

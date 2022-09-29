@@ -1,4 +1,5 @@
 using SoulsLike.Extentions;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -58,6 +59,7 @@ namespace SoulsLike
 			HandleJumpInput(isInteracting);
 			HandleInventoryInput();
 			HandleLockOnInput();
+			HandleTwoHandInput();
 		}
 
 		public void ResetFlags()
@@ -81,7 +83,7 @@ namespace SoulsLike
 
 		private void HandleRollInput(float delta)
 		{
-			bool rollInput = CheckRollInput();
+			bool rollInput = CheckRollPhase(_inputActions.PlayerActions.Roll);
 
 			if(rollInput)
 			{
@@ -95,16 +97,17 @@ namespace SoulsLike
 					_sprintFlag = false;
 					_rollFlag = true;
 				}
+
 				_rollInputTimer = 0;
 			}
 
-			bool CheckRollInput() => _inputActions.PlayerActions.Roll.phase == InputActionPhase.Performed;
+			bool CheckRollPhase(InputAction action) => action.phase == InputActionPhase.Performed;
 		}
 
 		private void HandleAttackInput(bool isInteracting, bool canDocombo)
 		{
-			bool rightLightAttackInput = CheckInput(_inputActions.PlayerActions.LightAttack);
-			bool rightHeavyAttackInput = CheckInput(_inputActions.PlayerActions.HeavyAttack);
+			bool rightLightAttackInput = CheckInputPerformed(_inputActions.PlayerActions.LightAttack);
+			bool rightHeavyAttackInput = CheckInputPerformed(_inputActions.PlayerActions.HeavyAttack);
 
 			if(!rightLightAttackInput && !rightHeavyAttackInput) return;
 			this.TriggerEvent(new RightWeaponAttack(rightLightAttackInput, rightHeavyAttackInput, isInteracting, canDocombo));
@@ -112,39 +115,41 @@ namespace SoulsLike
 
 		private void HandleQuickSlotsInput()
 		{
-			bool quickSlotRightInput = CheckInput(_inputActions.PlayerQuickSlots.DPadRight);
-			bool quickSlotLeftInput = CheckInput(_inputActions.PlayerQuickSlots.DPadLeft);
+			bool quickSlotRightInput = CheckInputPerformed(_inputActions.PlayerQuickSlots.DPadRight);
+			bool quickSlotLeftInput = CheckInputPerformed(_inputActions.PlayerQuickSlots.DPadLeft);
 
 			if(!quickSlotRightInput && !quickSlotLeftInput) return;
 			this.TriggerEvent(new WeaponSwitchEvent(quickSlotRightInput, quickSlotLeftInput));
 		}
 
-		private void HandleInteractInput() => _interactInput = CheckInput(_inputActions.PlayerActions.Interact);
+		private void HandleInteractInput() => _interactInput = CheckInputPerformed(_inputActions.PlayerActions.Interact);
 
 		private void HandleJumpInput(bool isInteracting)
 		{
-			bool jumpInput = CheckInput(_inputActions.PlayerActions.Jump);
-			if(jumpInput && !isInteracting) this.TriggerEvent(new JumpEvent(_moveAmount));
+			if(CheckInputPerformed(_inputActions.PlayerActions.Jump) && !isInteracting) this.TriggerEvent(new JumpEvent(_moveAmount));
 		}
 
 		private void HandleInventoryInput()
 		{
-			bool inventoryInput = CheckInput(_inputActions.PlayerActions.Inventory);
-			if(inventoryInput) this.TriggerEvent(new ToggleSelectionMenuEvent());
+			if(CheckInputPerformed(_inputActions.PlayerActions.OpenMenu)) this.TriggerEvent(new ToggleSelectionMenuEvent());
 		}
 
 		private void HandleLockOnInput()
 		{
-			bool lockOnInput = CheckInput(_inputActions.PlayerActions.LockOn);
-			bool lockOnLeftInput = CheckInput(_inputActions.PlayerActions.LockSwitchLeft);
-			bool lockOnRightInput = CheckInput(_inputActions.PlayerActions.LockSwitchRight);
+			bool lockOnLeftInput = CheckInputPerformed(_inputActions.PlayerActions.LockSwitchLeft);
+			bool lockOnRightInput = CheckInputPerformed(_inputActions.PlayerActions.LockSwitchRight);
 
-			if(lockOnInput) this.TriggerEvent(new LockOnTargetEvent());
+			if(CheckInputPerformed(_inputActions.PlayerActions.LockOn)) this.TriggerEvent(new LockOnTargetEvent());
 
 			if(!lockOnLeftInput && !lockOnRightInput) return;
 			this.TriggerEvent(new SwitchOnTargetEvent(lockOnLeftInput, lockOnRightInput));
 		}
 
-		private static bool CheckInput(InputAction action) => action.WasPerformedThisFrame();
+		private void HandleTwoHandInput()
+		{
+			if(CheckInputPerformed(_inputActions.PlayerActions.TwoHand)) this.TriggerEvent(new ToggleTwoHandEvent());
+		}
+
+		private static bool CheckInputPerformed(InputAction action) => action.WasPerformedThisFrame();
 	}
 }

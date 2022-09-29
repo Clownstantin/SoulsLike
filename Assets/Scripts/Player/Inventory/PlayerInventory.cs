@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SoulsLike.Extentions;
+using SoulsLike.UI;
 using UnityEngine;
 
 namespace SoulsLike
@@ -8,11 +9,13 @@ namespace SoulsLike
 	{
 		[Header("Weapon on Start")]
 		[SerializeField] private WeaponItem _rightWeapon = default;
+
 		[SerializeField] private WeaponItem _leftWeapon = default;
 		[SerializeField] private WeaponItem _unarmedWeapon = default;
 
 		[Header("Weapon Slots")]
 		[SerializeField] private WeaponItem[] _rightHandWeapons = default;
+
 		[SerializeField] private WeaponItem[] _leftHandWeapons = default;
 
 		private List<WeaponItem> _weaponInventory = default;
@@ -43,17 +46,17 @@ namespace SoulsLike
 		public void Subscribe()
 		{
 			this.AddListener<WeaponSwitchEvent>(OnWeaponSwitch);
-			this.AddListener<PickUpWeaponEvent>(OnPickUp);
+			this.AddListener<PickUpEvent>(OnPickUp);
 			this.AddListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
-			this.AddListener<InventoryWeaponButtonClickEvent>(OnInventoryWeaponButtonClicked);
+			this.AddListener<InventoryWeaponButtonClick>(OnInventoryWeaponButtonClicked);
 		}
 
 		public void Unsubscribe()
 		{
 			this.RemoveListener<WeaponSwitchEvent>(OnWeaponSwitch);
-			this.RemoveListener<PickUpWeaponEvent>(OnPickUp);
+			this.RemoveListener<PickUpEvent>(OnPickUp);
 			this.RemoveListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
-			this.RemoveListener<InventoryWeaponButtonClickEvent>(OnInventoryWeaponButtonClicked);
+			this.RemoveListener<InventoryWeaponButtonClick>(OnInventoryWeaponButtonClicked);
 		}
 
 		private void OnWeaponSwitch(WeaponSwitchEvent eventInfo)
@@ -62,7 +65,7 @@ namespace SoulsLike
 			else if(eventInfo.rightInput) HandleWeaponSwitch(ref _currentRightWeaponIndex, out _rightWeapon, _rightHandWeapons);
 		}
 
-		private void OnPickUp(PickUpWeaponEvent eventInfo)
+		private void OnPickUp(PickUpEvent eventInfo)
 		{
 			_weaponInventory.Add(eventInfo.weapon);
 			this.TriggerEvent(new UpdateWeaponInventoryEvent(_weaponInventory, _rightHandWeapons, _leftHandWeapons));
@@ -85,15 +88,23 @@ namespace SoulsLike
 		private void OnSelectionMenuToggle(ToggleSelectionMenuEvent _) =>
 			this.TriggerEvent(new UpdateWeaponInventoryEvent(_weaponInventory, _rightHandWeapons, _leftHandWeapons));
 
-		private void OnInventoryWeaponButtonClicked(InventoryWeaponButtonClickEvent eventInfo)
+		private void OnInventoryWeaponButtonClicked(InventoryWeaponButtonClick eventInfo)
 		{
 			WeaponItem weapon = eventInfo.weapon;
 			switch(eventInfo.slotType)
 			{
-				case UI.EquipmentSlotTypes.RightSlot01: SwitchWeaponInHands(0, weapon, true); break;
-				case UI.EquipmentSlotTypes.RightSlot02: SwitchWeaponInHands(1, weapon, true); break;
-				case UI.EquipmentSlotTypes.LeftSlot01: SwitchWeaponInHands(0, weapon); break;
-				case UI.EquipmentSlotTypes.LeftSlot02: SwitchWeaponInHands(1, weapon); break;
+				case EquipmentSlotTypes.RightSlot01:
+					SwitchWeaponInHands(0, weapon, true);
+					break;
+				case EquipmentSlotTypes.RightSlot02:
+					SwitchWeaponInHands(1, weapon, true);
+					break;
+				case EquipmentSlotTypes.LeftSlot01:
+					SwitchWeaponInHands(0, weapon);
+					break;
+				case EquipmentSlotTypes.LeftSlot02:
+					SwitchWeaponInHands(1, weapon);
+					break;
 			}
 
 			_rightWeapon = _rightHandWeapons[_currentRightWeaponIndex];

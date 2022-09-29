@@ -178,7 +178,7 @@ namespace SoulsLike
 
 		public void Subscribe()
 		{
-			this.AddListener<PickUpWeaponEvent>(OnPickUp);
+			this.AddListener<PickUpEvent>(OnPickUp);
 			this.AddListener<JumpEvent>(OnJump);
 			this.AddListener<AnimationPlayEvent>(OnAnimationPlay);
 			this.AddListener<GamePause>(OnGamePause);
@@ -187,7 +187,7 @@ namespace SoulsLike
 
 		public void Unsubscribe()
 		{
-			this.RemoveListener<PickUpWeaponEvent>(OnPickUp);
+			this.RemoveListener<PickUpEvent>(OnPickUp);
 			this.RemoveListener<JumpEvent>(OnJump);
 			this.RemoveListener<AnimationPlayEvent>(OnAnimationPlay);
 			this.RemoveListener<GamePause>(OnGamePause);
@@ -220,7 +220,7 @@ namespace SoulsLike
 			}
 		}
 
-		private void OnPickUp(PickUpWeaponEvent _) => _rigidbody.velocity = Vector3.zero;
+		private void OnPickUp(PickUpEvent _) => _rigidbody.velocity = Vector3.zero;
 
 		private void OnGameResume(GameResume _) => _rigidbody.isKinematic = false;
 

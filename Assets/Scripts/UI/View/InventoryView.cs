@@ -25,6 +25,7 @@ namespace SoulsLike.UI
 		public void Subscribe()
 		{
 			this.AddListener<UpdateWeaponInventoryEvent>(OnInventoryUpdate);
+			this.AddListener<OpenInventoryClick>(OnOpenInventoryClicked);
 			SubscribeButtonEvent(_handWeaponSlots);
 			SubscribeButtonEvent(_weaponInventorySlots);
 		}
@@ -32,6 +33,7 @@ namespace SoulsLike.UI
 		public void Unsubscribe()
 		{
 			this.RemoveListener<UpdateWeaponInventoryEvent>(OnInventoryUpdate);
+			this.RemoveListener<OpenInventoryClick>(OnOpenInventoryClicked);
 			UnsubscribeButtonEvent(_handWeaponSlots);
 			UnsubscribeButtonEvent(_weaponInventorySlots);
 		}
@@ -52,6 +54,12 @@ namespace SoulsLike.UI
 		{
 			UpdateWeaponInventory(eventInfo.itemInventory);
 			UpdateEquipment(eventInfo.rightHandWeapons, eventInfo.leftHandWeapons);
+		}
+
+		private void OnOpenInventoryClicked(OpenInventoryClick _)
+		{
+			for(int i = 0; i < _weaponInventorySlots.Length; i++)
+				_weaponInventorySlots[i].DisableButton();
 		}
 
 		private void UpdateEquipment(WeaponItem[] rightWeapons, WeaponItem[] leftWeapons)

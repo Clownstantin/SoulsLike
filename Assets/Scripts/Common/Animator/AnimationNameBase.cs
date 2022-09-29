@@ -5,8 +5,11 @@
 		public const string Empty = nameof(Empty);
 		public const string RightArmEmpty = nameof(RightArmEmpty);
 		public const string LeftArmEmpty = nameof(LeftArmEmpty);
+		public const string BothArmsEmpty = nameof(BothArmsEmpty);
+
 		public const string RighArmIdle = nameof(RighArmIdle);
 		public const string LeftArmIdle = nameof(LeftArmIdle);
+		public const string TwoHandIdle = nameof(TwoHandIdle);
 
 		public const string Roll = nameof(Roll);
 		public const string Jump = nameof(Jump);

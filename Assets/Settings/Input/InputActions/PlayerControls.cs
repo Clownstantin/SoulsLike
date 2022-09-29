@@ -131,7 +131,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
             ""id"": ""edc9f074-2dff-4d29-af16-ffee828292c3"",
             ""actions"": [
                 {
-                    ""name"": ""Inventory"",
+                    ""name"": ""OpenMenu"",
                     ""type"": ""Button"",
                     ""id"": ""94883772-c3d1-49f5-84fd-4fc1d59f04ed"",
                     ""expectedControlType"": ""Button"",
@@ -206,6 +206,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""name"": ""LockSwitchRight"",
                     ""type"": ""Button"",
                     ""id"": ""b58e5da7-e145-4777-ae7c-72c94f8916df"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TwoHand"",
+                    ""type"": ""Button"",
+                    ""id"": ""aafcbb54-53a9-4558-9fae-3aed74ccfb7e"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -319,7 +328,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse + Keyboard"",
-                    ""action"": ""Inventory"",
+                    ""action"": ""OpenMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -330,7 +339,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Controller"",
-                    ""action"": ""Inventory"",
+                    ""action"": ""OpenMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -375,6 +384,17 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Mouse + Keyboard"",
                     ""action"": ""LockSwitchRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4be573b1-9d7e-4eb9-96ee-3b7a8298b32d"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse + Keyboard"",
+                    ""action"": ""TwoHand"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -527,7 +547,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_PlayerMovement_Camera = m_PlayerMovement.FindAction("Camera", throwIfNotFound: true);
         // Player Actions
         m_PlayerActions = asset.FindActionMap("Player Actions", throwIfNotFound: true);
-        m_PlayerActions_Inventory = m_PlayerActions.FindAction("Inventory", throwIfNotFound: true);
+        m_PlayerActions_OpenMenu = m_PlayerActions.FindAction("OpenMenu", throwIfNotFound: true);
         m_PlayerActions_Roll = m_PlayerActions.FindAction("Roll", throwIfNotFound: true);
         m_PlayerActions_LightAttack = m_PlayerActions.FindAction("LightAttack", throwIfNotFound: true);
         m_PlayerActions_HeavyAttack = m_PlayerActions.FindAction("HeavyAttack", throwIfNotFound: true);
@@ -536,6 +556,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_PlayerActions_LockOn = m_PlayerActions.FindAction("LockOn", throwIfNotFound: true);
         m_PlayerActions_LockSwitchLeft = m_PlayerActions.FindAction("LockSwitchLeft", throwIfNotFound: true);
         m_PlayerActions_LockSwitchRight = m_PlayerActions.FindAction("LockSwitchRight", throwIfNotFound: true);
+        m_PlayerActions_TwoHand = m_PlayerActions.FindAction("TwoHand", throwIfNotFound: true);
         // Player Quick Slots
         m_PlayerQuickSlots = asset.FindActionMap("Player Quick Slots", throwIfNotFound: true);
         m_PlayerQuickSlots_DPadRight = m_PlayerQuickSlots.FindAction("D-Pad Right", throwIfNotFound: true);
@@ -642,7 +663,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     // Player Actions
     private readonly InputActionMap m_PlayerActions;
     private IPlayerActionsActions m_PlayerActionsActionsCallbackInterface;
-    private readonly InputAction m_PlayerActions_Inventory;
+    private readonly InputAction m_PlayerActions_OpenMenu;
     private readonly InputAction m_PlayerActions_Roll;
     private readonly InputAction m_PlayerActions_LightAttack;
     private readonly InputAction m_PlayerActions_HeavyAttack;
@@ -651,11 +672,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_LockOn;
     private readonly InputAction m_PlayerActions_LockSwitchLeft;
     private readonly InputAction m_PlayerActions_LockSwitchRight;
+    private readonly InputAction m_PlayerActions_TwoHand;
     public struct PlayerActionsActions
     {
         private @PlayerControls m_Wrapper;
         public PlayerActionsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Inventory => m_Wrapper.m_PlayerActions_Inventory;
+        public InputAction @OpenMenu => m_Wrapper.m_PlayerActions_OpenMenu;
         public InputAction @Roll => m_Wrapper.m_PlayerActions_Roll;
         public InputAction @LightAttack => m_Wrapper.m_PlayerActions_LightAttack;
         public InputAction @HeavyAttack => m_Wrapper.m_PlayerActions_HeavyAttack;
@@ -664,6 +686,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @LockOn => m_Wrapper.m_PlayerActions_LockOn;
         public InputAction @LockSwitchLeft => m_Wrapper.m_PlayerActions_LockSwitchLeft;
         public InputAction @LockSwitchRight => m_Wrapper.m_PlayerActions_LockSwitchRight;
+        public InputAction @TwoHand => m_Wrapper.m_PlayerActions_TwoHand;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -673,9 +696,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsActionsCallbackInterface != null)
             {
-                @Inventory.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInventory;
-                @Inventory.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInventory;
-                @Inventory.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInventory;
+                @OpenMenu.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnOpenMenu;
+                @OpenMenu.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnOpenMenu;
+                @OpenMenu.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnOpenMenu;
                 @Roll.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnRoll;
                 @Roll.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnRoll;
                 @Roll.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnRoll;
@@ -700,13 +723,16 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @LockSwitchRight.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnLockSwitchRight;
                 @LockSwitchRight.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnLockSwitchRight;
                 @LockSwitchRight.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnLockSwitchRight;
+                @TwoHand.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnTwoHand;
+                @TwoHand.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnTwoHand;
+                @TwoHand.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnTwoHand;
             }
             m_Wrapper.m_PlayerActionsActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Inventory.started += instance.OnInventory;
-                @Inventory.performed += instance.OnInventory;
-                @Inventory.canceled += instance.OnInventory;
+                @OpenMenu.started += instance.OnOpenMenu;
+                @OpenMenu.performed += instance.OnOpenMenu;
+                @OpenMenu.canceled += instance.OnOpenMenu;
                 @Roll.started += instance.OnRoll;
                 @Roll.performed += instance.OnRoll;
                 @Roll.canceled += instance.OnRoll;
@@ -731,6 +757,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @LockSwitchRight.started += instance.OnLockSwitchRight;
                 @LockSwitchRight.performed += instance.OnLockSwitchRight;
                 @LockSwitchRight.canceled += instance.OnLockSwitchRight;
+                @TwoHand.started += instance.OnTwoHand;
+                @TwoHand.performed += instance.OnTwoHand;
+                @TwoHand.canceled += instance.OnTwoHand;
             }
         }
     }
@@ -817,7 +846,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     }
     public interface IPlayerActionsActions
     {
-        void OnInventory(InputAction.CallbackContext context);
+        void OnOpenMenu(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
         void OnLightAttack(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
@@ -826,6 +855,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnLockOn(InputAction.CallbackContext context);
         void OnLockSwitchLeft(InputAction.CallbackContext context);
         void OnLockSwitchRight(InputAction.CallbackContext context);
+        void OnTwoHand(InputAction.CallbackContext context);
     }
     public interface IPlayerQuickSlotsActions
     {

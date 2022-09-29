@@ -7,41 +7,41 @@ namespace SoulsLike.UI
 	[System.Serializable]
 	public struct HUDView : IView
 	{
-		[Header("Bars")]
-		[SerializeField] private Slider _healthBarSlider;
-		[SerializeField] private Slider _staminaBarSlider;
 		[Header("QuickSlots")]
 		[SerializeField] private Image _leftWeaponIcon;
+
 		[SerializeField] private Image _rightWeaponIcon;
+
 		[Header("Windows")]
 		[SerializeField] private GameObject _hudWindow;
+
 		[SerializeField] private GameObject _selectionWindow;
 		[SerializeField] private GameObject _inventoryWindow;
 		[SerializeField] private GameObject _equipmentWindow;
 		[SerializeField] private bool _isSelectionMenuActive;
 
+		[Header("Menu Buttons")]
+		[SerializeField] private Button _openInventoryButton;
+
+		[SerializeField] private Button _openEquipmentButton;
+		[SerializeField] private Button _openOptionsButton;
+
 		public void Subscribe()
 		{
-			this.AddListener<HealthInit>(OnHealthInit);
-			this.AddListener<StaminaInit>(OnStaminaInit);
-			this.AddListener<HealthChanged>(OnHealthChanged);
-			this.AddListener<StaminaChanged>(OnStaminaChanged);
 			this.AddListener<WeaponLoadEvent>(OnWeaponLoad);
 			this.AddListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
-			this.AddListener<EquipButtonClickEvent>(OnEquipButtonClicked);
-			this.AddListener<InventoryWeaponButtonClickEvent>(OnInventoryButtonClicked);
+			this.AddListener<EquipButtonClick>(OnEquipButtonClicked);
+			this.AddListener<InventoryWeaponButtonClick>(OnInventoryButtonClicked);
+			_openInventoryButton.onClick.AddListener(OnOpenInventoryClicked);
 		}
 
 		public void Unsubscribe()
 		{
-			this.RemoveListener<HealthInit>(OnHealthInit);
-			this.RemoveListener<StaminaInit>(OnStaminaInit);
-			this.RemoveListener<HealthChanged>(OnHealthChanged);
-			this.RemoveListener<StaminaChanged>(OnStaminaChanged);
 			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
 			this.RemoveListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
-			this.RemoveListener<EquipButtonClickEvent>(OnEquipButtonClicked);
-			this.RemoveListener<InventoryWeaponButtonClickEvent>(OnInventoryButtonClicked);
+			this.RemoveListener<EquipButtonClick>(OnEquipButtonClicked);
+			this.RemoveListener<InventoryWeaponButtonClick>(OnInventoryButtonClicked);
+			_openInventoryButton.onClick.RemoveListener(OnOpenInventoryClicked);
 		}
 
 		private static void SetWeaponSpriteToImage(Image image, Item weapon, bool hasIcon)
@@ -53,24 +53,9 @@ namespace SoulsLike.UI
 		private void OnWeaponLoad(WeaponLoadEvent eventInfo)
 		{
 			WeaponItem weapon = eventInfo.weapon;
+			if(!weapon) return;
 			SetWeaponSpriteToImage(eventInfo.isLeft ? _leftWeaponIcon : _rightWeaponIcon, weapon, weapon.ItemIcon);
 		}
-
-		private void OnHealthInit(HealthInit eventInfo)
-		{
-			_healthBarSlider.maxValue = eventInfo.health;
-			_healthBarSlider.value = eventInfo.health;
-		}
-
-		private void OnStaminaInit(StaminaInit eventInfo)
-		{
-			_staminaBarSlider.maxValue = eventInfo.stamina;
-			_staminaBarSlider.value = eventInfo.stamina;
-		}
-
-		private void OnHealthChanged(HealthChanged eventInfo) => _healthBarSlider.value = eventInfo.currentHealth;
-
-		private void OnStaminaChanged(StaminaChanged eventInfo) => _staminaBarSlider.value = eventInfo.currentStamina;
 
 		private void OnSelectionMenuToggle(ToggleSelectionMenuEvent _)
 		{
@@ -85,16 +70,23 @@ namespace SoulsLike.UI
 			}
 		}
 
-		private void OnEquipButtonClicked(EquipButtonClickEvent _)
+		private void OnEquipButtonClicked(EquipButtonClick _)
 		{
-			_inventoryWindow.SetActive(true);
 			_equipmentWindow.SetActive(false);
+			_inventoryWindow.SetActive(true);
 		}
 
-		private void OnInventoryButtonClicked(InventoryWeaponButtonClickEvent _)
+		private void OnInventoryButtonClicked(InventoryWeaponButtonClick _)
 		{
 			_inventoryWindow.SetActive(false);
 			_equipmentWindow.SetActive(true);
+		}
+
+		private void OnOpenInventoryClicked()
+		{
+			_selectionWindow.SetActive(false);
+			_inventoryWindow.SetActive(true);
+			this.TriggerEvent(new OpenInventoryClick());
 		}
 	}
 }

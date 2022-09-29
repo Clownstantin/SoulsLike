@@ -28,14 +28,14 @@ namespace SoulsLike
 		private bool _isLockedOnTarget = default;
 
 		public bool IsLockedOnTarget => _isLockedOnTarget;
-		public Transform CurrentLockOnTarget => _currentLockOnTarget;
 		public Transform CameraTransform => _cameraData.cameraTransform;
+		public Transform CurrentLockOnTarget => _currentLockOnTarget;
 
 		#region Monobehavior
 		private void Awake()
 		{
 			_myTransform = transform;
-			_availableTargets = new List<UnitManager>();
+			_availableTargets = new List<UnitManager>(_cameraData.maxTargets);
 			_defaultPositionZ = _cameraData.cameraTransform.localPosition.z;
 			_ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
 		}
@@ -58,7 +58,7 @@ namespace SoulsLike
 		public void FollowTarget(float delta)
 		{
 			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, _playerTransform.position,
-								ref _cameraVelocity, delta * _cameraData.followSpeed);
+			                                       ref _cameraVelocity, delta * _cameraData.followSpeed);
 			_myTransform.position = targetPos;
 
 			HandleCameraCollisions(delta);
@@ -86,11 +86,12 @@ namespace SoulsLike
 			}
 			else
 			{
-				Vector3 dir = (_currentLockOnTarget.position - _myTransform.position).normalized;
+				Vector3 lockOnPos = _currentLockOnTarget.position;
+				Vector3 dir = (lockOnPos - _myTransform.position).normalized;
 				dir.y = 0;
 				_myTransform.rotation = Quaternion.Lerp(_myTransform.rotation, Quaternion.LookRotation(dir), delta * _cameraData.lockOnLerpSpeed);
 
-				dir = (_currentLockOnTarget.position - cameraPivotTransform.position).normalized;
+				dir = (lockOnPos - cameraPivotTransform.position).normalized;
 				Vector3 eulerAngle = Quaternion.LookRotation(dir).eulerAngles;
 				eulerAngle.y = 0;
 				cameraPivotTransform.localEulerAngles = eulerAngle;
@@ -104,8 +105,7 @@ namespace SoulsLike
 			var newUnlockedPos = new Vector3(0, _cameraData.unlockedPivotPosition);
 			Vector3 camLocalPos = _cameraData.cameraPivotTransform.localPosition;
 
-			_cameraData.cameraPivotTransform.localPosition = Vector3.SmoothDamp(camLocalPos, _isLockedOnTarget ? newLockedPos :
-															 newUnlockedPos, ref velocity, delta);
+			_cameraData.cameraPivotTransform.localPosition = Vector3.SmoothDamp(camLocalPos, _isLockedOnTarget ? newLockedPos : newUnlockedPos, ref velocity, delta);
 		}
 
 		private void OnLockOnTarget(LockOnTargetEvent _)
@@ -122,15 +122,13 @@ namespace SoulsLike
 
 			float shortestDistance = Mathf.Infinity;
 
-			for(int i = 0; i < _availableTargets.Count; i++)
+			foreach(UnitManager target in _availableTargets)
 			{
-				float distanceFromTarget = Vector3.Distance(_playerTransform.position, _availableTargets[i].transform.position);
+				float distanceFromTarget = Vector3.Distance(_playerTransform.position, target.transform.position);
 
-				if(distanceFromTarget < shortestDistance)
-				{
-					shortestDistance = distanceFromTarget;
-					_currentLockOnTarget = _availableTargets[i].LockOnTransform;
-				}
+				if(!(distanceFromTarget < shortestDistance)) continue;
+				shortestDistance = distanceFromTarget;
+				_currentLockOnTarget = target.LockOnTransform;
 			}
 		}
 
@@ -141,26 +139,26 @@ namespace SoulsLike
 			float shortestLeftTargetDistance = Mathf.Infinity;
 			float shortestRightTargetDistance = Mathf.Infinity;
 
-			for(int i = 0; i < _availableTargets.Count; i++)
+			foreach(UnitManager target in _availableTargets)
 			{
-				Vector3 relativeTargetPos = _currentLockOnTarget.InverseTransformPoint(_availableTargets[i].transform.position);
-				float distanceFromLeftTarget = _currentLockOnTarget.transform.position.x - _availableTargets[i].transform.position.x;
-				float distanceFromRightTarget = _currentLockOnTarget.transform.position.x + _availableTargets[i].transform.position.x;
+				Vector3 targetPos = target.transform.position;
+				Vector3 lockOnPos = _currentLockOnTarget.transform.position;
+				Vector3 relativeTargetPos = _currentLockOnTarget.InverseTransformPoint(targetPos);
+				float distanceFromLeftTarget = lockOnPos.x - targetPos.x;
+				float distanceFromRightTarget = lockOnPos.x + targetPos.x;
 
-				if(relativeTargetPos.x > 0 && distanceFromLeftTarget < shortestLeftTargetDistance)
+				switch(relativeTargetPos.x)
 				{
-					shortestLeftTargetDistance = distanceFromLeftTarget;
-					_leftLockOnTarget = _availableTargets[i].LockOnTransform;
-				}
-
-				if(relativeTargetPos.x < 0 && distanceFromRightTarget < shortestRightTargetDistance)
-				{
-					shortestRightTargetDistance = distanceFromRightTarget;
-					_rightLockOnTarget = _availableTargets[i].LockOnTransform;
+					case > 0 when distanceFromLeftTarget < shortestLeftTargetDistance:
+						shortestLeftTargetDistance = distanceFromLeftTarget;
+						_leftLockOnTarget = target.LockOnTransform;
+						break;
+					case < 0 when distanceFromRightTarget < shortestRightTargetDistance:
+						shortestRightTargetDistance = distanceFromRightTarget;
+						_rightLockOnTarget = target.LockOnTransform;
+						break;
 				}
 			}
-
-			Log.Send($"Targets to switch {_availableTargets.Count}");
 
 			if(eventInfo.isLeftTarget && _leftLockOnTarget) _currentLockOnTarget = _leftLockOnTarget;
 			else if(eventInfo.isRightTarget && _rightLockOnTarget) _currentLockOnTarget = _rightLockOnTarget;
@@ -168,24 +166,26 @@ namespace SoulsLike
 
 		private void FindAvailableTargets()
 		{
-			Collider[] colliders = Physics.OverlapSphere(_playerTransform.position, _cameraData.lockOnSphereRadius);
+			var colliderBuff = new Collider[_cameraData.maxTargets];
+			int buffSize = Physics.OverlapSphereNonAlloc(_playerTransform.position, _cameraData.lockOnSphereRadius,
+			                                             colliderBuff, _cameraData.lockOnLayer);
 
-			for(int i = 0; i < colliders.Length; i++)
+			for(int i = 0; i < buffSize; i++)
 			{
-				if(colliders[i].TryGetComponent(out UnitManager unit))
-				{
-					Vector3 lockTargetDir = (unit.transform.position - _playerTransform.position).normalized;
-					float distanceFromTarget = Vector3.Distance(_playerTransform.position, unit.transform.position);
-					float viewAngle = Vector3.Angle(lockTargetDir, _cameraData.cameraTransform.forward);
+				if(!colliderBuff[i].TryGetComponent(out UnitManager unit)) continue;
 
-					if(unit.transform.root != _playerTransform.root && viewAngle > -_cameraData.clampViewAngle &&
-					   viewAngle < _cameraData.clampViewAngle && distanceFromTarget <= _cameraData.maxLockOnDistance)
-					{
-						if(Physics.Linecast(_playerTransform.position, unit.LockOnTransform.position, out RaycastHit hit) &&
-						   hit.transform.gameObject.layer != 6)
-							_availableTargets.Add(unit);
-					}
-				}
+				Vector3 playerPos = _playerTransform.position;
+				Vector3 unitPos = unit.transform.position;
+				Vector3 lockTargetDir = (unitPos - playerPos).normalized;
+				float distanceFromTarget = Vector3.Distance(playerPos, unitPos);
+				float viewAngle = Vector3.Angle(lockTargetDir, _cameraData.cameraTransform.forward);
+
+				if(unit.transform.root == _playerTransform.root || !(viewAngle > -_cameraData.clampViewAngle) ||
+				   !(viewAngle < _cameraData.clampViewAngle) || !(distanceFromTarget <= _cameraData.maxLockOnDistance)) continue;
+
+				if(Physics.Linecast(_playerTransform.position, unit.LockOnTransform.position, out RaycastHit hit) &&
+				   hit.transform.gameObject.layer != 6)
+					_availableTargets.Add(unit);
 			}
 		}
 
@@ -208,7 +208,7 @@ namespace SoulsLike
 			direction.Normalize();
 
 			if(Physics.SphereCast(pivotPos, _cameraData.cameraSphereRadius, direction, out RaycastHit hit,
-								  Mathf.Abs(_targetPositionZ), _ignoreLayers) && !hit.collider.isTrigger)
+			                      Mathf.Abs(_targetPositionZ), _ignoreLayers) && !hit.collider.isTrigger)
 			{
 				float distance = Vector3.Distance(pivotPos, hit.point);
 				_targetPositionZ = -(distance - _cameraData.cameraCollisionOffset);
