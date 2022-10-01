@@ -55,38 +55,46 @@ namespace SoulsLike
 		{
 			_isTwoHanded = !_isTwoHanded;
 			WeaponItem rightWeapon = _playerInventory.RightWeapon;
+			WeaponItem leftWeapon = _playerInventory.LeftWeapon;
 
 			if(_isTwoHanded)
 			{
 				_animatorHandler.PlayTargetAnimation(rightWeapon.TwoHandAnimation, false);
-				this.TriggerEvent(new WeaponLoadEvent(null, false));
+				this.TriggerEvent(new WeaponLoadEvent(leftWeapon, false, true));
 			}
 			else
 			{
 				_animatorHandler.PlayTargetAnimation(AnimationNameBase.BothArmsEmpty, false);
 				this.TriggerEvent(new WeaponLoadEvent(rightWeapon, false));
-				this.TriggerEvent(new WeaponLoadEvent(_playerInventory.LeftWeapon, true));
+				this.TriggerEvent(new WeaponLoadEvent(leftWeapon, true));
 			}
 		}
 
 		private void HandleWeaponCombo(WeaponItem weapon)
 		{
 			if(!_comboFlag) return;
-
 			_animatorHandler.DisableCombo();
 
-			if(_lastAttack == weapon.OneHandedLightAttack01)
-				_animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack02, true);
-			else if(_lastAttack == weapon.OneHandedHeavyAttack01)
-				_animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack02, true);
+			if(_isTwoHanded)
+			{
+				if(_lastAttack == weapon.TwoHandedLightAttack01) _animatorHandler.PlayTargetAnimation(weapon.TwoHandedLightAttack02, true);
+				else if(_lastAttack == weapon.TwoHandedHeavyAttack01) _animatorHandler.PlayTargetAnimation(weapon.TwoHandedHeavyAttack02, true);
+			}
+			else
+			{
+				if(_lastAttack == weapon.OneHandedLightAttack01) _animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack02, true);
+				else if(_lastAttack == weapon.OneHandedHeavyAttack01) _animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack02, true);
+			}
 		}
 
 		private void HandleAttack(WeaponItem weapon, bool isHeavy = false)
 		{
-			string attackAnimation = isHeavy ? weapon.OneHandedLightAttack01 : weapon.OneHandedHeavyAttack01;
+			string attackAnimation = _isTwoHanded ? isHeavy ? weapon.TwoHandedHeavyAttack01 : weapon.TwoHandedLightAttack01 :
+				isHeavy ? weapon.OneHandedHeavyAttack01 : weapon.OneHandedLightAttack01;
+
 			_weaponSlotManager.SetAttackingWeapon(weapon);
 			_animatorHandler.PlayTargetAnimation(attackAnimation, true);
-			_lastAttack = weapon.OneHandedLightAttack01;
+			_lastAttack = _isTwoHanded ? weapon.TwoHandedLightAttack01 : weapon.OneHandedLightAttack01;
 		}
 	}
 }

@@ -1,10 +1,11 @@
+using System;
 using SoulsLike.Extentions;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace SoulsLike.UI
 {
-	[System.Serializable]
+	[Serializable]
 	public struct HUDView : IView
 	{
 		[Header("QuickSlots")]
@@ -54,7 +55,7 @@ namespace SoulsLike.UI
 		{
 			WeaponItem weapon = eventInfo.weapon;
 			if(!weapon) return;
-			SetWeaponSpriteToImage(eventInfo.isLeft ? _leftWeaponIcon : _rightWeaponIcon, weapon, weapon.ItemIcon);
+			SetWeaponSpriteToImage(eventInfo.isLeftSlot ? _leftWeaponIcon : _rightWeaponIcon, weapon, weapon.ItemIcon);
 		}
 
 		private void OnSelectionMenuToggle(ToggleSelectionMenuEvent _)

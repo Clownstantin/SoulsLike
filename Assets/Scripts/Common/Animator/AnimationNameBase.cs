@@ -23,6 +23,11 @@
 		public const string OhHeavyAttack01 = nameof(OhHeavyAttack01);
 		public const string OhHeavyAttack02 = nameof(OhHeavyAttack02);
 
+		public const string ThLightAttack01 = nameof(ThLightAttack01);
+		public const string ThLightAttack02 = nameof(ThLightAttack02);
+		public const string ThHeavyAttack01 = nameof(ThHeavyAttack01);
+		public const string ThHeavyAttack02 = nameof(ThHeavyAttack02);
+
 		public const string DamageTaken = nameof(DamageTaken);
 		public const string Death = nameof(Death);
 		public const string PickUp = nameof(PickUp);

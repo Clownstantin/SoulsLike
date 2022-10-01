@@ -103,7 +103,7 @@ namespace SoulsLike
 
 		private void OnJump(JumpEvent _) => PlayTargetAnimation(AnimationNameBase.Jump, true);
 
-		private void OnRoll(Roll eventInfo) =>
+		private void OnRoll(RollEvent eventInfo) =>
 			PlayTargetAnimation(eventInfo.isMoving ? AnimationNameBase.Roll : AnimationNameBase.Stepback, eventInfo.isMoving);
 
 		private void OnLand(Landed eventInfo) =>
@@ -121,7 +121,7 @@ namespace SoulsLike
 
 		private void OnWeaponLoad(WeaponLoadEvent eventInfo)
 		{
-			bool isLeft = eventInfo.isLeft;
+			bool isLeft = eventInfo.isLeftSlot;
 			WeaponItem weapon = eventInfo.weapon;
 			if(!weapon) return;
 
@@ -137,7 +137,7 @@ namespace SoulsLike
 			this.AddListener<PlayerDied>(OnPlayerDeathAction);
 			this.AddListener<Landed>(OnLand);
 			this.AddListener<Fall>(OnFall);
-			this.AddListener<Roll>(OnRoll);
+			this.AddListener<RollEvent>(OnRoll);
 			this.AddListener<PickUpEvent>(OnPickUp);
 			this.AddListener<JumpEvent>(OnJump);
 			this.AddListener<WeaponInitEvent>(OnWeaponInit);
@@ -152,7 +152,7 @@ namespace SoulsLike
 			this.RemoveListener<PlayerDied>(OnPlayerDeathAction);
 			this.RemoveListener<Landed>(OnLand);
 			this.RemoveListener<Fall>(OnFall);
-			this.RemoveListener<Roll>(OnRoll);
+			this.RemoveListener<RollEvent>(OnRoll);
 			this.RemoveListener<PickUpEvent>(OnPickUp);
 			this.RemoveListener<WeaponInitEvent>(OnWeaponInit);
 			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);

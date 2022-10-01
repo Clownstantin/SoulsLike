@@ -3,12 +3,14 @@ namespace SoulsLike
 	public struct WeaponLoadEvent : IGameEvent
 	{
 		public readonly WeaponItem weapon;
-		public readonly bool isLeft;
+		public readonly bool isLeftSlot;
+		public readonly bool isBackSLot;
 
-		public WeaponLoadEvent(WeaponItem weapon, bool isLeft)
+		public WeaponLoadEvent(WeaponItem weapon, bool isLeftSlot, bool isBackSLot = false)
 		{
 			this.weapon = weapon;
-			this.isLeft = isLeft;
+			this.isLeftSlot = isLeftSlot;
+			this.isBackSLot = isBackSLot;
 		}
 	}
 }

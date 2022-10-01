@@ -57,8 +57,8 @@ namespace SoulsLike
 
 		public void FollowTarget(float delta)
 		{
-			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, _playerTransform.position,
-			                                       ref _cameraVelocity, delta * _cameraData.followSpeed);
+			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, _playerTransform.position, ref _cameraVelocity,
+			                                       delta * _cameraData.followSpeed);
 			_myTransform.position = targetPos;
 
 			HandleCameraCollisions(delta);
@@ -105,7 +105,8 @@ namespace SoulsLike
 			var newUnlockedPos = new Vector3(0, _cameraData.unlockedPivotPosition);
 			Vector3 camLocalPos = _cameraData.cameraPivotTransform.localPosition;
 
-			_cameraData.cameraPivotTransform.localPosition = Vector3.SmoothDamp(camLocalPos, _isLockedOnTarget ? newLockedPos : newUnlockedPos, ref velocity, delta);
+			_cameraData.cameraPivotTransform.localPosition = Vector3.SmoothDamp(camLocalPos, _isLockedOnTarget ? newLockedPos : newUnlockedPos,
+			                                                                    ref velocity, delta);
 		}
 
 		private void OnLockOnTarget(LockOnTargetEvent _)
@@ -167,8 +168,7 @@ namespace SoulsLike
 		private void FindAvailableTargets()
 		{
 			var colliderBuff = new Collider[_cameraData.maxTargets];
-			int buffSize = Physics.OverlapSphereNonAlloc(_playerTransform.position, _cameraData.lockOnSphereRadius,
-			                                             colliderBuff, _cameraData.lockOnLayer);
+			int buffSize = Physics.OverlapSphereNonAlloc(_playerTransform.position, _cameraData.lockOnSphereRadius, colliderBuff, _cameraData.lockOnLayer);
 
 			for(int i = 0; i < buffSize; i++)
 			{
@@ -183,8 +183,7 @@ namespace SoulsLike
 				if(unit.transform.root == _playerTransform.root || !(viewAngle > -_cameraData.clampViewAngle) ||
 				   !(viewAngle < _cameraData.clampViewAngle) || !(distanceFromTarget <= _cameraData.maxLockOnDistance)) continue;
 
-				if(Physics.Linecast(_playerTransform.position, unit.LockOnTransform.position, out RaycastHit hit) &&
-				   hit.transform.gameObject.layer != 6)
+				if(Physics.Linecast(_playerTransform.position, unit.LockOnTransform.position, out RaycastHit hit) && hit.transform.gameObject.layer != 6)
 					_availableTargets.Add(unit);
 			}
 		}
@@ -203,7 +202,6 @@ namespace SoulsLike
 
 			Vector3 cameraPos = _cameraData.cameraTransform.position;
 			Vector3 pivotPos = _cameraData.cameraPivotTransform.position;
-
 			Vector3 direction = cameraPos - pivotPos;
 			direction.Normalize();
 

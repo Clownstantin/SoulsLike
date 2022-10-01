@@ -82,7 +82,7 @@ namespace SoulsLike
 			bool isMoving = _inputHandler.MoveAmount > 0;
 			if(isMoving) _myTransform.rotation = Quaternion.LookRotation(_moveDirection);
 
-			this.TriggerEvent(new Roll(isMoving));
+			this.TriggerEvent(new RollEvent(isMoving));
 		}
 
 		public void HandleInAirTimer(float delta)
@@ -213,11 +213,9 @@ namespace SoulsLike
 
 		private void OnJump(JumpEvent eventInfo)
 		{
-			if(eventInfo.moveAmount > 0)
-			{
-				HandleMoveDirection();
-				_myTransform.rotation = Quaternion.LookRotation(_moveDirection);
-			}
+			if(!(eventInfo.moveAmount > 0)) return;
+			HandleMoveDirection();
+			_myTransform.rotation = Quaternion.LookRotation(_moveDirection);
 		}
 
 		private void OnPickUp(PickUpEvent _) => _rigidbody.velocity = Vector3.zero;

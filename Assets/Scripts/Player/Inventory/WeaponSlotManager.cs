@@ -9,6 +9,7 @@ namespace SoulsLike
 
 		private WeaponHolderSlot _leftHandSlot = default;
 		private WeaponHolderSlot _rightHandSlot = default;
+		private WeaponHolderSlot _backSlot = default;
 
 		private DamageDealer _leftDamageDialer = default;
 		private DamageDealer _rightDamageDialer = default;
@@ -33,6 +34,7 @@ namespace SoulsLike
 			{
 				if(weaponSlot.IsLeftHandSlot) _leftHandSlot = weaponSlot;
 				else if(weaponSlot.IsRightHandSlot) _rightHandSlot = weaponSlot;
+				else if(weaponSlot.IsBackSlot) _backSlot = weaponSlot;
 			}
 		}
 
@@ -49,11 +51,19 @@ namespace SoulsLike
 
 		private void OnWeaponLoad(WeaponLoadEvent eventInfo)
 		{
-			bool isLeft = eventInfo.isLeft;
-			WeaponItem weaponItem = eventInfo.weapon;
+			bool isLeft = eventInfo.isLeftSlot;
+			WeaponItem weapon = eventInfo.weapon;
+
+			if(eventInfo.isBackSLot)
+			{
+				_backSlot.LoadWeaponModel(weapon);
+				_leftHandSlot.DestroyWeapon();
+				return;
+			}
+			_backSlot.DestroyWeapon();
 
 			WeaponHolderSlot slot = isLeft ? _leftHandSlot : _rightHandSlot;
-			slot.LoadWeaponModel(weaponItem);
+			slot.LoadWeaponModel(weapon);
 
 			if(isLeft) _leftDamageDialer = _leftHandSlot.CurrentWeaponModel.DamageDealer;
 			else _rightDamageDialer = _rightHandSlot.CurrentWeaponModel.DamageDealer;

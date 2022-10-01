@@ -7,11 +7,14 @@ namespace SoulsLike
 		[SerializeField] private Transform _parentOverride = default;
 		[SerializeField] private bool _isLeftHandSlot = default;
 		[SerializeField] private bool _isRightHandSlot = default;
+		[SerializeField] private bool _isBackSlot = default;
 
 		private Weapon _currentWeaponModel = default;
 
 		public bool IsLeftHandSlot => _isLeftHandSlot;
 		public bool IsRightHandSlot => _isRightHandSlot;
+		public bool IsBackSlot => _isBackSlot;
+
 		public Weapon CurrentWeaponModel => _currentWeaponModel;
 
 		public void LoadWeaponModel(WeaponItem weaponItem)
