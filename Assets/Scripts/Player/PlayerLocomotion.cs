@@ -1,12 +1,14 @@
 using SoulsLike.Extentions;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SoulsLike
 {
 	[RequireComponent(typeof(Rigidbody))]
 	public class PlayerLocomotion : MonoBehaviour
 	{
-		[SerializeField] private MovementData _movementData = default;
+		[FormerlySerializedAs("_movementData")] [SerializeField]
+		private PlayerMovementData _playerMovementData = default;
 
 		private PlayerInput _inputHandler = default;
 		private CameraHandler _cameraHandler = default;
@@ -60,16 +62,16 @@ namespace SoulsLike
 
 		public void HandleSprinting()
 		{
-			_currentSpeed = _movementData.movementSpeed;
+			_currentSpeed = _playerMovementData.movementSpeed;
 
 			if(_inputHandler.SprintFlag && _inputHandler.MoveAmount > 0.5f)
 			{
-				_currentSpeed = _movementData.sprintSpeed;
+				_currentSpeed = _playerMovementData.sprintSpeed;
 				_isSprinting = true;
 			}
 			else
 			{
-				if(_inputHandler.MoveAmount < 0.5f) _currentSpeed = _movementData.walkingSpeed;
+				if(_inputHandler.MoveAmount < 0.5f) _currentSpeed = _playerMovementData.walkingSpeed;
 				_isSprinting = false;
 			}
 		}
@@ -93,12 +95,12 @@ namespace SoulsLike
 		public void HandleFalling(float delta, bool isInteracting)
 		{
 			_isGrounded = false;
-			float fallingSpeed = _movementData.fallingSpeed;
-			float minDistToFall = _movementData.minDistanceToFall;
-			float moveSpeed = _movementData.movementSpeed;
+			float fallingSpeed = _playerMovementData.fallingSpeed;
+			float minDistToFall = _playerMovementData.minDistanceToFall;
+			float moveSpeed = _playerMovementData.movementSpeed;
 
 			Vector3 origin = _myTransform.position;
-			origin.y += _movementData.groundDetectionRayStart;
+			origin.y += _playerMovementData.groundDetectionRayStart;
 
 			if(Physics.Raycast(origin, _myTransform.forward, out _, 0.4f))
 				_moveDirection = Vector3.zero;
@@ -109,7 +111,7 @@ namespace SoulsLike
 				_rigidbody.AddForce(_moveDirection * fallingSpeed / 10f);
 			}
 
-			origin += _moveDirection * _movementData.groundDirectionRayDistance;
+			origin += _moveDirection * _playerMovementData.groundDirectionRayDistance;
 			_targetPosition = _myTransform.position;
 
 			Debug.DrawRay(origin, Vector3.down * minDistToFall, Color.red, 0.1f, false);
@@ -196,7 +198,7 @@ namespace SoulsLike
 
 		private void RotateTowardsDirection(float delta, Vector3 direction)
 		{
-			float rotSpeed = _movementData.rotationSpeed;
+			float rotSpeed = _playerMovementData.rotationSpeed;
 			Quaternion lookRotation = Quaternion.LookRotation(direction);
 			Quaternion targetRotation = Quaternion.Slerp(_myTransform.rotation, lookRotation, rotSpeed * delta);
 

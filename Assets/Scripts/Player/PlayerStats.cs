@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public class PlayerStats : Stats
+	public class PlayerStats : UnitStats
 	{
 		private void OnEnable() => this.AddListener<StaminaDrain>(OnStaminaDrain);
 
@@ -12,18 +12,18 @@ namespace SoulsLike
 		{
 			InitStats();
 
-			this.TriggerEvent(new HealthInitEvent(unitData.maxHealth));
-			this.TriggerEvent(new StaminaInitEvent(unitData.maxStamina));
+			this.TriggerEvent(new HealthInitEvent(_unitStatsData.maxHealth));
+			this.TriggerEvent(new StaminaInitEvent(_unitStatsData.maxStamina));
 		}
 
 		public override void TakeDamage(int damage)
 		{
 			base.TakeDamage(damage);
-			this.TriggerEvent(new HealthChanged(unitData.currentHealth));
+			this.TriggerEvent(new HealthChanged(_unitStatsData.currentHealth));
 
-			if(unitData.currentHealth > 0) return;
+			if(_unitStatsData.currentHealth > 0) return;
 
-			unitData.currentHealth = 0;
+			_unitStatsData.currentHealth = 0;
 			this.TriggerEvent(new PlayerDied());
 
 			//Handle Player Death
@@ -31,8 +31,8 @@ namespace SoulsLike
 
 		private void OnStaminaDrain(StaminaDrain eventInfo)
 		{
-			unitData.currentStamina -= eventInfo.drainDamage;
-			this.TriggerEvent(new StaminaChanged(unitData.currentStamina));
+			_unitStatsData.currentStamina -= eventInfo.drainDamage;
+			this.TriggerEvent(new StaminaChanged(_unitStatsData.currentStamina));
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public class EnemyStats : Stats
+	public class EnemyStats : UnitStats
 	{
 		private Animator _animator = default;
 
@@ -18,9 +18,9 @@ namespace SoulsLike
 
 			_animator.Play(AnimationNameBase.DamageTaken);
 
-			if(unitData.currentHealth > 0) return;
+			if(_unitStatsData.currentHealth > 0) return;
 
-			unitData.currentHealth = 0;
+			_unitStatsData.currentHealth = 0;
 			_animator.Play(AnimationNameBase.Death);
 
 			//Handle Enemy Death

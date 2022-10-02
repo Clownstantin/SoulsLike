@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 206495903}
   - component: {fileID: 206495902}
   - component: {fileID: 206495901}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 367f5d9fb5abf424193633cf1274545e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementData:
+  _playerMovementData:
     normalCamera: {fileID: 0}
     movementSpeed: 5
     walkingSpeed: 1
@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5871ea2973a1a8499806d15fe572cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitData:
+  _unitStatsData:
     healthLevel: 10
     healthMultiplier: 10
     staminaLevel: 10
