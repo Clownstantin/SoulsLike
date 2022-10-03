@@ -5,7 +5,7 @@ namespace SoulsLike
 {
 	public class PlayerCombatSystem : MonoBehaviour
 	{
-		private AnimatorHandler _animatorHandler = default;
+		private PlayerAnimatorHandler _playerAnimatorHandler = default;
 		private WeaponSlotManager _weaponSlotManager = default;
 		private PlayerInventory _playerInventory = default;
 
@@ -25,10 +25,10 @@ namespace SoulsLike
 			this.RemoveListener<ToggleTwoHandEvent>(OnToggleTwoHand);
 		}
 
-		public void Init(PlayerInventory playerInventory, AnimatorHandler animatorHandler, WeaponSlotManager weaponSlotManager)
+		public void Init(PlayerInventory playerInventory, PlayerAnimatorHandler playerAnimatorHandler, WeaponSlotManager weaponSlotManager)
 		{
 			_playerInventory = playerInventory;
-			_animatorHandler = animatorHandler;
+			_playerAnimatorHandler = playerAnimatorHandler;
 			_weaponSlotManager = weaponSlotManager;
 		}
 
@@ -59,12 +59,12 @@ namespace SoulsLike
 
 			if(_isTwoHanded)
 			{
-				_animatorHandler.PlayTargetAnimation(rightWeapon.TwoHandAnimation, false);
+				_playerAnimatorHandler.PlayTargetAnimation(rightWeapon.TwoHandAnimation, false);
 				this.TriggerEvent(new WeaponLoadEvent(leftWeapon, false, true));
 			}
 			else
 			{
-				_animatorHandler.PlayTargetAnimation(AnimationNameBase.BothArmsEmpty, false);
+				_playerAnimatorHandler.PlayTargetAnimation(AnimationNameBase.BothArmsEmpty, false);
 				this.TriggerEvent(new WeaponLoadEvent(rightWeapon, false));
 				this.TriggerEvent(new WeaponLoadEvent(leftWeapon, true));
 			}
@@ -73,17 +73,17 @@ namespace SoulsLike
 		private void HandleWeaponCombo(WeaponItem weapon)
 		{
 			if(!_comboFlag) return;
-			_animatorHandler.DisableCombo();
+			_playerAnimatorHandler.DisableCombo();
 
 			if(_isTwoHanded)
 			{
-				if(_lastAttack == weapon.TwoHandedLightAttack01) _animatorHandler.PlayTargetAnimation(weapon.TwoHandedLightAttack02, true);
-				else if(_lastAttack == weapon.TwoHandedHeavyAttack01) _animatorHandler.PlayTargetAnimation(weapon.TwoHandedHeavyAttack02, true);
+				if(_lastAttack == weapon.TwoHandedLightAttack01) _playerAnimatorHandler.PlayTargetAnimation(weapon.TwoHandedLightAttack02, true);
+				else if(_lastAttack == weapon.TwoHandedHeavyAttack01) _playerAnimatorHandler.PlayTargetAnimation(weapon.TwoHandedHeavyAttack02, true);
 			}
 			else
 			{
-				if(_lastAttack == weapon.OneHandedLightAttack01) _animatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack02, true);
-				else if(_lastAttack == weapon.OneHandedHeavyAttack01) _animatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack02, true);
+				if(_lastAttack == weapon.OneHandedLightAttack01) _playerAnimatorHandler.PlayTargetAnimation(weapon.OneHandedLightAttack02, true);
+				else if(_lastAttack == weapon.OneHandedHeavyAttack01) _playerAnimatorHandler.PlayTargetAnimation(weapon.OneHandedHeavyAttack02, true);
 			}
 		}
 
@@ -93,7 +93,7 @@ namespace SoulsLike
 				isHeavy ? weapon.OneHandedHeavyAttack01 : weapon.OneHandedLightAttack01;
 
 			_weaponSlotManager.SetAttackingWeapon(weapon);
-			_animatorHandler.PlayTargetAnimation(attackAnimation, true);
+			_playerAnimatorHandler.PlayTargetAnimation(attackAnimation, true);
 			_lastAttack = _isTwoHanded ? weapon.TwoHandedLightAttack01 : weapon.OneHandedLightAttack01;
 		}
 	}

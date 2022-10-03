@@ -1,28 +1,20 @@
-﻿using UnityEngine;
+﻿using SoulsLike.Extentions;
 
 namespace SoulsLike
 {
 	public class EnemyStats : UnitStats
 	{
-		private Animator _animator = default;
-
-		public void Init(Animator animator)
-		{
-			_animator = animator;
-			InitStats();
-		}
+		public void Init() => InitStats();
 
 		public override void TakeDamage(int damage)
 		{
 			base.TakeDamage(damage);
+			int enemyID = transform.GetInstanceID();
+			this.TriggerEvent(new EnemyHealthChanged(enemyID));
 
-			_animator.Play(AnimationNameBase.DamageTaken);
-
-			if(_unitStatsData.currentHealth > 0) return;
-
-			_unitStatsData.currentHealth = 0;
-			_animator.Play(AnimationNameBase.Death);
-
+			if(unitStatsData.currentHealth > 0) return;
+			unitStatsData.currentHealth = 0;
+			this.TriggerEvent(new EnemyDied(enemyID));
 			//Handle Enemy Death
 		}
 	}

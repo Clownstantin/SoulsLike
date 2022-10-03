@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5871ea2973a1a8499806d15fe572cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _unitStatsData:
+  unitStatsData:
     healthLevel: 10
     healthMultiplier: 10
     staminaLevel: 10

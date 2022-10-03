@@ -1,14 +1,12 @@
 using SoulsLike.Extentions;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace SoulsLike
 {
 	[RequireComponent(typeof(Rigidbody))]
 	public class PlayerLocomotion : MonoBehaviour
 	{
-		[FormerlySerializedAs("_movementData")] [SerializeField]
-		private PlayerMovementData _playerMovementData = default;
+		[SerializeField] private PlayerMovementData _playerMovementData = default;
 
 		private PlayerInput _inputHandler = default;
 		private CameraHandler _cameraHandler = default;
@@ -215,7 +213,7 @@ namespace SoulsLike
 
 		private void OnJump(JumpEvent eventInfo)
 		{
-			if(!(eventInfo.moveAmount > 0)) return;
+			if(eventInfo.moveAmount == 0) return;
 			HandleMoveDirection();
 			_myTransform.rotation = Quaternion.LookRotation(_moveDirection);
 		}

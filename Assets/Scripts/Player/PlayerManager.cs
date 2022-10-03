@@ -6,7 +6,7 @@ namespace SoulsLike
 	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInput))]
 	public class PlayerManager : UnitManager
 	{
-		private AnimatorHandler _animatorHandler = default;
+		private PlayerAnimatorHandler _playerAnimatorHandler = default;
 		private CameraHandler _cameraHandler = default;
 
 		private PlayerInput _inputHandler = default;
@@ -31,7 +31,7 @@ namespace SoulsLike
 			_inputHandler = GetComponent<PlayerInput>();
 			_interactSystem = GetComponent<PlayerInteractSystem>();
 
-			_animatorHandler = GetComponentInChildren<AnimatorHandler>();
+			_playerAnimatorHandler = GetComponentInChildren<PlayerAnimatorHandler>();
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
 		}
 
@@ -42,9 +42,9 @@ namespace SoulsLike
 
 			_weaponSlotManager.Init();
 			_cameraHandler.Init(_myTransform);
-			_playerAttack.Init(_playerInventory, _animatorHandler, _weaponSlotManager);
+			_playerAttack.Init(_playerInventory, _playerAnimatorHandler, _weaponSlotManager);
 			_playerLocomotion.Init(_inputHandler, _cameraHandler);
-			_animatorHandler.Init();
+			_playerAnimatorHandler.Init();
 			_interactSystem.Init();
 			_playerInventory.Init();
 			_playerStats.Init();
@@ -52,16 +52,16 @@ namespace SoulsLike
 
 		public override void OnUpdate(float delta)
 		{
-			_isInteracting = _animatorHandler.IsInteracting;
+			_isInteracting = _playerAnimatorHandler.IsInteracting;
 			bool isSprinting = _playerLocomotion.IsSprinting;
 			bool isInAir = _playerLocomotion.IsInAir;
 
-			_inputHandler.TickInput(delta, _isInteracting, _animatorHandler.CanDoCombo);
+			_inputHandler.TickInput(delta, _isInteracting, _playerAnimatorHandler.CanDoCombo);
 
 			if(_cameraHandler.IsLockedOnTarget && !_inputHandler.SprintFlag)
-				_animatorHandler.UpdateAnimatorValues(delta, _inputHandler.Vertical, _inputHandler.Horizontal, isSprinting, isInAir);
+				_playerAnimatorHandler.UpdateAnimatorValues(delta, _inputHandler.Vertical, _inputHandler.Horizontal, isSprinting, isInAir);
 			else
-				_animatorHandler.UpdateAnimatorValues(delta, _inputHandler.MoveAmount, 0, isSprinting, isInAir);
+				_playerAnimatorHandler.UpdateAnimatorValues(delta, _inputHandler.MoveAmount, 0, isSprinting, isInAir);
 
 			_interactSystem.CheckObjectToInteract(_inputHandler.InteractInput);
 

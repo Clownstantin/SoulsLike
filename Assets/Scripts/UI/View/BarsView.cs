@@ -1,10 +1,11 @@
-﻿using SoulsLike.Extentions;
+﻿using System;
+using SoulsLike.Extentions;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace SoulsLike.UI
 {
-	[System.Serializable]
+	[Serializable]
 	public struct BarsView : IView
 	{
 		[Header("Bars")]
@@ -13,21 +14,21 @@ namespace SoulsLike.UI
 
 		public void Subscribe()
 		{
-			this.AddListener<HealthInitEvent>(OnHealthInit);
+			this.AddListener<PlayerHealthInitEvent>(OnHealthInit);
 			this.AddListener<StaminaInitEvent>(OnStaminaInit);
-			this.AddListener<HealthChanged>(OnHealthChanged);
+			this.AddListener<PlayerHealthChanged>(OnHealthChanged);
 			this.AddListener<StaminaChanged>(OnStaminaChanged);
 		}
 
 		public void Unsubscribe()
 		{
-			this.RemoveListener<HealthInitEvent>(OnHealthInit);
+			this.RemoveListener<PlayerHealthInitEvent>(OnHealthInit);
 			this.RemoveListener<StaminaInitEvent>(OnStaminaInit);
-			this.RemoveListener<HealthChanged>(OnHealthChanged);
+			this.RemoveListener<PlayerHealthChanged>(OnHealthChanged);
 			this.RemoveListener<StaminaChanged>(OnStaminaChanged);
 		}
 
-		private void OnHealthInit(HealthInitEvent eventInfo)
+		private void OnHealthInit(PlayerHealthInitEvent eventInfo)
 		{
 			_healthBarSlider.maxValue = eventInfo.health;
 			_healthBarSlider.value = eventInfo.health;
@@ -39,7 +40,7 @@ namespace SoulsLike.UI
 			_staminaBarSlider.value = eventInfo.stamina;
 		}
 
-		private void OnHealthChanged(HealthChanged eventInfo) => _healthBarSlider.value = eventInfo.currentHealth;
+		private void OnHealthChanged(PlayerHealthChanged eventInfo) => _healthBarSlider.value = eventInfo.currentHealth;
 
 		private void OnStaminaChanged(StaminaChanged eventInfo) => _staminaBarSlider.value = eventInfo.currentStamina;
 	}

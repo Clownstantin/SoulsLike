@@ -11,5 +11,6 @@ namespace SoulsLike
 		public float detectionRadius;
 		public LayerMask detectionLayer;
 		public float maxDetectionAngle;
+		public float stopDistance;
 	}
 }

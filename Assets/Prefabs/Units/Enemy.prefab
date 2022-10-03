@@ -50,11 +50,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f0904ab3a0d315459f6d234bf9134dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _unitStatsData:
-    healthLevel: 0
-    healthMultiplier: 0
-    staminaLevel: 0
-    staminaMultiplier: 0
+  unitStatsData:
+    healthLevel: 10
+    healthMultiplier: 10
+    staminaLevel: 10
+    staminaMultiplier: 10
     maxHealth: 0
     currentHealth: 0
     maxStamina: 0
@@ -1902,3 +1902,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8939ae46107e0a945b6d5836e4a23886, type: 3}
   m_PrefabInstance: {fileID: 5092650965033204106}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5363174470319572187 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8939ae46107e0a945b6d5836e4a23886, type: 3}
+  m_PrefabInstance: {fileID: 5092650965033204106}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6420986945267400345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5363174470319572187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee7ad03fe3f47b39f9a33cc1f7c84b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

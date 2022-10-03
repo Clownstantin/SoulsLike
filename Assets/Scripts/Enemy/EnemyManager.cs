@@ -2,11 +2,10 @@
 
 namespace SoulsLike
 {
-	[RequireComponent(typeof(EnemyStats))]
+	[RequireComponent(typeof(EnemyLocomotion), typeof(EnemyStats))]
 	public class EnemyManager : UnitManager
 	{
-		private Animator _animator = default;
-
+		private EnemyAnimatorHandler _enemyAnimatorHandler = default;
 		private EnemyLocomotion _enemyLocomotion = default;
 		private EnemyStats _enemyStats = default;
 
@@ -14,14 +13,22 @@ namespace SoulsLike
 
 		private void Awake()
 		{
-			_animator = GetComponentInChildren<Animator>();
 			_enemyStats = GetComponent<EnemyStats>();
 			_enemyLocomotion = GetComponent<EnemyLocomotion>();
+			_enemyAnimatorHandler = GetComponentInChildren<EnemyAnimatorHandler>();
 		}
 
-		public override void OnUpdate(float delta) => HandleCurrentAction();
+		protected override void OnStart()
+		{
+			_enemyStats.Init();
+			_enemyAnimatorHandler.Init();
+			_enemyLocomotion.Init();
+		}
 
-		private void Start() => _enemyStats.Init(_animator);
+		public override void OnUpdate(float delta)
+		{
+			HandleCurrentAction();
+		}
 
 		private void HandleCurrentAction()
 		{
