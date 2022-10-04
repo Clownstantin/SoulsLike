@@ -4,18 +4,30 @@ using UnityEngine.AI;
 
 namespace SoulsLike
 {
+	[RequireComponent(typeof(Rigidbody))]
 	public class EnemyLocomotion : MonoBehaviour
 	{
 		[SerializeField] private EnemyMovementData _enemyMovementData = default;
 
 		private UnitStats _currentTarget = default;
 		private NavMeshAgent _navMesh = default;
+
 		private Transform _myTransform = default;
+		private Rigidbody _rigidbody = default;
+
+		private void OnEnable() => this.AddListener<EnemyAnimationPlay>(OnAnimationPlay);
+
+		private void OnDisable() => this.RemoveListener<EnemyAnimationPlay>(OnAnimationPlay);
 
 		public void Init()
 		{
-			_myTransform = transform;
+			_rigidbody = GetComponent<Rigidbody>();
 			_navMesh = GetComponentInChildren<NavMeshAgent>();
+
+			_myTransform = transform;
+			_navMesh.enabled = false;
+			_navMesh.stoppingDistance = _enemyMovementData.stopDistance;
+			_rigidbody.isKinematic = false;
 		}
 
 		public void HandleDetection()
@@ -33,9 +45,9 @@ namespace SoulsLike
 			}
 		}
 
-		public void HandleMoveToTarget(float delta, bool isPerformingAction)
+		public void HandleMoveToTarget(bool isPerformingAction)
 		{
-			float viewAngle = GetViewAngle(_currentTarget);
+			float delta = Time.deltaTime;
 			float distanceFromTarget = Vector3.Distance(_currentTarget.transform.position, _myTransform.position);
 
 			if(isPerformingAction)
@@ -45,11 +57,47 @@ namespace SoulsLike
 			}
 			else
 			{
-				if(distanceFromTarget > _enemyMovementData.stopDistance) this.TriggerEvent(new EnemyMoveEvent(delta));
+				if(distanceFromTarget > _enemyMovementData.stopDistance)
+					this.TriggerEvent(new EnemyMoveEvent(delta));
+				else
+					this.TriggerEvent(new EnemyStopEvent(delta));
 			}
+			_navMesh.transform.localPosition = Vector3.zero;
+			HandleRotation(delta, isPerformingAction);
 		}
 
 		public bool HasTarget() => _currentTarget;
+
+		private void HandleRotation(float delta, bool isPerformingAction)
+		{
+			float rotSpeed = _enemyMovementData.rotationSpeed;
+
+			if(isPerformingAction)
+			{
+				Vector3 dir = _currentTarget.transform.position - _myTransform.position;
+				dir.y = 0;
+				dir.Normalize();
+
+				if(dir == Vector3.zero) dir = _myTransform.forward;
+
+				Quaternion lookRotation = Quaternion.LookRotation(dir);
+				_myTransform.rotation = Quaternion.Slerp(_myTransform.rotation, lookRotation, rotSpeed * delta);
+			}
+			else
+			{
+				_navMesh.enabled = true;
+				_navMesh.SetDestination(_currentTarget.transform.position);
+				_rigidbody.velocity = _navMesh.velocity;
+				_myTransform.rotation = Quaternion.Slerp(_myTransform.rotation, _navMesh.transform.rotation, rotSpeed * delta);
+			}
+			_navMesh.transform.localRotation = Quaternion.identity;
+		}
+
+		private void OnAnimationPlay(EnemyAnimationPlay eventInfo)
+		{
+			_rigidbody.drag = 0;
+			_rigidbody.velocity = eventInfo.velocity;
+		}
 
 		private float GetViewAngle(Component target)
 		{

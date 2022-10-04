@@ -25,7 +25,7 @@ namespace SoulsLike
 			Vector3 deltaPosition = animator.deltaPosition;
 			deltaPosition.y = 0;
 			Vector3 velocity = deltaPosition / delta;
-			this.TriggerEvent(new AnimationPlayEvent(velocity));
+			this.TriggerEvent(new PlayerAnimationPlay(velocity));
 		}
 
 		public void UpdateAnimatorValues(float delta, float verticalMovement, float horizontalMovement, bool isSprinting, bool isInAir)

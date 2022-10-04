@@ -25,14 +25,14 @@ namespace SoulsLike
 			_enemyLocomotion.Init();
 		}
 
-		public override void OnUpdate(float delta)
-		{
-			HandleCurrentAction();
-		}
+		public override void OnUpdate(float delta) { }
+
+		public override void OnFixedUpdate(float delta) => HandleCurrentAction();
 
 		private void HandleCurrentAction()
 		{
 			if(!_enemyLocomotion.HasTarget()) _enemyLocomotion.HandleDetection();
+			else _enemyLocomotion.HandleMoveToTarget(_isPerformingAction);
 		}
 	}
 }
