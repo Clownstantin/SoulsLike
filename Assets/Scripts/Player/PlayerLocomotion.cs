@@ -30,9 +30,23 @@ namespace SoulsLike
 		public bool IsSprinting => _isSprinting;
 		public bool IsInAir => _isInAir;
 
-		private void OnEnable() => Subscribe();
+		private void OnEnable()
+		{
+			this.AddListener<PickUpEvent>(OnPickUp);
+			this.AddListener<JumpEvent>(OnJump);
+			this.AddListener<PlayerAnimationPlay>(OnAnimationPlay);
+			this.AddListener<GamePause>(OnGamePause);
+			this.AddListener<GameResume>(OnGameResume);
+		}
 
-		private void OnDisable() => Unsubscribe();
+		private void OnDisable()
+		{
+			this.RemoveListener<PickUpEvent>(OnPickUp);
+			this.RemoveListener<JumpEvent>(OnJump);
+			this.RemoveListener<PlayerAnimationPlay>(OnAnimationPlay);
+			this.RemoveListener<GamePause>(OnGamePause);
+			this.RemoveListener<GameResume>(OnGameResume);
+		}
 
 		public void Init(PlayerInput inputHandler, CameraHandler cameraHandler)
 		{
@@ -131,7 +145,7 @@ namespace SoulsLike
 					}
 					else _inAirTimer = 0;
 
-					this.TriggerEvent(new Landed(isLongLand));
+					this.TriggerEvent(new PlayerLandEvent(isLongLand));
 					_isInAir = false;
 				}
 			}
@@ -142,7 +156,7 @@ namespace SoulsLike
 
 				if(!_isInAir)
 				{
-					if(!isInteracting) this.TriggerEvent(new Fall());
+					if(!isInteracting) this.TriggerEvent(new PlayerFallEvent());
 
 					Vector3 velocity = _rigidbody.velocity;
 					velocity.Normalize();
@@ -170,28 +184,9 @@ namespace SoulsLike
 			else
 			{
 				HandleMoveDirection();
-
 				if(_moveDirection == Vector3.zero) _moveDirection = _myTransform.forward;
 				RotateTowardsDirection(delta, _moveDirection);
 			}
-		}
-
-		public void Subscribe()
-		{
-			this.AddListener<PickUpEvent>(OnPickUp);
-			this.AddListener<JumpEvent>(OnJump);
-			this.AddListener<PlayerAnimationPlay>(OnAnimationPlay);
-			this.AddListener<GamePause>(OnGamePause);
-			this.AddListener<GameResume>(OnGameResume);
-		}
-
-		public void Unsubscribe()
-		{
-			this.RemoveListener<PickUpEvent>(OnPickUp);
-			this.RemoveListener<JumpEvent>(OnJump);
-			this.RemoveListener<PlayerAnimationPlay>(OnAnimationPlay);
-			this.RemoveListener<GamePause>(OnGamePause);
-			this.RemoveListener<GameResume>(OnGameResume);
 		}
 
 		private void RotateTowardsDirection(float delta, Vector3 direction)

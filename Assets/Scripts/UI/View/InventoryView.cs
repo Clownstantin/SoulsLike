@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SoulsLike.Extentions;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SoulsLike.UI
 {
-	[System.Serializable]
+	[Serializable]
 	public struct InventoryView : IView
 	{
 		[Header("Weapon Inventory")]
@@ -38,16 +40,16 @@ namespace SoulsLike.UI
 			UnsubscribeButtonEvent(_weaponInventorySlots);
 		}
 
-		private void SubscribeButtonEvent(ISlot[] slot)
+		private void SubscribeButtonEvent(IEnumerable<ISlot> slots)
 		{
-			for(int i = 0; i < slot.Length; i++)
-				slot[i].Subscribe();
+			foreach(ISlot slot in slots)
+				slot.Subscribe();
 		}
 
-		private void UnsubscribeButtonEvent(ISlot[] slot)
+		private void UnsubscribeButtonEvent(IEnumerable<ISlot> slots)
 		{
-			for(int i = 0; i < slot.Length; i++)
-				slot[i].Unsubscribe();
+			foreach(ISlot slot in slots)
+				slot.Unsubscribe();
 		}
 
 		private void OnInventoryUpdate(UpdateWeaponInventoryEvent eventInfo)
@@ -58,20 +60,29 @@ namespace SoulsLike.UI
 
 		private void OnOpenInventoryClicked(OpenInventoryClick _)
 		{
-			for(int i = 0; i < _weaponInventorySlots.Length; i++)
-				_weaponInventorySlots[i].DisableButton();
+			foreach(WeaponInventorySlot slot in _weaponInventorySlots)
+				slot.DisableButton();
 		}
 
-		private void UpdateEquipment(WeaponItem[] rightWeapons, WeaponItem[] leftWeapons)
+		private void UpdateEquipment(IReadOnlyList<WeaponItem> rightWeapons, IReadOnlyList<WeaponItem> leftWeapons)
 		{
-			for(int i = 0; i < _handWeaponSlots.Length; i++)
+			foreach(HandWeaponSlot slot in _handWeaponSlots)
 			{
-				switch(_handWeaponSlots[i].SlotType)
+				switch(slot.SlotType)
 				{
-					case EquipmentSlotTypes.RightSlot01: _handWeaponSlots[i].AddItem(rightWeapons[0]); break;
-					case EquipmentSlotTypes.RightSlot02: _handWeaponSlots[i].AddItem(rightWeapons[1]); break;
-					case EquipmentSlotTypes.LeftSlot01: _handWeaponSlots[i].AddItem(leftWeapons[0]); break;
-					case EquipmentSlotTypes.LeftSlot02: _handWeaponSlots[i].AddItem(leftWeapons[1]); break;
+					case EquipmentSlotTypes.RightSlot01:
+						slot.AddItem(rightWeapons[0]);
+						break;
+					case EquipmentSlotTypes.RightSlot02:
+						slot.AddItem(rightWeapons[1]);
+						break;
+					case EquipmentSlotTypes.LeftSlot01:
+						slot.AddItem(leftWeapons[0]);
+						break;
+					case EquipmentSlotTypes.LeftSlot02:
+						slot.AddItem(leftWeapons[1]);
+						break;
+					default: return;
 				}
 			}
 		}

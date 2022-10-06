@@ -127,7 +127,7 @@ namespace SoulsLike
 			{
 				float distanceFromTarget = Vector3.Distance(_playerTransform.position, target.transform.position);
 
-				if(!(distanceFromTarget < shortestDistance)) continue;
+				if(distanceFromTarget >= shortestDistance) continue;
 				shortestDistance = distanceFromTarget;
 				_currentLockOnTarget = target.LockOnTransform;
 			}
@@ -202,8 +202,7 @@ namespace SoulsLike
 
 			Vector3 cameraPos = _cameraData.cameraTransform.position;
 			Vector3 pivotPos = _cameraData.cameraPivotTransform.position;
-			Vector3 direction = cameraPos - pivotPos;
-			direction.Normalize();
+			Vector3 direction = (cameraPos - pivotPos).normalized;
 
 			if(Physics.SphereCast(pivotPos, _cameraData.cameraSphereRadius, direction, out RaycastHit hit,
 			                      Mathf.Abs(_targetPositionZ), _ignoreLayers) && !hit.collider.isTrigger)

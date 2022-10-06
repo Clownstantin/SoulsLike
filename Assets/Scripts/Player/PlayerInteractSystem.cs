@@ -19,14 +19,11 @@ namespace SoulsLike
 
 		public void CheckObjectToInteract(bool interactInput)
 		{
-			if(Physics.SphereCast(_myTransform.position, _checkRadius, _myTransform.forward,
-				out RaycastHit hit, _checkDistance, _ignoreForGroundCheck) &&
-			   hit.collider.TryGetComponent(out Interactable interactableObj))
+			if(Physics.SphereCast(_myTransform.position, _checkRadius, _myTransform.forward, out RaycastHit hit, _checkDistance,
+			                      _ignoreForGroundCheck) && hit.collider.TryGetComponent(out Interactable interactableObj))
 			{
 				string interactableText = interactableObj.InteractableText;
-
 				this.TriggerEvent(new InteractTextPopUp(interactableText, true));
-
 				if(interactInput) interactableObj.PickUp();
 			}
 			else

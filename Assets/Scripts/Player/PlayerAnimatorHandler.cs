@@ -12,9 +12,35 @@ namespace SoulsLike
 		public bool IsInteracting => _isInteracting;
 		public bool CanDoCombo => _canDoCombo;
 
-		private void OnEnable() => Subscribe();
+		private void OnEnable()
+		{
+			this.AddListener<PlayerHealthChanged>(OnHealthChangedAction);
+			this.AddListener<PlayerDied>(OnPlayerDeathAction);
+			this.AddListener<PlayerLandEvent>(OnLand);
+			this.AddListener<PlayerFallEvent>(OnFall);
+			this.AddListener<RollEvent>(OnRoll);
+			this.AddListener<PickUpEvent>(OnPickUp);
+			this.AddListener<JumpEvent>(OnJump);
+			this.AddListener<WeaponInitEvent>(OnWeaponInit);
+			this.AddListener<WeaponLoadEvent>(OnWeaponLoad);
+			this.AddListener<GamePause>(OnGamePause);
+			this.AddListener<GameResume>(OnGameResume);
+		}
 
-		private void OnDisable() => Unsubscribe();
+		private void OnDisable()
+		{
+			this.RemoveListener<PlayerHealthChanged>(OnHealthChangedAction);
+			this.RemoveListener<PlayerDied>(OnPlayerDeathAction);
+			this.RemoveListener<PlayerLandEvent>(OnLand);
+			this.RemoveListener<PlayerFallEvent>(OnFall);
+			this.RemoveListener<RollEvent>(OnRoll);
+			this.RemoveListener<PickUpEvent>(OnPickUp);
+			this.RemoveListener<WeaponInitEvent>(OnWeaponInit);
+			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
+			this.RemoveListener<JumpEvent>(OnJump);
+			this.RemoveListener<GamePause>(OnGamePause);
+			this.RemoveListener<GameResume>(OnGameResume);
+		}
 
 		private void OnAnimatorMove()
 		{
@@ -69,7 +95,7 @@ namespace SoulsLike
 
 		private void OnHealthChangedAction(PlayerHealthChanged _) => PlayTargetAnimation(AnimationNameBase.DamageTaken, true);
 
-		private void OnFall(Fall _) => PlayTargetAnimation(AnimationNameBase.Fall, true);
+		private void OnFall(PlayerFallEvent _) => PlayTargetAnimation(AnimationNameBase.Fall, true);
 
 		private void OnPickUp(PickUpEvent _) => PlayTargetAnimation(AnimationNameBase.PickUp, true);
 
@@ -78,7 +104,7 @@ namespace SoulsLike
 		private void OnRoll(RollEvent eventInfo) =>
 			PlayTargetAnimation(eventInfo.isMoving ? AnimationNameBase.Roll : AnimationNameBase.Stepback, eventInfo.isMoving);
 
-		private void OnLand(Landed eventInfo) =>
+		private void OnLand(PlayerLandEvent eventInfo) =>
 			PlayTargetAnimation(eventInfo.isLongLand ? AnimationNameBase.Land : AnimationNameBase.Empty, eventInfo.isLongLand);
 
 		private void OnGameResume(GameResume _) => animator.enabled = true;
@@ -101,36 +127,6 @@ namespace SoulsLike
 			string emptyAnimationName = isLeft ? AnimationNameBase.LeftArmEmpty : AnimationNameBase.RightArmEmpty;
 
 			animator.CrossFade(weapon ? weaponAnimationName : emptyAnimationName, crossFadeTransitionDuration);
-		}
-
-		private void Subscribe()
-		{
-			this.AddListener<PlayerHealthChanged>(OnHealthChangedAction);
-			this.AddListener<PlayerDied>(OnPlayerDeathAction);
-			this.AddListener<Landed>(OnLand);
-			this.AddListener<Fall>(OnFall);
-			this.AddListener<RollEvent>(OnRoll);
-			this.AddListener<PickUpEvent>(OnPickUp);
-			this.AddListener<JumpEvent>(OnJump);
-			this.AddListener<WeaponInitEvent>(OnWeaponInit);
-			this.AddListener<WeaponLoadEvent>(OnWeaponLoad);
-			this.AddListener<GamePause>(OnGamePause);
-			this.AddListener<GameResume>(OnGameResume);
-		}
-
-		private void Unsubscribe()
-		{
-			this.RemoveListener<PlayerHealthChanged>(OnHealthChangedAction);
-			this.RemoveListener<PlayerDied>(OnPlayerDeathAction);
-			this.RemoveListener<Landed>(OnLand);
-			this.RemoveListener<Fall>(OnFall);
-			this.RemoveListener<RollEvent>(OnRoll);
-			this.RemoveListener<PickUpEvent>(OnPickUp);
-			this.RemoveListener<WeaponInitEvent>(OnWeaponInit);
-			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
-			this.RemoveListener<JumpEvent>(OnJump);
-			this.RemoveListener<GamePause>(OnGamePause);
-			this.RemoveListener<GameResume>(OnGameResume);
 		}
 	}
 }

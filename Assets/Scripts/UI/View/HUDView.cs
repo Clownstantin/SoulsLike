@@ -10,12 +10,10 @@ namespace SoulsLike.UI
 	{
 		[Header("QuickSlots")]
 		[SerializeField] private Image _leftWeaponIcon;
-
 		[SerializeField] private Image _rightWeaponIcon;
 
 		[Header("Windows")]
 		[SerializeField] private GameObject _hudWindow;
-
 		[SerializeField] private GameObject _selectionWindow;
 		[SerializeField] private GameObject _inventoryWindow;
 		[SerializeField] private GameObject _equipmentWindow;
@@ -23,7 +21,6 @@ namespace SoulsLike.UI
 
 		[Header("Menu Buttons")]
 		[SerializeField] private Button _openInventoryButton;
-
 		[SerializeField] private Button _openEquipmentButton;
 		[SerializeField] private Button _openOptionsButton;
 
@@ -54,7 +51,6 @@ namespace SoulsLike.UI
 		private void OnWeaponLoad(WeaponLoadEvent eventInfo)
 		{
 			WeaponItem weapon = eventInfo.weapon;
-			if(!weapon) return;
 			SetWeaponSpriteToImage(eventInfo.isLeftSlot ? _leftWeaponIcon : _rightWeaponIcon, weapon, weapon.ItemIcon);
 		}
 
@@ -64,11 +60,9 @@ namespace SoulsLike.UI
 			_selectionWindow.SetActive(_isSelectionMenuActive);
 			_hudWindow.SetActive(!_isSelectionMenuActive);
 
-			if(!_isSelectionMenuActive)
-			{
-				_inventoryWindow.SetActive(false);
-				_equipmentWindow.SetActive(false);
-			}
+			if(_isSelectionMenuActive) return;
+			_inventoryWindow.SetActive(false);
+			_equipmentWindow.SetActive(false);
 		}
 
 		private void OnEquipButtonClicked(EquipButtonClick _)

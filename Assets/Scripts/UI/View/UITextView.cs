@@ -1,11 +1,12 @@
-﻿using SoulsLike.Extentions;
+﻿using System;
+using SoulsLike.Extentions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace SoulsLike.UI
 {
-	[System.Serializable]
+	[Serializable]
 	public struct UITextView : IView
 	{
 		[Header("Text PopUp")]
@@ -43,7 +44,6 @@ namespace SoulsLike.UI
 				_itemText.text = eventInfo.item.ItemName;
 				_itemImage.sprite = eventInfo.item.ItemIcon;
 			}
-
 			_itemPopUpContainer.SetActive(eventInfo.isActive);
 		}
 	}

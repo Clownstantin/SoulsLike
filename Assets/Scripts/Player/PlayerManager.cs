@@ -77,7 +77,6 @@ namespace SoulsLike
 				_playerLocomotion.HandleMovement();
 				_playerLocomotion.HandleRotation(delta);
 			}
-
 			_playerLocomotion.HandleFalling(delta, _isInteracting);
 		}
 

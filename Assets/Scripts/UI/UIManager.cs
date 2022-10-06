@@ -19,14 +19,14 @@ namespace SoulsLike.UI
 
 		private void OnEnable()
 		{
-			for(int i = 0; i < _views.Length; i++)
-				_views[i].Subscribe();
+			foreach(IView view in _views)
+				view.Subscribe();
 		}
 
 		private void OnDisable()
 		{
-			for(int i = 0; i < _views.Length; i++)
-				_views[i].Unsubscribe();
+			foreach(IView view in _views)
+				view.Unsubscribe();
 		}
 	}
 }
