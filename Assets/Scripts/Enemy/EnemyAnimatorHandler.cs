@@ -4,7 +4,7 @@ using UnityEngine;
 namespace SoulsLike
 {
 	[RequireComponent(typeof(Animator))]
-	public class EnemyAnimatorHandler : AnimatorHandler
+	public class EnemyAnimatorHandler : AnimatorHandler, IEventListener, IEventSender
 	{
 		private int _enemyID = default;
 

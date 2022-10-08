@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace SoulsLike.UI
 {
-	public class WeaponInventorySlot : MonoBehaviour, ISlot
+	public class WeaponInventorySlot : MonoBehaviour, ISlot, IEventListener, IEventSender
 	{
 		[SerializeField] private Image _weaponIcon = default;
 		[SerializeField] private Button _inventoryWeaponButton = default;

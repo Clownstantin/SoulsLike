@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace SoulsLike.UI
 {
 	[Serializable]
-	public struct InventoryView : IView
+	public struct InventoryView : IView, IEventListener
 	{
 		[Header("Weapon Inventory")]
 		[SerializeField] private WeaponInventorySlot _weaponSlotPrefab;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace SoulsLike
 {
 	[RequireComponent(typeof(Rigidbody))]
-	public class PlayerLocomotion : MonoBehaviour
+	public class PlayerLocomotion : MonoBehaviour, IEventListener, IEventSender
 	{
 		[SerializeField] private PlayerMovementData _playerMovementData = default;
 

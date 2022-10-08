@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public class PlayerInteractSystem : MonoBehaviour
+	public class PlayerInteractSystem : MonoBehaviour, IEventSender
 	{
 		[SerializeField] private float _checkRadius = default;
 		[SerializeField] private float _checkDistance = default;

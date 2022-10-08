@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public class CameraHandler : MonoBehaviour
+	public class CameraHandler : MonoBehaviour, IEventListener
 	{
 		[SerializeField] private CameraData _cameraData = default;
 
@@ -60,7 +60,6 @@ namespace SoulsLike
 			Vector3 targetPos = Vector3.SmoothDamp(_myTransform.position, _playerTransform.position, ref _cameraVelocity,
 			                                       delta * _cameraData.followSpeed);
 			_myTransform.position = targetPos;
-
 			HandleCameraCollisions(delta);
 		}
 

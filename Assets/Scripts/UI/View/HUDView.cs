@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace SoulsLike.UI
 {
 	[Serializable]
-	public struct HUDView : IView
+	public struct HUDView : IView, IEventListener, IEventSender
 	{
 		[Header("QuickSlots")]
 		[SerializeField] private Image _leftWeaponIcon;

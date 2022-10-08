@@ -1,11 +1,10 @@
 using SoulsLike.Extentions;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace SoulsLike
 {
-	public class PlayerInput : MonoBehaviour
+	public class PlayerInput : MonoBehaviour, IEventListener, IEventSender
 	{
 		private PlayerControls _inputActions = default;
 

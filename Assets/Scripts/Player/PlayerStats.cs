@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public class PlayerStats : UnitStats
+	public class PlayerStats : UnitStats, IEventListener, IEventSender
 	{
 		private void OnEnable() => this.AddListener<StaminaDrain>(OnStaminaDrain);
 

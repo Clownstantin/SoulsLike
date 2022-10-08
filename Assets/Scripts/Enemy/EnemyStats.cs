@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public class EnemyStats : UnitStats
+	public class EnemyStats : UnitStats, IEventSender
 	{
 		public void Init() => InitStats();
 

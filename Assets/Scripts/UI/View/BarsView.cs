@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace SoulsLike.UI
 {
 	[Serializable]
-	public struct BarsView : IView
+	public struct BarsView : IView, IEventListener
 	{
 		[Header("Bars")]
 		[SerializeField] private Slider _healthBarSlider;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public class PlayerCombatSystem : MonoBehaviour
+	public class PlayerCombatSystem : MonoBehaviour, IEventListener, IEventSender
 	{
 		private PlayerAnimatorHandler _playerAnimatorHandler = default;
 		private WeaponSlotManager _weaponSlotManager = default;

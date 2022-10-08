@@ -4,7 +4,7 @@ using UnityEngine;
 namespace SoulsLike
 {
 	[RequireComponent(typeof(Animator))]
-	public class PlayerAnimatorHandler : AnimatorHandler
+	public class PlayerAnimatorHandler : AnimatorHandler, IEventListener, IEventSender
 	{
 		private bool _isInteracting = default;
 		private bool _canDoCombo = default;

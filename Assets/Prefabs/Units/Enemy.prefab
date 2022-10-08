@@ -65,6 +65,7 @@ GameObject:
   - component: {fileID: 5092650966584854460}
   - component: {fileID: 201854651}
   - component: {fileID: -716681610192025140}
+  - component: {fileID: 2867958897222545036}
   - component: {fileID: 1574309168682766101}
   - component: {fileID: 2638573350402706960}
   - component: {fileID: 201854652}
@@ -136,6 +137,19 @@ MonoBehaviour:
     maxDetectionAngle: 50
     stopDistance: 1.5
     rotationSpeed: 200
+--- !u!114 &2867958897222545036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5092650966584854463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fcaea4847dc4130aba7029f620b2971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemyConfig: {fileID: 11400000, guid: 13570bd3708c43449984d9194d90d073, type: 2}
 --- !u!114 &1574309168682766101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,7 +165,6 @@ MonoBehaviour:
   _enemyAttacks:
   - {fileID: 11400000, guid: 569e9cc3c51037741b42b5ba26e9768d, type: 2}
   - {fileID: 11400000, guid: c21c295061785d14ea0c4aa68cddf11d, type: 2}
-  _recoveryTime: 1
 --- !u!114 &2638573350402706960
 MonoBehaviour:
   m_ObjectHideFlags: 0

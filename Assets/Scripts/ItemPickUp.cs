@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-    public class ItemPickUp : Interactable
+    public class ItemPickUp : Interactable, IEventSender
     {
         [Header("")] [SerializeField] private WeaponItem _item;
 

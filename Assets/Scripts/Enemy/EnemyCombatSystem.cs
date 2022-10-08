@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public class EnemyCombatSystem : MonoBehaviour
+	public class EnemyCombatSystem : MonoBehaviour, IEventListener, IEventSender
 	{
 		[SerializeField] private EnemyAttackAction[] _enemyAttacks = default;
 

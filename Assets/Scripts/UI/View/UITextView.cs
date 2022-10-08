@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace SoulsLike.UI
 {
 	[Serializable]
-	public struct UITextView : IView
+	public struct UITextView : IView, IEventListener
 	{
 		[Header("Text PopUp")]
 		[SerializeField] private GameObject _interactPopUpContainer;

@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace SoulsLike
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviour, IEventSender
     {
         private static GameManager s_instance = default;
 

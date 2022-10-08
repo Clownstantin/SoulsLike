@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public class PlayerInventory : MonoBehaviour
+	public class PlayerInventory : MonoBehaviour, IEventListener, IEventSender
 	{
 		[Header("Weapon on Start")]
 		[SerializeField] private WeaponItem _rightWeapon = default;
@@ -26,9 +26,21 @@ namespace SoulsLike
 		public WeaponItem RightWeapon => _rightWeapon;
 		public WeaponItem LeftWeapon => _leftWeapon;
 
-		private void OnEnable() => Subscribe();
+		private void OnEnable()
+		{
+			this.AddListener<WeaponSwitchEvent>(OnWeaponSwitch);
+			this.AddListener<PickUpEvent>(OnPickUp);
+			this.AddListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
+			this.AddListener<InventoryWeaponButtonClick>(OnInventoryWeaponButtonClicked);
+		}
 
-		private void OnDisable() => Unsubscribe();
+		private void OnDisable()
+		{
+			this.RemoveListener<WeaponSwitchEvent>(OnWeaponSwitch);
+			this.RemoveListener<PickUpEvent>(OnPickUp);
+			this.RemoveListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
+			this.RemoveListener<InventoryWeaponButtonClick>(OnInventoryWeaponButtonClicked);
+		}
 
 		public void Init()
 		{
@@ -41,22 +53,6 @@ namespace SoulsLike
 			this.TriggerEvent(new UpdateWeaponInventoryEvent(_weaponInventory, _rightHandWeapons, _leftHandWeapons));
 
 			UpdateWeaponsInHands();
-		}
-
-		public void Subscribe()
-		{
-			this.AddListener<WeaponSwitchEvent>(OnWeaponSwitch);
-			this.AddListener<PickUpEvent>(OnPickUp);
-			this.AddListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
-			this.AddListener<InventoryWeaponButtonClick>(OnInventoryWeaponButtonClicked);
-		}
-
-		public void Unsubscribe()
-		{
-			this.RemoveListener<WeaponSwitchEvent>(OnWeaponSwitch);
-			this.RemoveListener<PickUpEvent>(OnPickUp);
-			this.RemoveListener<ToggleSelectionMenuEvent>(OnSelectionMenuToggle);
-			this.RemoveListener<InventoryWeaponButtonClick>(OnInventoryWeaponButtonClicked);
 		}
 
 		private void OnWeaponSwitch(WeaponSwitchEvent eventInfo)

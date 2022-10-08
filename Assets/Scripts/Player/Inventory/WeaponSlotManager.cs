@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SoulsLike
 {
-	public class WeaponSlotManager : MonoBehaviour
+	public class WeaponSlotManager : MonoBehaviour, IEventListener, IEventSender
 	{
 		private WeaponItem _attackingWeapon = default;
 
