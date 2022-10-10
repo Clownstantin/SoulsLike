@@ -1,7 +1,7 @@
 ﻿using SoulsLike.Extentions;
 using UnityEngine;
 
-namespace SoulsLike
+namespace SoulsLike.Player
 {
 	public class PlayerInteractSystem : MonoBehaviour, IEventSender
 	{

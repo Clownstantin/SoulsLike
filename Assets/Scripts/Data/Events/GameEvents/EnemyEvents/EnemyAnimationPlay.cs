@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public struct EnemyAnimationPlay : IGameEvent
+	public readonly struct EnemyAnimationPlay : IGameEvent
 	{
 		public readonly int enemyID;
 		public readonly Vector3 velocity;

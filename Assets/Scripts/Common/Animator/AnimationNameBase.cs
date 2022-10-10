@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct AnimationNameBase
+	public readonly struct AnimationNameBase
 	{
 		public const string Empty = nameof(Empty);
 		public const string RightArmEmpty = nameof(RightArmEmpty);

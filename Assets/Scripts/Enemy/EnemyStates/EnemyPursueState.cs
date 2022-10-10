@@ -2,79 +2,60 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace SoulsLike.EnemyStates
+namespace SoulsLike.Enemy
 {
-	public struct EnemyPursueState : IEnemyState, IEventSender
+	public sealed class EnemyPursueState : EnemyState, IEventSender
 	{
-		private EnemyStateManager _stateManager;
-		private EnemyConfig _config;
-		private UnitStats _currentTarget;
+		private readonly Transform _myTransform;
+		private readonly Rigidbody _rigidbody;
+		private readonly NavMeshAgent _navMesh;
+		private readonly EnemyConfig _config;
 
-		private Transform _myTransform;
-		private Rigidbody _rigidbody;
-		private NavMeshAgent _navMesh;
-
-		private readonly int _enemyID;
-
-		public EnemyPursueState(EnemyStateManager stateManager, UnitStats currentTarget)
+		public EnemyPursueState(EnemyStateManager stateManager, EnemyStateFactory factory) : base(stateManager, factory)
 		{
-			_stateManager = stateManager;
-			_currentTarget = currentTarget;
-
-			_config = _stateManager.EnemyConfig;
-			_myTransform = _stateManager.transform;
-			_enemyID = _stateManager.EnemyID;
-			_rigidbody = _stateManager.Rigidbody;
-			_navMesh = _stateManager.NavMeshAgent;
+			_navMesh = stateManager.GetComponentInChildren<NavMeshAgent>();
+			_myTransform = stateManager.transform;
+			_rigidbody = stateManager.Rigidbody;
+			_config = stateManager.EnemyConfig;
 
 			_navMesh.enabled = false;
-			_navMesh.stoppingDistance = _config.StopDistance;
+			_navMesh.stoppingDistance = _config.MaxAttackRange;
 			_rigidbody.isKinematic = false;
 		}
 
-		public void UpdateState(float delta)
+		public override void UpdateState(float delta)
 		{
-			if(!_currentTarget) return;
-			Vector3 targetPos = _currentTarget.transform.position;
+			if(!stateManager.CurrentTarget) return;
+			Vector3 targetPos = stateManager.CurrentTarget.transform.position;
 			float distanceFromTarget = Vector3.Distance(targetPos, _myTransform.position);
+			Quaternion lookRot;
 
-			if(_stateManager.isPerformingAction)
+			if(stateManager.IsPerformingAction)
 			{
-				this.TriggerEvent(new EnemyStopEvent(_enemyID, delta));
+				this.TriggerEvent(new EnemyStopEvent(stateManager.EnemyID, delta));
 				_navMesh.enabled = false;
+
+				Vector3 dir = (targetPos - _myTransform.position).normalized;
+				dir.y = 0;
+				dir = dir == Vector3.zero ? _myTransform.forward : dir;
+				lookRot = Quaternion.LookRotation(dir);
 			}
 			else
 			{
 				_navMesh.enabled = true;
+				lookRot = _navMesh.transform.rotation;
 				_navMesh.SetDestination(targetPos);
 				_rigidbody.velocity = _navMesh.velocity;
-
-				if(distanceFromTarget > _config.StopDistance) this.TriggerEvent(new EnemyMoveEvent(_enemyID, delta));
-				else
-				{
-					this.TriggerEvent(new EnemyStopEvent(_enemyID, delta));
-					//_stateManager.SwitchState(new EnemyAttackState());
-				}
 			}
-			_navMesh.transform.localPosition = Vector3.zero;
-			HandleRotation(delta, _stateManager.isPerformingAction);
-		}
 
-		private void HandleRotation(float delta, bool isPerformingAction)
-		{
-			float rotSpeed = _config.RotationSpeed;
+			_myTransform.rotation = Quaternion.Slerp(_myTransform.rotation, lookRot, _config.RotationSpeed * delta);
 
-			if(isPerformingAction)
-			{
-				Vector3 dir = (_currentTarget.transform.position - _myTransform.position).normalized;
-				dir.y = 0;
-				dir = dir == Vector3.zero ? _myTransform.forward : dir;
+			Transform navMeshTransform = _navMesh.transform;
+			navMeshTransform.localPosition = Vector3.zero;
+			navMeshTransform.localRotation = Quaternion.identity;
 
-				Quaternion lookRotation = Quaternion.LookRotation(dir);
-				_myTransform.rotation = Quaternion.Slerp(_myTransform.rotation, lookRotation, rotSpeed * delta);
-			}
-			else _myTransform.rotation = Quaternion.Slerp(_myTransform.rotation, _navMesh.transform.rotation, rotSpeed * delta);
-			_navMesh.transform.localRotation = Quaternion.identity;
+			if(distanceFromTarget <= _config.MaxAttackRange) SwitchState(factory.CombatStance());
+			else this.TriggerEvent(new EnemyMoveEvent(stateManager.EnemyID, delta));
 		}
 	}
 }

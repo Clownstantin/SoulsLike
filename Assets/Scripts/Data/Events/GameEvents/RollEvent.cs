@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct RollEvent : IGameEvent
+	public readonly struct RollEvent : IGameEvent
 	{
 		public readonly bool isMoving;
 

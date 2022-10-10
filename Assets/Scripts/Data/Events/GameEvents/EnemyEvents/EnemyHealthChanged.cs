@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct EnemyHealthChanged : IGameEvent
+	public readonly struct EnemyHealthChanged : IGameEvent
 	{
 		public readonly int enemyID;
 

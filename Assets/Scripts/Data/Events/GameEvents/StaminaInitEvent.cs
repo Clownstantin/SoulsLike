@@ -1,6 +1,6 @@
 namespace SoulsLike
 {
-	public struct StaminaInitEvent : IGameEvent
+	public readonly struct StaminaInitEvent : IGameEvent
 	{
 		public readonly int stamina;
 

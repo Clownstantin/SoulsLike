@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	[CreateAssetMenu(menuName = "Items/Weapon Item")]
+	[CreateAssetMenu(menuName = "Items/Weapon Item", order = 52)]
 	public class WeaponItem : Item
 	{
 		[SerializeField] private Weapon _weaponPrefab = default;

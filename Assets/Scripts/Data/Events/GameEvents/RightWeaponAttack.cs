@@ -1,6 +1,6 @@
 namespace SoulsLike
 {
-	public struct RightWeaponAttack : IGameEvent
+	public readonly struct RightWeaponAttack : IGameEvent
 	{
 		public readonly bool lightAttackInput;
 		public readonly bool heavyAttackInput;

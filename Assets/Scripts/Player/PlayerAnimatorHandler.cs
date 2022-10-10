@@ -1,7 +1,7 @@
 ﻿using SoulsLike.Extentions;
 using UnityEngine;
 
-namespace SoulsLike
+namespace SoulsLike.Player
 {
 	[RequireComponent(typeof(Animator))]
 	public class PlayerAnimatorHandler : AnimatorHandler, IEventListener, IEventSender

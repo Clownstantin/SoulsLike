@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct JumpEvent : IGameEvent
+	public readonly struct JumpEvent : IGameEvent
 	{
 		public readonly float moveAmount;
 

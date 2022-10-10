@@ -2,7 +2,7 @@ using SoulsLike.Extentions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace SoulsLike
+namespace SoulsLike.Player
 {
 	public class PlayerInput : MonoBehaviour, IEventListener, IEventSender
 	{

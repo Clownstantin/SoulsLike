@@ -2,6 +2,6 @@
 {
 	public interface IEnemyState
 	{
-		void UpdateState(float delta);
+		void UpdateState(float defta);
 	}
 }

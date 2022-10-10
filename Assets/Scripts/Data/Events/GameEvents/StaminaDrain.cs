@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct StaminaDrain : IGameEvent
+	public readonly struct StaminaDrain : IGameEvent
 	{
 		public readonly int drainDamage;
 

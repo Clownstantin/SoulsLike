@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public struct EquipButtonClick : IGameEvent
+	public readonly struct EquipButtonClick : IGameEvent
 	{
 		public readonly EquipmentSlotTypes slotType;
 

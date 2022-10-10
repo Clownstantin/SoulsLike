@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct ItemTextPopUp : IGameEvent
+	public readonly struct ItemTextPopUp : IGameEvent
 	{
 		public readonly Item item;
 		public readonly bool isActive;

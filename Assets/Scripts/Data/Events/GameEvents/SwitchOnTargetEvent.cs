@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct SwitchOnTargetEvent : IGameEvent
+	public readonly struct SwitchOnTargetEvent : IGameEvent
 	{
 		public readonly bool isLeftTarget;
 		public readonly bool isRightTarget;

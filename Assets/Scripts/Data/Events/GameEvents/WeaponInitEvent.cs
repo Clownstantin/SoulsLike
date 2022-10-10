@@ -1,6 +1,6 @@
 namespace SoulsLike
 {
-	public struct WeaponInitEvent : IGameEvent
+	public readonly struct WeaponInitEvent : IGameEvent
 	{
 		public readonly WeaponItem rightWeapon;
 		public readonly WeaponItem leftWeapon;

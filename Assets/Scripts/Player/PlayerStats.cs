@@ -1,6 +1,6 @@
 ﻿using SoulsLike.Extentions;
 
-namespace SoulsLike
+namespace SoulsLike.Player
 {
 	public class PlayerStats : UnitStats, IEventListener, IEventSender
 	{

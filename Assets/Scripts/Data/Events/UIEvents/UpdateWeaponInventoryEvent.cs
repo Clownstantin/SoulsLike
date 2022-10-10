@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public struct UpdateWeaponInventoryEvent : IGameEvent
+	public readonly struct UpdateWeaponInventoryEvent : IGameEvent
 	{
 		public readonly List<WeaponItem> itemInventory;
 		public readonly WeaponItem[] rightHandWeapons;
@@ -10,7 +10,7 @@ namespace SoulsLike
 
 		public UpdateWeaponInventoryEvent(List<WeaponItem> weaponInventory, WeaponItem[] rightWeapons, WeaponItem[] leftWeapons)
 		{
-			this.itemInventory = weaponInventory;
+			itemInventory = weaponInventory;
 			rightHandWeapons = rightWeapons;
 			leftHandWeapons = leftWeapons;
 		}

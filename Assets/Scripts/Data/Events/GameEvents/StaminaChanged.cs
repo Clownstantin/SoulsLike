@@ -1,6 +1,6 @@
 namespace SoulsLike
 {
-	public struct StaminaChanged : IGameEvent
+	public readonly struct StaminaChanged : IGameEvent
 	{
 		public readonly int currentStamina;
 

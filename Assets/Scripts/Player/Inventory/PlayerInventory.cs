@@ -3,22 +3,18 @@ using SoulsLike.Extentions;
 using SoulsLike.UI;
 using UnityEngine;
 
-namespace SoulsLike
+namespace SoulsLike.Player
 {
 	public class PlayerInventory : MonoBehaviour, IEventListener, IEventSender
 	{
-		[Header("Weapon on Start")]
-		[SerializeField] private WeaponItem _rightWeapon = default;
-
-		[SerializeField] private WeaponItem _leftWeapon = default;
 		[SerializeField] private WeaponItem _unarmedWeapon = default;
-
 		[Header("Weapon Slots")]
 		[SerializeField] private WeaponItem[] _rightHandWeapons = default;
-
 		[SerializeField] private WeaponItem[] _leftHandWeapons = default;
 
 		private List<WeaponItem> _weaponInventory = default;
+		private WeaponItem _rightWeapon = default;
+		private WeaponItem _leftWeapon = default;
 
 		private int _currentRightWeaponIndex = default;
 		private int _currentLeftWeaponIndex = default;
@@ -45,7 +41,6 @@ namespace SoulsLike
 		public void Init()
 		{
 			_weaponInventory = new List<WeaponItem>();
-
 			_rightWeapon = _rightHandWeapons[0];
 			_leftWeapon = _leftHandWeapons[0];
 
@@ -89,18 +84,10 @@ namespace SoulsLike
 			WeaponItem weapon = eventInfo.weapon;
 			switch(eventInfo.slotType)
 			{
-				case EquipmentSlotTypes.RightSlot01:
-					SwitchWeaponInHands(0, weapon, true);
-					break;
-				case EquipmentSlotTypes.RightSlot02:
-					SwitchWeaponInHands(1, weapon, true);
-					break;
-				case EquipmentSlotTypes.LeftSlot01:
-					SwitchWeaponInHands(0, weapon);
-					break;
-				case EquipmentSlotTypes.LeftSlot02:
-					SwitchWeaponInHands(1, weapon);
-					break;
+				case EquipmentSlotTypes.RightSlot01: SwitchWeaponInHands(0, weapon, true); break;
+				case EquipmentSlotTypes.RightSlot02: SwitchWeaponInHands(1, weapon, true); break;
+				case EquipmentSlotTypes.LeftSlot01: SwitchWeaponInHands(0, weapon); break;
+				case EquipmentSlotTypes.LeftSlot02: SwitchWeaponInHands(1, weapon); break;
 			}
 
 			_rightWeapon = _rightHandWeapons[_currentRightWeaponIndex];

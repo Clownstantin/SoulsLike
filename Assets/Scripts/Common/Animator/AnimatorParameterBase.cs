@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct AnimatorParameterBase
+	public readonly struct AnimatorParameterBase
 	{
 		public const string Vertical = nameof(Vertical);
 		public const string Horizontal = nameof(Horizontal);

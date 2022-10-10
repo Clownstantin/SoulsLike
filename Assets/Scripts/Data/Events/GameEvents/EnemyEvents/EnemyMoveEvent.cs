@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct EnemyMoveEvent : IGameEvent
+	public readonly struct EnemyMoveEvent : IGameEvent
 	{
 		public readonly int enemyID;
 		public readonly float delta;

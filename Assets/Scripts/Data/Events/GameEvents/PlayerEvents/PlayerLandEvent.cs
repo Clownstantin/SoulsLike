@@ -1,6 +1,6 @@
 ﻿namespace SoulsLike
 {
-	public struct PlayerLandEvent : IGameEvent
+	public readonly struct PlayerLandEvent : IGameEvent
 	{
 		public readonly bool isLongLand;
 

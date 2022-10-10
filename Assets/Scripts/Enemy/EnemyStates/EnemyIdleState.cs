@@ -1,31 +1,25 @@
 ﻿using UnityEngine;
 
-namespace SoulsLike.EnemyStates
+namespace SoulsLike.Enemy
 {
-	public struct EnemyIdleState : IEnemyState
+	public sealed class EnemyIdleState : EnemyState
 	{
-		private readonly EnemyStateManager _stateManager;
 		private readonly EnemyConfig _config;
 		private readonly Transform _myTransform;
 		private readonly Collider[] _collidersBuff;
 
-		private UnitStats _currentTarget;
-
-		public EnemyIdleState(EnemyStateManager stateManager)
+		public EnemyIdleState(EnemyStateManager stateManager, EnemyStateFactory factory) : base(stateManager, factory)
 		{
-			_currentTarget = null;
-			_stateManager = stateManager;
-			_myTransform = _stateManager.transform;
-			_config = _stateManager.EnemyConfig;
-
+			_myTransform = stateManager.transform;
+			_config = stateManager.EnemyConfig;
 			_collidersBuff = new Collider[_config.MaxDetectionTargets];
 		}
 
-		public void UpdateState(float delta)
+		public override void UpdateState(float delta)
 		{
-			if(_currentTarget) return;
-			int buffSize = Physics.OverlapSphereNonAlloc(_myTransform.position, _config.DetectionRadius, _collidersBuff,
-			                                             _config.DetectionLayer);
+			if(stateManager.CurrentTarget) return;
+			int buffSize = Physics.OverlapSphereNonAlloc(_myTransform.position, _config.DetectionRadius, _collidersBuff, _config.DetectionLayer);
+			
 			for(int i = 0; i < buffSize; i++)
 			{
 				if(!_collidersBuff[i].TryGetComponent(out UnitStats unitStats)) continue;
@@ -34,8 +28,8 @@ namespace SoulsLike.EnemyStates
 
 				if(viewAngle > -_config.MaxDetectionAngle && viewAngle < _config.MaxDetectionAngle)
 				{
-					_currentTarget = unitStats;
-					_stateManager.SwitchState(new EnemyPursueState(_stateManager, _currentTarget));
+					stateManager.SetCurrentTarget(unitStats);
+					SwitchState(factory.Pursue());
 					return;
 				}
 			}

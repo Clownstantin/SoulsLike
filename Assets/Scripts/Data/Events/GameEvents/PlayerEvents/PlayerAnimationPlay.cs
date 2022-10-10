@@ -2,7 +2,7 @@
 
 namespace SoulsLike
 {
-	public struct PlayerAnimationPlay : IGameEvent
+	public readonly struct PlayerAnimationPlay : IGameEvent
 	{
 		public readonly Vector3 velocity;
 

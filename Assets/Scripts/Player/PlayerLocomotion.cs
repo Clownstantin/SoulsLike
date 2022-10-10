@@ -1,7 +1,7 @@
 using SoulsLike.Extentions;
 using UnityEngine;
 
-namespace SoulsLike
+namespace SoulsLike.Player
 {
 	[RequireComponent(typeof(Rigidbody))]
 	public class PlayerLocomotion : MonoBehaviour, IEventListener, IEventSender

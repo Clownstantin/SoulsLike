@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SoulsLike
+namespace SoulsLike.Player
 {
 	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerCombatSystem)),
 	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInput))]
