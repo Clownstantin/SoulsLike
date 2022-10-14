@@ -9,7 +9,6 @@ namespace SoulsLike.Enemy
 		private readonly EnemyAttackAction[] _enemyAttacks;
 
 		private EnemyAttackAction _currentAttack;
-		private float _recoveryTime;
 
 		public EnemyAttackState(EnemyStateManager stateManager, EnemyStateFactory factory) : base(stateManager, factory)
 		{
@@ -19,31 +18,26 @@ namespace SoulsLike.Enemy
 
 		public override void UpdateState(float delta)
 		{
-			if(stateManager.IsPerformingAction && _recoveryTime <= 0)
-			{
-				stateManager.SetIsPerformingAction(false);
-				SwitchState(factory.CombatStance());
-			}
-
-			if(_recoveryTime > 0) _recoveryTime -= delta;
-
-			float distanceToTarget = Vector3.Distance(stateManager.CurrentTarget.transform.position, _myTransform.position);
-			this.TriggerEvent(new EnemyStopEvent(stateManager.EnemyID, delta));
-
-			_currentAttack = GetRandomAttack(distanceToTarget);
-
-			if(!_currentAttack || _recoveryTime > 0) return;
-			this.TriggerEvent(new EnemyAttackEvent(stateManager.EnemyID, _currentAttack));
-			stateManager.SetIsPerformingAction(true);
-			_recoveryTime = _currentAttack.RecoveryTime;
-		}
-
-		private EnemyAttackAction GetRandomAttack(float distanceToTarget)
-		{
-			Vector3 targetDir = (stateManager.CurrentTarget.transform.position - _myTransform.position).normalized;
-			float viewAngle = Vector3.Angle(targetDir, _myTransform.forward);
+			if(stateManager.IsPerformingAction) return;
+			Vector3 targetPos = stateManager.CurrentTarget.transform.position;
+			Vector3 myPos = _myTransform.position;
+			Vector3 dirToTarget = (targetPos - myPos).normalized;
+			float distanceToTarget = Vector3.Distance(targetPos, myPos);
+			float viewAngle = Vector3.Angle(dirToTarget, _myTransform.forward);
 
 			int maxScore = GetMaxScore(distanceToTarget, viewAngle);
+			_currentAttack = GetRandomAttack(maxScore, distanceToTarget);
+
+			if(!_currentAttack) return;
+			this.TriggerEvent(new EnemyAttackEvent(stateManager.EnemyID, _currentAttack));
+			stateManager.SetIsPerformingAction(true);
+			stateManager.SetRecoveryTime(_currentAttack.RecoveryTime);
+
+			SwitchState(factory.CombatStance());
+		}
+
+		private EnemyAttackAction GetRandomAttack(int maxScore, float distanceToTarget)
+		{
 			int randomScore = Random.Range(0, maxScore);
 			int tempScore = 0;
 

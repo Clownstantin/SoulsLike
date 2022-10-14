@@ -23,7 +23,11 @@ namespace SoulsLike.Enemy
 			_enemyAnimatorHandler.Init();
 		}
 
-		public override void OnUpdate(float delta) { }
+		public override void OnUpdate(float delta)
+		{
+			bool isInteracting = _enemyAnimatorHandler.GetIsInteracting();
+			_enemyStateManager.SetIsInteracting(isInteracting);
+		}
 
 		public override void OnFixedUpdate(float delta) => _enemyStateManager.UpdateStates(delta);
 	}

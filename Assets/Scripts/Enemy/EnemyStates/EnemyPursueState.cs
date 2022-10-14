@@ -13,7 +13,7 @@ namespace SoulsLike.Enemy
 
 		public EnemyPursueState(EnemyStateManager stateManager, EnemyStateFactory factory) : base(stateManager, factory)
 		{
-			_navMesh = stateManager.GetComponentInChildren<NavMeshAgent>();
+			_navMesh = stateManager.NavMesh;
 			_myTransform = stateManager.transform;
 			_rigidbody = stateManager.Rigidbody;
 			_config = stateManager.EnemyConfig;
@@ -32,7 +32,7 @@ namespace SoulsLike.Enemy
 
 			if(stateManager.IsPerformingAction)
 			{
-				this.TriggerEvent(new EnemyStopEvent(stateManager.EnemyID, delta));
+				this.TriggerEvent(new EnemyStopEvent(stateManager.EnemyID));
 				_navMesh.enabled = false;
 
 				Vector3 dir = (targetPos - _myTransform.position).normalized;

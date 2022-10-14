@@ -12,6 +12,8 @@
 		public const string TwoHandIdle = nameof(TwoHandIdle);
 
 		public const string Roll = nameof(Roll);
+		public const string Sleep = nameof(Sleep);
+		public const string GetUp = nameof(GetUp);
 		public const string Jump = nameof(Jump);
 		public const string Stepback = nameof(Stepback);
 		public const string Land = nameof(Land);

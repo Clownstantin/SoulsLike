@@ -207,8 +207,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8062590390958af44a75f6854b90c2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rightWeapon: {fileID: 11400000, guid: df64dd6155be7d540a4c862b6ffd4f46, type: 2}
-  _leftWeapon: {fileID: 11400000, guid: df64dd6155be7d540a4c862b6ffd4f46, type: 2}
   _unarmedWeapon: {fileID: 11400000, guid: df64dd6155be7d540a4c862b6ffd4f46, type: 2}
   _rightHandWeapons:
   - {fileID: 11400000, guid: 3522d588d35ef204096a61a18fff492b, type: 2}
@@ -447,7 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2545f41c183934ab197c565c67660b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _crossFadeTransitionDuration: 0.2
+  crossFadeTransitionDuration: 0.2
 --- !u!4 &8961243561073651670 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a40c97d65feab604d86b6aca55744ce8, type: 3}

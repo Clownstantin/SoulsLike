@@ -10,6 +10,7 @@ namespace SoulsLike.Enemy
 			Pursue,
 			CombatStance,
 			Attack,
+			Ambush,
 			Length
 		}
 
@@ -22,6 +23,7 @@ namespace SoulsLike.Enemy
 			_states[EnemyStates.Pursue] = new EnemyPursueState(stateManager, this);
 			_states[EnemyStates.CombatStance] = new EnemyCombatStanceState(stateManager, this);
 			_states[EnemyStates.Attack] = new EnemyAttackState(stateManager, this);
+			_states[EnemyStates.Ambush] = new EnemyAmbushState(stateManager, this);
 		}
 
 		public IEnemyState Idle() => _states[EnemyStates.Idle];
@@ -31,5 +33,7 @@ namespace SoulsLike.Enemy
 		public IEnemyState CombatStance() => _states[EnemyStates.CombatStance];
 
 		public IEnemyState Attack() => _states[EnemyStates.Attack];
+
+		public IEnemyState Ambush() => _states[EnemyStates.Ambush];
 	}
 }

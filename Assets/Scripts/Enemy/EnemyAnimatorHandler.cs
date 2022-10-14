@@ -20,6 +20,8 @@ namespace SoulsLike.Enemy
 			this.AddListener<EnemyStopEvent>(OnEnemyStop);
 			this.AddListener<EnemyMoveEvent>(OnEnemyMove);
 			this.AddListener<EnemyAttackEvent>(OnEnemyAttack);
+			this.AddListener<EnemySleepEvent>(OnEnemySleep);
+			this.AddListener<EnemyAwakeEvent>(OnEnemyAwake);
 			this.AddListener<EnemyDied>(OnDie);
 		}
 
@@ -29,6 +31,8 @@ namespace SoulsLike.Enemy
 			this.RemoveListener<EnemyStopEvent>(OnEnemyStop);
 			this.RemoveListener<EnemyMoveEvent>(OnEnemyMove);
 			this.RemoveListener<EnemyAttackEvent>(OnEnemyAttack);
+			this.RemoveListener<EnemySleepEvent>(OnEnemySleep);
+			this.RemoveListener<EnemyAwakeEvent>(OnEnemyAwake);
 			this.RemoveListener<EnemyDied>(OnDie);
 		}
 
@@ -41,6 +45,8 @@ namespace SoulsLike.Enemy
 			this.TriggerEvent(new EnemyAnimationPlay(_enemyID, velocity));
 		}
 
+		public bool GetIsInteracting() => animator.GetBool(isInteractingHash);
+
 		private void OnHealthChanged(EnemyHealthChanged eventInfo)
 		{
 			if(eventInfo.enemyID != _enemyID) return;
@@ -50,20 +56,31 @@ namespace SoulsLike.Enemy
 		private void OnEnemyMove(EnemyMoveEvent eventInfo)
 		{
 			if(eventInfo.enemyID != _enemyID) return;
-			animator.SetFloat(verticalHash, 1, 0.1f, eventInfo.delta);
+			animator.SetFloat(verticalHash, 1);
 		}
 
 		private void OnEnemyStop(EnemyStopEvent eventInfo)
 		{
 			if(eventInfo.enemyID != _enemyID) return;
-			animator.SetFloat(verticalHash, 0, 0.1f, eventInfo.delta);
-			animator.SetFloat(horizontalHash, 0, 0.1f, eventInfo.delta);
+			animator.SetFloat(verticalHash, 0);
 		}
 
 		private void OnEnemyAttack(EnemyAttackEvent eventInfo)
 		{
 			if(eventInfo.enemyID != _enemyID) return;
 			PlayTargetAnimation(eventInfo.attackAction.ActionAnimation, true);
+		}
+
+		private void OnEnemySleep(EnemySleepEvent eventInfo)
+		{
+			if(eventInfo.enemyID != _enemyID) return;
+			PlayTargetAnimation(AnimationNameBase.Sleep, true);
+		}
+
+		private void OnEnemyAwake(EnemyAwakeEvent eventInfo)
+		{
+			if(eventInfo.enemyID != _enemyID) return;
+			PlayTargetAnimation(AnimationNameBase.GetUp, true);
 		}
 
 		private void OnDie(EnemyDied eventInfo)

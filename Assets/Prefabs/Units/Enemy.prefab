@@ -208,9 +208,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1895459720545357078}
     m_Modifications:
+    - target: {fileID: 820648791403916355, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2343770592619253284, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3190755524031127201, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}
       propertyPath: m_Name
       value: ShortSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 3190755524031127201, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3190755524031127214, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}
       propertyPath: m_RootOrder
@@ -255,6 +267,10 @@ PrefabInstance:
     - target: {fileID: 3190755524031127214, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6704581181346723581, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38595066f6605f24da64842c6b88f8ec, type: 3}

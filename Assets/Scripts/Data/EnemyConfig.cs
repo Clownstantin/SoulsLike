@@ -15,6 +15,8 @@ namespace SoulsLike
 		[Header("Combat Settings")]
 		[SerializeField] private EnemyAttackAction[] _attackActions = default;
 		[SerializeField] private float _maxAttackRange = default;
+		[SerializeField] private float _ambushRadius = default;
+
 
 		public int MaxDetectionTargets => _maxDetectionTargets;
 		public float DetectionRadius => _detectionRadius;
@@ -25,5 +27,6 @@ namespace SoulsLike
 
 		public EnemyAttackAction[] AttackActions => _attackActions;
 		public float MaxAttackRange => _maxAttackRange;
+		public float AmbushRadius => _ambushRadius;
 	}
 }
