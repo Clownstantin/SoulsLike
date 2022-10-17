@@ -8,9 +8,9 @@ namespace SoulsLike.Player
 
 		private void OnDisable() => this.RemoveListener<StaminaDrain>(OnStaminaDrain);
 
-		public void Init()
+		public override void Init()
 		{
-			InitStats();
+			base.Init();
 
 			this.TriggerEvent(new PlayerHealthInitEvent(unitStatsData.maxHealth));
 			this.TriggerEvent(new StaminaInitEvent(unitStatsData.maxStamina));
@@ -18,15 +18,15 @@ namespace SoulsLike.Player
 
 		public override void TakeDamage(int damage)
 		{
+			if(isDead) return;
 			base.TakeDamage(damage);
 			this.TriggerEvent(new PlayerHealthChanged(unitStatsData.currentHealth));
 
 			if(unitStatsData.currentHealth > 0) return;
 
 			unitStatsData.currentHealth = 0;
+			isDead = true;
 			this.TriggerEvent(new PlayerDied());
-
-			//Handle Player Death
 		}
 
 		private void OnStaminaDrain(StaminaDrain eventInfo)

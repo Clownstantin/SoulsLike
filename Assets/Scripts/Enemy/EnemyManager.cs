@@ -6,29 +6,32 @@ namespace SoulsLike.Enemy
 	public class EnemyManager : UnitManager
 	{
 		private EnemyStats _enemyStats = default;
-		private EnemyStateManager _enemyStateManager = default;
-		private EnemyAnimatorHandler _enemyAnimatorHandler = default;
+		private EnemyStateManager _stateManager = default;
+		private EnemyWeaponSlotManager _weaponSlotManager = default;
+		private EnemyAnimatorHandler _animatorHandler = default;
 
 		private void Awake()
 		{
 			_enemyStats = GetComponent<EnemyStats>();
-			_enemyStateManager = GetComponent<EnemyStateManager>();
-			_enemyAnimatorHandler = GetComponentInChildren<EnemyAnimatorHandler>();
+			_stateManager = GetComponent<EnemyStateManager>();
+			_animatorHandler = GetComponentInChildren<EnemyAnimatorHandler>();
+			_weaponSlotManager = GetComponentInChildren<EnemyWeaponSlotManager>();
 		}
 
 		protected override void OnStart()
 		{
 			_enemyStats.Init();
-			_enemyStateManager.Init();
-			_enemyAnimatorHandler.Init();
+			_stateManager.Init();
+			_animatorHandler.Init();
+			_weaponSlotManager.Init();
 		}
 
 		public override void OnUpdate(float delta)
 		{
-			bool isInteracting = _enemyAnimatorHandler.GetIsInteracting();
-			_enemyStateManager.SetIsInteracting(isInteracting);
+			bool isInteracting = _animatorHandler.GetIsInteracting();
+			_stateManager.SetIsInteracting(isInteracting);
 		}
 
-		public override void OnFixedUpdate(float delta) => _enemyStateManager.UpdateStates(delta);
+		public override void OnFixedUpdate(float delta) => _stateManager.UpdateStates(delta);
 	}
 }

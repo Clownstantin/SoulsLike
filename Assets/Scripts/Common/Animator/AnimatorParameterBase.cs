@@ -7,5 +7,6 @@
 		public const string IsInteracting = nameof(IsInteracting);
 		public const string CanDoCombo = nameof(CanDoCombo);
 		public const string IsInAir = nameof(IsInAir);
+		public const string IsUsingRightHand = nameof(IsUsingRightHand);
 	}
 }

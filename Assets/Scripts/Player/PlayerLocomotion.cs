@@ -34,7 +34,7 @@ namespace SoulsLike.Player
 		{
 			this.AddListener<PickUpEvent>(OnPickUp);
 			this.AddListener<JumpEvent>(OnJump);
-			this.AddListener<PlayerAnimationPlay>(OnAnimationPlay);
+			this.AddListener<PlayerAnimatorMove>(OnAnimationPlay);
 			this.AddListener<GamePause>(OnGamePause);
 			this.AddListener<GameResume>(OnGameResume);
 		}
@@ -43,7 +43,7 @@ namespace SoulsLike.Player
 		{
 			this.RemoveListener<PickUpEvent>(OnPickUp);
 			this.RemoveListener<JumpEvent>(OnJump);
-			this.RemoveListener<PlayerAnimationPlay>(OnAnimationPlay);
+			this.RemoveListener<PlayerAnimatorMove>(OnAnimationPlay);
 			this.RemoveListener<GamePause>(OnGamePause);
 			this.RemoveListener<GameResume>(OnGameResume);
 		}
@@ -219,7 +219,7 @@ namespace SoulsLike.Player
 
 		private void OnGamePause(GamePause _) => _rigidbody.isKinematic = true;
 
-		private void OnAnimationPlay(PlayerAnimationPlay eventInfo)
+		private void OnAnimationPlay(PlayerAnimatorMove eventInfo)
 		{
 			_rigidbody.drag = 0;
 			_rigidbody.velocity = eventInfo.velocity;

@@ -5,6 +5,7 @@ namespace SoulsLike.Enemy
 {
 	public sealed class EnemyAttackState : EnemyState, IEventSender
 	{
+		private readonly EnemyConfig _config;
 		private readonly Transform _myTransform;
 		private readonly EnemyAttackAction[] _enemyAttacks;
 
@@ -12,6 +13,7 @@ namespace SoulsLike.Enemy
 
 		public EnemyAttackState(EnemyStateManager stateManager, EnemyStateFactory factory) : base(stateManager, factory)
 		{
+			_config = stateManager.EnemyConfig;
 			_myTransform = stateManager.transform;
 			_enemyAttacks = stateManager.EnemyConfig.AttackActions;
 		}
@@ -21,9 +23,13 @@ namespace SoulsLike.Enemy
 			if(stateManager.IsPerformingAction) return;
 			Vector3 targetPos = stateManager.CurrentTarget.transform.position;
 			Vector3 myPos = _myTransform.position;
-			Vector3 dirToTarget = (targetPos - myPos).normalized;
+			Vector3 dir = (targetPos - myPos).normalized;
+			dir.y = 0;
+			dir = dir == Vector3.zero ? _myTransform.forward : dir;
+
 			float distanceToTarget = Vector3.Distance(targetPos, myPos);
-			float viewAngle = Vector3.Angle(dirToTarget, _myTransform.forward);
+			float viewAngle = Vector3.Angle(dir, _myTransform.forward);
+			_myTransform.rotation = Quaternion.Slerp(_myTransform.rotation, Quaternion.LookRotation(dir), _config.RotationSpeed * delta);
 
 			int maxScore = GetMaxScore(distanceToTarget, viewAngle);
 			_currentAttack = GetRandomAttack(maxScore, distanceToTarget);

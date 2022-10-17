@@ -15,6 +15,7 @@ namespace SoulsLike
 
 		private Transform _playerTransform = default;
 		private Transform _myTransform = default;
+		private Collider[] _collidersBuff = default;
 
 		private Vector3 _cameraPosition = default;
 		private Vector3 _cameraVelocity = default;
@@ -31,15 +32,6 @@ namespace SoulsLike
 		public Transform CameraTransform => _cameraData.cameraTransform;
 		public Transform CurrentLockOnTarget => _currentLockOnTarget;
 
-		#region Monobehavior
-		private void Awake()
-		{
-			_myTransform = transform;
-			_availableTargets = new List<UnitManager>(_cameraData.maxTargets);
-			_defaultPositionZ = _cameraData.cameraTransform.localPosition.z;
-			_ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
-		}
-
 		private void OnEnable()
 		{
 			this.AddListener<LockOnTargetEvent>(OnLockOnTarget);
@@ -51,9 +43,16 @@ namespace SoulsLike
 			this.RemoveListener<LockOnTargetEvent>(OnLockOnTarget);
 			this.RemoveListener<SwitchOnTargetEvent>(OnSwitchTarget);
 		}
-		#endregion
 
-		public void Init(Transform playerTransform) => _playerTransform = playerTransform;
+		public void Init(Transform playerTransform)
+		{
+			_myTransform = transform;
+			_playerTransform = playerTransform;
+			_defaultPositionZ = _cameraData.cameraTransform.localPosition.z;
+			_ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
+			_availableTargets = new List<UnitManager>(_cameraData.maxTargets);
+			_collidersBuff = new Collider[_cameraData.maxTargets];
+		}
 
 		public void FollowTarget(float delta)
 		{
@@ -166,12 +165,11 @@ namespace SoulsLike
 
 		private void FindAvailableTargets()
 		{
-			var colliderBuff = new Collider[_cameraData.maxTargets];
-			int buffSize = Physics.OverlapSphereNonAlloc(_playerTransform.position, _cameraData.lockOnSphereRadius, colliderBuff, _cameraData.lockOnLayer);
+			int buffSize = Physics.OverlapSphereNonAlloc(_playerTransform.position, _cameraData.lockOnSphereRadius, _collidersBuff, _cameraData.lockOnLayer);
 
 			for(int i = 0; i < buffSize; i++)
 			{
-				if(!colliderBuff[i].TryGetComponent(out UnitManager unit)) continue;
+				if(!_collidersBuff[i].TryGetComponent(out UnitManager unit)) continue;
 
 				Vector3 playerPos = _playerTransform.position;
 				Vector3 unitPos = unit.transform.position;

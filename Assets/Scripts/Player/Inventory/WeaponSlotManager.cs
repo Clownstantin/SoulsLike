@@ -1,4 +1,5 @@
 ﻿using SoulsLike.Extentions;
+using SoulsLike.Player;
 using UnityEngine;
 
 namespace SoulsLike
@@ -14,6 +15,8 @@ namespace SoulsLike
 		private DamageDealer _leftDamageDialer = default;
 		private DamageDealer _rightDamageDialer = default;
 
+		private PlayerAnimatorHandler _animatorHandler = default;
+
 		private void OnEnable()
 		{
 			this.AddListener<WeaponInitEvent>(OnWeaponInit);
@@ -26,8 +29,9 @@ namespace SoulsLike
 			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
 		}
 
-		public void Init()
+		public void Init(PlayerAnimatorHandler animatorHandler)
 		{
+			_animatorHandler = animatorHandler;
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
 
 			foreach(WeaponHolderSlot weaponSlot in weaponHolderSlots)
@@ -84,13 +88,17 @@ namespace SoulsLike
 			this.TriggerEvent(new StaminaDrain(drain));
 		}
 
-		private void OpenLeftDamageCollider() => _leftDamageDialer.EnableDamageCollider();
+		private void OpenDamageCollider()
+		{
+			DamageDealer dealer = _animatorHandler.IsUsingRightHand ? _rightDamageDialer : _leftDamageDialer;
+			dealer.EnableDamageCollider();
+		}
 
-		private void OpenRightDamageCollider() => _rightDamageDialer.EnableDamageCollider();
-
-		private void CloseLeftDamageCollider() => _leftDamageDialer.DisableDamageCollider();
-
-		private void CloseRightDamageCollider() => _rightDamageDialer.DisableDamageCollider();
+		private void CloseDamageCollider()
+		{
+			_rightDamageDialer.DisableDamageCollider();
+			_leftDamageDialer.DisableDamageCollider();
+		}
 		#endregion
 	}
 }

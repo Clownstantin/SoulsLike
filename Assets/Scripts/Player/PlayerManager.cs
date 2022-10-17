@@ -40,11 +40,11 @@ namespace SoulsLike.Player
 			_myTransform = transform;
 			_cameraHandler = GameManager.Instance.CameraHandler;
 
-			_weaponSlotManager.Init();
+			_playerAnimatorHandler.Init();
+			_weaponSlotManager.Init(_playerAnimatorHandler);
 			_cameraHandler.Init(_myTransform);
 			_playerAttack.Init(_playerInventory, _playerAnimatorHandler, _weaponSlotManager);
 			_playerLocomotion.Init(_inputHandler, _cameraHandler);
-			_playerAnimatorHandler.Init();
 			_interactSystem.Init();
 			_playerInventory.Init();
 			_playerStats.Init();
