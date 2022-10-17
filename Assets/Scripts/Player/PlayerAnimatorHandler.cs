@@ -7,12 +7,6 @@ namespace SoulsLike.Player
 	public class PlayerAnimatorHandler : AnimatorHandler, IEventListener, IEventSender
 	{
 		private bool _isInteracting = default;
-		private bool _canDoCombo = default;
-		private bool _isUsingRightHand = default;
-
-		public bool IsInteracting => _isInteracting;
-		public bool CanDoCombo => _canDoCombo;
-		public bool IsUsingRightHand => _isUsingRightHand;
 
 		private void OnEnable()
 		{
@@ -61,11 +55,14 @@ namespace SoulsLike.Player
 		public void UpdateAnimatorValues(float delta, float verticalMovement, float horizontalMovement, bool isSprinting, bool isInAir)
 		{
 			_isInteracting = animator.GetBool(isInteractingHash);
-			_canDoCombo = animator.GetBool(canDoComboHash);
-			_isUsingRightHand = animator.GetBool(isUsingRightHandHash);
+			bool canDoCombo = animator.GetBool(canDoComboHash);
+			bool isUsingRighHand = animator.GetBool(isUsingRightHandHash);
+			bool isInvulnerable = animator.GetBool(isInvulnerableHash);
 
 			float vertical = GetClampedAxis(verticalMovement);
 			float horizontal = GetClampedAxis(horizontalMovement);
+
+			this.TriggerEvent(new PassPlayerAnimatorParams(_isInteracting, canDoCombo, isUsingRighHand, isInvulnerable));
 
 			if(isSprinting)
 			{

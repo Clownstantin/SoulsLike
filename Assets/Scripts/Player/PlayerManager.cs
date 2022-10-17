@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using SoulsLike.Extentions;
+using UnityEngine;
 
 namespace SoulsLike.Player
 {
 	[RequireComponent(typeof(PlayerStats), typeof(PlayerLocomotion), typeof(PlayerCombatSystem)),
 	 RequireComponent(typeof(PlayerInventory), typeof(PlayerInput))]
-	public class PlayerManager : UnitManager
+	public class PlayerManager : UnitManager, IEventListener
 	{
 		private PlayerAnimatorHandler _playerAnimatorHandler = default;
 		private CameraHandler _cameraHandler = default;
@@ -20,8 +21,8 @@ namespace SoulsLike.Player
 		private Transform _myTransform = default;
 
 		private bool _isInteracting = default;
+		private bool _canDoCombo = default;
 
-		#region MonoBehaviour
 		private void Awake()
 		{
 			_playerStats = GetComponent<PlayerStats>();
@@ -35,13 +36,17 @@ namespace SoulsLike.Player
 			_weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
 		}
 
+		private void OnEnable() => this.AddListener<PassPlayerAnimatorParams>(OnPassParams);
+
+		private void OnDisable() => this.RemoveListener<PassPlayerAnimatorParams>(OnPassParams);
+
 		protected override void OnStart()
 		{
 			_myTransform = transform;
 			_cameraHandler = GameManager.Instance.CameraHandler;
 
 			_playerAnimatorHandler.Init();
-			_weaponSlotManager.Init(_playerAnimatorHandler);
+			_weaponSlotManager.Init();
 			_cameraHandler.Init(_myTransform);
 			_playerAttack.Init(_playerInventory, _playerAnimatorHandler, _weaponSlotManager);
 			_playerLocomotion.Init(_inputHandler, _cameraHandler);
@@ -52,11 +57,10 @@ namespace SoulsLike.Player
 
 		public override void OnUpdate(float delta)
 		{
-			_isInteracting = _playerAnimatorHandler.IsInteracting;
 			bool isSprinting = _playerLocomotion.IsSprinting;
 			bool isInAir = _playerLocomotion.IsInAir;
 
-			_inputHandler.TickInput(delta, _isInteracting, _playerAnimatorHandler.CanDoCombo);
+			_inputHandler.TickInput(delta, _isInteracting, _canDoCombo);
 
 			if(_cameraHandler.IsLockedOnTarget && !_inputHandler.SprintFlag)
 				_playerAnimatorHandler.UpdateAnimatorValues(delta, _inputHandler.Vertical, _inputHandler.Horizontal, isSprinting, isInAir);
@@ -68,6 +72,7 @@ namespace SoulsLike.Player
 			if(_isInteracting) return;
 			_playerLocomotion.HandleRolling(_inputHandler.RollFlag);
 			_playerLocomotion.HandleSprinting();
+			_playerStats.RegenerateStamina(delta, _isInteracting);
 		}
 
 		public override void OnFixedUpdate(float delta)
@@ -90,6 +95,11 @@ namespace SoulsLike.Player
 			_cameraHandler.HandleCameraRotation(delta, _inputHandler.MouseX, _inputHandler.MouseY);
 			_cameraHandler.HandleCameraHeight(delta);
 		}
-		#endregion
+
+		private void OnPassParams(PassPlayerAnimatorParams eventInfo)
+		{
+			_isInteracting = eventInfo.isInteracting;
+			_canDoCombo = eventInfo.canDoCombo;
+		}
 	}
 }

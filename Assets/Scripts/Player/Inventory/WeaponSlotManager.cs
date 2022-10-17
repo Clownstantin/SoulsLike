@@ -1,5 +1,4 @@
 ﻿using SoulsLike.Extentions;
-using SoulsLike.Player;
 using UnityEngine;
 
 namespace SoulsLike
@@ -14,24 +13,25 @@ namespace SoulsLike
 
 		private DamageDealer _leftDamageDialer = default;
 		private DamageDealer _rightDamageDialer = default;
+		private bool _isUsingRightHand = default;
 
-		private PlayerAnimatorHandler _animatorHandler = default;
 
 		private void OnEnable()
 		{
 			this.AddListener<WeaponInitEvent>(OnWeaponInit);
 			this.AddListener<WeaponLoadEvent>(OnWeaponLoad);
+			this.AddListener<PassPlayerAnimatorParams>(OnPassParams);
 		}
 
 		private void OnDisable()
 		{
 			this.RemoveListener<WeaponInitEvent>(OnWeaponInit);
 			this.RemoveListener<WeaponLoadEvent>(OnWeaponLoad);
+			this.RemoveListener<PassPlayerAnimatorParams>(OnPassParams);
 		}
 
-		public void Init(PlayerAnimatorHandler animatorHandler)
+		public void Init()
 		{
-			_animatorHandler = animatorHandler;
 			WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
 
 			foreach(WeaponHolderSlot weaponSlot in weaponHolderSlots)
@@ -73,6 +73,8 @@ namespace SoulsLike
 			else _rightDamageDialer = _rightHandSlot.CurrentWeaponModel.DamageDealer;
 		}
 
+		private void OnPassParams(PassPlayerAnimatorParams eventInfo) => _isUsingRightHand = eventInfo.isUsingRightHand;
+
 		#region AnimationEvents
 		private void DrainStaminaOnLightAttack()
 		{
@@ -90,7 +92,7 @@ namespace SoulsLike
 
 		private void OpenDamageCollider()
 		{
-			DamageDealer dealer = _animatorHandler.IsUsingRightHand ? _rightDamageDialer : _leftDamageDialer;
+			DamageDealer dealer = _isUsingRightHand ? _rightDamageDialer : _leftDamageDialer;
 			dealer.EnableDamageCollider();
 		}
 

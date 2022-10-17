@@ -8,5 +8,6 @@
 		public const string CanDoCombo = nameof(CanDoCombo);
 		public const string IsInAir = nameof(IsInAir);
 		public const string IsUsingRightHand = nameof(IsUsingRightHand);
+		public const string IsInvulnerable = nameof(IsInvulnerable);
 	}
 }

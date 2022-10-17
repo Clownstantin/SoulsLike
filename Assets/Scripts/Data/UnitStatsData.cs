@@ -14,6 +14,6 @@ namespace SoulsLike
 		[HideInInspector] public int maxHealth;
 		[HideInInspector] public int currentHealth;
 		[HideInInspector] public int maxStamina;
-		[HideInInspector] public int currentStamina;
+		[HideInInspector] public float currentStamina;
 	}
 }

@@ -14,6 +14,7 @@ namespace SoulsLike
 		protected int canDoComboHash = default;
 		protected int isInAirHash = default;
 		protected int isUsingRightHandHash = default;
+		protected int isInvulnerableHash = default;
 
 		public virtual void Init()
 		{
@@ -25,6 +26,7 @@ namespace SoulsLike
 			canDoComboHash = Animator.StringToHash(AnimatorParameterBase.CanDoCombo);
 			isInAirHash = Animator.StringToHash(AnimatorParameterBase.IsInAir);
 			isUsingRightHandHash = Animator.StringToHash(AnimatorParameterBase.IsUsingRightHand);
+			isInvulnerableHash = Animator.StringToHash(AnimatorParameterBase.IsInvulnerable);
 		}
 
 		public void PlayTargetAnimation(string animationName, bool isInteracting)
@@ -38,6 +40,10 @@ namespace SoulsLike
 		private void EnableCombo() => animator.SetBool(canDoComboHash, true);
 
 		public void DisableCombo() => animator.SetBool(canDoComboHash, false);
+
+		private void EnableInvulnerability() => animator.SetBool(isInvulnerableHash, true);
+
+		private void DisableInvulnerability() => animator.SetBool(isInvulnerableHash, false);
 		#endregion
 	}
 }
